@@ -1,0 +1,14 @@
+.account {
+  flex: 5;
+  background-color: aliceblue;
+}
+
+.detailTitle {
+  font-size: 15px;
+  margin-right: 100;
+}
+
+.detailDescription {
+  font-size: 13px;
+  margin-left: 100;
+}

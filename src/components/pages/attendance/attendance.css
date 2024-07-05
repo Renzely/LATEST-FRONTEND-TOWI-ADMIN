@@ -1,0 +1,7 @@
+.attendance{
+    flex: 5;
+    background-color: aliceblue;
+}
+.leaflet-container {
+    height: 100%;
+}
