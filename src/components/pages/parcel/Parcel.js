@@ -1,5 +1,7 @@
 import "./parcel.css";
 import * as React from "react";
+import Topbar from "../../topbar/Topbar";
+import Sidebar from "../../sidebar/Sidebar";
 import {
   DataGrid,
   GridToolbarContainer,
@@ -66,7 +68,7 @@ export default function Parcel() {
     {
       field: "accountNameBranchManning",
       headerName: "Account Name Branch",
-      width: 350,
+      width: 450,
     },
     {
       field: "period",
@@ -132,7 +134,7 @@ export default function Parcel() {
 
   async function getUser() {
     await axios
-      .post("http://localhost:8080/retrieve-parcel-data")
+      .post("http://192.168.50.217:8080/retrieve-parcel-data")
       .then(async (response) => {
         const data = await response.data.data;
         console.log(data, "test");
@@ -172,7 +174,10 @@ export default function Parcel() {
 
   return (
     <div className="attendance">
-      <div style={{ height: "100%", width: "100%", marginLeft: "100" }}>
+        <Topbar/>
+         <div className="container">
+         <Sidebar/>
+      <div style={{ height: "100%", width: "85%", marginLeft: "100" }}>
         <DataGrid
           rows={userData}
           columns={columns}
@@ -204,6 +209,7 @@ export default function Parcel() {
           </Typography>
         </Box>
       </Modal>
+    </div>
     </div>
   );
 }

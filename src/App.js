@@ -14,16 +14,19 @@ import ViewAttendance from "./components/pages/attendance/ViewAttendance";
 import Account from "./components/pages/account/Account";
 import ViewParcel from "./components/pages/parcel/ViewParcel";
 import RTV from "./components/pages/ReturnToVendor/RTV";
+import Login from "./components/Admin/login";
+import Admin from "./components/pages/AdminAccount/Admin";
+import ForgotPassword from "./components/Admin/forgotpassword";
 
 function App() {
   return (
     <div>
-      <Topbar />
-      <div className="container">
-        <Sidebar />
+     
 
         <Routes>
-          <Route path="/" element={<Attendance />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/view-admin-accounts" element={<Admin />} /> 
           <Route path="/parcel" element={<Parcel />} />
           <Route path="/view-parcel" element={<ViewParcel />} />
           <Route path="/view-attendance" element={<ViewAttendance />} />
@@ -31,7 +34,6 @@ function App() {
           <Route path="/view-RTV" element={<RTV />} />
         </Routes>
       </div>
-    </div>
   );
 }
 

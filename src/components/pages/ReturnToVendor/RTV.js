@@ -1,5 +1,7 @@
 import "./parcel.css";
 import * as React from "react";
+import Topbar from "../../topbar/Topbar";
+import Sidebar from "../../sidebar/Sidebar";
 import {
   DataGrid,
   GridToolbarContainer,
@@ -118,7 +120,7 @@ export default function RTV() {
 
   async function getUser() {
     await axios
-      .post("http://localhost:8080/retrieve-RTV-data")
+      .post("http://192.168.50.217:8080/retrieve-RTV-data")
       .then(async (response) => {
         const data = await response.data.data;
         console.log(data, "test");
@@ -148,7 +150,10 @@ export default function RTV() {
 
   return (
     <div className="attendance">
-      <div style={{ height: "100%", width: "100%", marginLeft: "100" }}>
+        <Topbar/>
+         <div className="container">
+         <Sidebar/>
+      <div style={{ height: "100%", width: "85%", marginLeft: "100" }}>
         <DataGrid
           rows={userData}
           columns={columns}
@@ -180,6 +185,7 @@ export default function RTV() {
           </Typography>
         </Box>
       </Modal>
+    </div>
     </div>
   );
 }

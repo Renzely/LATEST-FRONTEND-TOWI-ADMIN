@@ -1,5 +1,7 @@
 import "./account.css";
 import * as React from "react";
+import Topbar from "../../topbar/Topbar";
+import Sidebar from "../../sidebar/Sidebar";
 import {
   DataGrid,
   GridToolbarContainer,
@@ -134,7 +136,7 @@ export default function Account() {
     try {
       // Update the user's branches with the selected branches
       const response = await axios.put(
-        "http://localhost:8080/update-user-branch",
+        "http://192.168.50.217:8080/update-user-branch",
         {
           emailAddress: modalEmail,
           branches: selectedBranches,
@@ -298,7 +300,7 @@ export default function Account() {
 
   async function getUser() {
     await axios
-      .post("http://localhost:8080/get-all-user", requestBody)
+      .post("http://192.168.50.217:8080/get-all-user", requestBody)
       .then(async (response) => {
         const data = await response.data.data;
 
@@ -325,7 +327,7 @@ export default function Account() {
   async function setStatus() {
     console.log("check body", requestBody);
     await axios
-      .put("http://localhost:8080/update-status", requestBody)
+      .put("http://192.168.50.217:8080/update-status", requestBody)
       .then(async (response) => {
         const data = await response.data.data;
 
@@ -340,6 +342,9 @@ export default function Account() {
 
   return (
     <div className="account">
+        <Topbar/>
+         <div className="container">
+         <Sidebar/>
       <div style={{ height: "100%", width: "100%", marginLeft: "100" }}>
         <DataGrid
           rows={userData}
@@ -461,6 +466,7 @@ export default function Account() {
           </Button>
         </DialogActions>
       </Dialog>
+    </div>
     </div>
   );
 }
