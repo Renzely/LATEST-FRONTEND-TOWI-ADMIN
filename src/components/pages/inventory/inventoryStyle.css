@@ -5,4 +5,6 @@
 .leaflet-container {
     height: 100%;
 }
-
+.bold-header .MuiDataGrid-columnHeaderTitle {
+    font-weight: bold;
+  }

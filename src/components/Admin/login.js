@@ -3,35 +3,27 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Navigate} from "react-router-dom";
-import axios, { isAxiosError } from "axios";
+import axios from "axios";
 import Swal from "sweetalert2";
+import logo from './Studio-Project.png';
 
-// function Copyright(props) {
-//   return (
-//     <Typography variant="body2" color="text.secondary" align="center" {...props}>
-//       {'Copyright © '}
-//       <Link color="inherit" href="https://bmphrc.com/">
-//         BMPower Rider App Admin
-//       </Link>{' '}
-//       {2024}
-//       {'.'}
-//     </Typography>
-//   );
-// }
-
-// TODO remove, this demo shouldn't need to reset the theme.
-
-const defaultTheme = createTheme();
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#4caf50', // Green color
+    },
+    background: {
+      default: '#ffffff', // White background
+    },
+  },
+});
 
 export default function Login() {
   const handleSubmit = async (event) => {
@@ -50,77 +42,53 @@ export default function Login() {
         icon: "warning"
       });
       return
-    } 
-    console.log(body)
+    }
 
-    await  axios
-        .post('http://192.168.50.217:8080/login-admin', body)
-        .then(async response=> {
-          const data = await response.data;
+    try {
+      const response = await axios.post('http://192.168.50.217:8080/login-admin', body);
+      const data = await response.data;
 
-          console.log(data);
-
-          if (data.status === 200){
-            console.log("login success")
-            
-            Swal.fire({
-              title: "Login Success!",
-              icon: "success",
-              confirmButtonColor: "#3085d6",
-            }). then((result) =>  {
-              if (result.isConfirmed) {
-     
-                localStorage.setItem('isLoggedIn', "admin");
-              return  window.location.href = '/view-admin-accounts';             
-              }else{
-           
-                localStorage.setItem('isLoggedIn', "admin");
-              return  window.location.href = '/view-admin-accounts';   
-              }
-            });
-           
-           
-            
+      if (data.status === 200) {
+        Swal.fire({
+          title: "Login Success!",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            localStorage.setItem('isLoggedIn', "admin");
+            localStorage.setItem('roleAccount', data.data.roleAccount); // Store roleAccount
+            window.location.href = '/view-accounts';
+          } else {
+            localStorage.setItem('isLoggedIn', "admin");
+            localStorage.setItem('roleAccount', data.data.roleAccount); // Store roleAccount
+            window.location.href = '/view-accounts';
           }
-          else if (data.status === 401){
-
-            Swal.fire({
-              title: "Login Failed!",
-              text: data.data,
-              icon: "error"
-            });
-            console.log("login failed")
-          }
-          else{
-            Swal.fire({
-              title: "Login Error!",
-              text: data.data,
-              icon: "error"
-            });
-          }
-
-
         });
-  
-
-   
-
+      } else if (data.status === 401) {
+        Swal.fire({
+          title: "Login Failed!",
+          text: data.data,
+          icon: "error"
+        });
+      } else {
+        Swal.fire({
+          title: "Login Error!",
+          text: data.data,
+          icon: "error"
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        title: "Login Error!",
+        text: "Something went wrong. Please try again later.",
+        icon: "error"
+      });
+    }
   };
 
-  const LoginSuccess = Swal.mixin({
-    toast: true,
-    position: "top-end",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-      toast.onmouseenter = Swal.stopTimer;
-      toast.onmouseleave = Swal.resumeTimer;
-    }
-  });
-
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -131,10 +99,7 @@ export default function Login() {
             alignItems: 'center',
           }}
         >
-
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
+          <img src={logo} alt="Logo" style={{ width: '150px', marginBottom: '16px' }} />
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
@@ -148,6 +113,12 @@ export default function Login() {
               name="email"
               autoComplete="email"
               autoFocus
+              InputProps={{
+                style: { color: 'green' }
+              }}
+              InputLabelProps={{
+                style: { color: 'green' }
+              }}
             />
             <TextField
               margin="normal"
@@ -158,11 +129,13 @@ export default function Login() {
               type="password"
               id="password"
               autoComplete="current-password"
+              InputProps={{
+                style: { color: 'green' }
+              }}
+              InputLabelProps={{
+                style: { color: 'green' }
+              }}
             />
-            {/* <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            /> */}
             <Button
               type="submit"
               fullWidth
@@ -173,15 +146,13 @@ export default function Login() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="/forgotpassword" variant="body2">
+                <Link href="/forgotpassword" variant="body2" style={{ color: '#4caf50' }}>
                   Forgot password?
                 </Link>
               </Grid>
-             
             </Grid>
           </Box>
         </Box>
-        {/* <Copyright sx={{ mt: 8, mb: 4 }} /> */}
       </Container>
     </ThemeProvider>
   );
