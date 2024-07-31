@@ -1,4 +1,4 @@
-import "./parcel.css";
+import "./inventoryStyle.css";
 import * as React from "react";
 import Topbar from "../../topbar/Topbar";
 import Sidebar from "../../sidebar/Sidebar";
@@ -35,7 +35,7 @@ function CustomToolbar() {
   );
 }
 
-export default function Parcel() {
+export default function Inventory() {
   const [userData, setUserData] = React.useState([]);
 
   const body = { test: "test" };
@@ -44,91 +44,113 @@ export default function Parcel() {
   const handleClose = () => setOpen(false);
 
   const columns = [
-    { field: "count", headerName: "#", width: 150 },
+    {
+      field: "count",
+      headerName: "#",
+      width: 150,
+      headerClassName: "bold-header",
+    },
     {
       field: "date",
       headerName: "Date",
       width: 200,
+      headerClassName: "bold-header",
     },
     {
       field: "inputId",
       headerName: "Input ID",
       width: 200,
+      headerClassName: "bold-header",
     },
     {
       field: "name",
       headerName: "Merchandiser",
       width: 300,
+      headerClassName: "bold-header",
     },
     {
       field: "UserEmail",
       headerName: "Email",
       width: 300,
+      headerClassName: "bold-header",
     },
     {
       field: "accountNameBranchManning",
       headerName: "Account Name Branch",
-      width: 450,
+      width: 350,
+      headerClassName: "bold-header",
     },
     {
       field: "period",
       headerName: "Period",
       width: 200,
+      headerClassName: "bold-header",
     },
     {
       field: "month",
       headerName: "Month",
-      width: 200,
+      width: 150,
+      headerClassName: "bold-header",
     },
     {
       field: "week",
       headerName: "Week",
-      width: 200,
+      width: 150,
+      headerClassName: "bold-header",
     },
     {
       field: "category",
       headerName: "Category",
-      width: 200,
+      width: 150,
+      headerClassName: "bold-header",
     },
     {
       field: "skuDescription",
       headerName: "SKU Description",
       width: 350,
+      headerClassName: "bold-header",
     },
     {
       field: "products",
       headerName: "Products",
       width: 200,
+      headerClassName: "bold-header",
     },
     {
       field: "skuCode",
       headerName: "SKU Code",
       width: 150,
+      headerClassName: "bold-header",
     },
     {
       field: "status",
       headerName: "Status",
       width: 150,
+      headerClassName: "bold-header",
     },
     {
       field: "beginning",
       headerName: "Beginning",
       width: 150,
+      headerClassName: "bold-header",
     },
     {
       field: "delivery",
       headerName: "Delivery",
       width: 150,
+      headerClassName: "bold-header",
     },
     {
       field: "inventoryDaysLevel",
       headerName: "InventoryDaysLevel",
       width: 200,
+      headerClassName: "bold-header",
     },
     {
       field: "noOfDaysOOS",
       headerName: "No Of Days OOS",
       width: 150,
+      headerClassName: "bold-header",
     },
   ];
 
@@ -140,6 +162,12 @@ export default function Parcel() {
         console.log(data, "test");
 
         const newData = data.map((data, key) => {
+          const value = (status, defaultValue) => {
+            if (status === "Delisted") return "Delisted";
+            if (status === "Not Carried") return "NC";
+            return defaultValue || 0;
+          };
+
           return {
             count: key + 1,
             date: data.date,
@@ -155,12 +183,12 @@ export default function Parcel() {
             products: data.products,
             skuCode: data.skuCode,
             status: data.status,
-            beginning: data.beginning? data.beginning: 0,
-            delivery: data.delivery? data.delivery: 0,
-            ending: data.ending? data.ending: 0,
-            offtake: data.offtake? data.offtake: 0,
-            inventoryDaysLevel: data.inventoryDaysLevel? data.inventoryDaysLevel: 0,
-            noOfDaysOOS: data.noOfDaysOOS? data.noOfDaysOOS: 0,
+            beginning: value(data.status, data.beginning),
+            delivery: value(data.status, data.delivery),
+            ending: value(data.status, data.ending),
+            offtake: value(data.status, data.offtake),
+            inventoryDaysLevel: value(data.status, data.inventoryDaysLevel),
+            noOfDaysOOS: value(data.status, data.noOfDaysOOS),
           };
         });
         console.log(newData, "testing par");
@@ -174,42 +202,52 @@ export default function Parcel() {
 
   return (
     <div className="attendance">
-        <Topbar/>
-         <div className="container">
-         <Sidebar/>
-      <div style={{ height: "100%", width: "85%", marginLeft: "100" }}>
-        <DataGrid
-          rows={userData}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 10 },
-            },
-          }}
-          slots={{
-            toolbar: CustomToolbar,
-          }}
-          pageSizeOptions={[5, 10]}
-          getRowId={(row) => row.count}
-        />
-      </div>
+      <Topbar />
+      <div className="container">
+        <Sidebar />
+        <div style={{ height: "100%", width: "85%", marginLeft: "100" }}>
+          <DataGrid
+            rows={userData}
+            columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 10 },
+              },
+            }}
+            slots={{
+              toolbar: GridToolbar,
+            }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+                printOptions: { disableToolbarButton: true },
+              },
+            }}
+            //disableDensitySelector
+            disableColumnFilter
+            disableColumnSelector
+            disableRowSelectionOnClick
+            pageSizeOptions={[5, 10, 20, 30]}
+            getRowId={(row) => row.count}
+          />
+        </div>
 
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
-        </Box>
-      </Modal>
-    </div>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Text in a modal
+            </Typography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+            </Typography>
+          </Box>
+        </Modal>
+      </div>
     </div>
   );
 }

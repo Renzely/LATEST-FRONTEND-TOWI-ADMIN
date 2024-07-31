@@ -12,3 +12,6 @@
   font-size: 13px;
   margin-left: 100;
 }
+.bold-header .MuiDataGrid-columnHeaderTitle {
+  font-weight: bold;
+}

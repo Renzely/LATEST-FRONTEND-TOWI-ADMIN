@@ -1,4 +1,4 @@
-import "./parcel.css";
+import "./RTV.css";
 import * as React from "react";
 import Topbar from "../../topbar/Topbar";
 import Sidebar from "../../sidebar/Sidebar";
@@ -44,47 +44,55 @@ export default function RTV() {
   const handleClose = () => setOpen(false);
 
   const columns = [
-    { field: "count", headerName: "#", width: 150 },
+    { field: "count", headerName: "#", width: 75 },
     {
       field: "date",
       headerName: "Date",
-      width: 200,
+      width: 150,
+      headerClassName: 'bold-header'
     },
 
     {
       field: "merchandiserName",
       headerName: "Merchandiser Name",
-      width: 300,
+      width: 220,
+      headerClassName: 'bold-header'
     },
     {
       field: "UserEmail",
       headerName: "Email",
-      width: 300,
+      width: 220,
+      headerClassName: 'bold-header'
     },
     {
       field: "item",
       headerName: "Item",
-      width: 350,
+      width: 220,
+      headerClassName: 'bold-header'
     },
     {
       field: "quantity",
       headerName: "Quantity",
-      width: 200,
+      width: 150,
+      headerClassName: 'bold-header'
     },
     {
       field: "driverName",
       headerName: "Driver Name",
       width: 200,
+      headerClassName: 'bold-header'
     },
     {
       field: "plateNumber",
       headerName: "Plate Number",
-      width: 200,
+      width: 150,
+      headerClassName: 'bold-header'
     },
     {
       field: "pullOutReason",
       headerName: "Pull Out Reason",
       width: 200,
+      headerClassName: 'bold-header'
       //type: buttonBaseClasses,
     },
 
@@ -163,9 +171,20 @@ export default function RTV() {
             },
           }}
           slots={{
-            toolbar: CustomToolbar,
+            toolbar: GridToolbar,
           }}
-          pageSizeOptions={[5, 10]}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+              printOptions: { disableToolbarButton: true },
+         
+            },
+          }}
+          //disableDensitySelector
+          disableColumnFilter
+          disableColumnSelector
+          disableRowSelectionOnClick
+          pageSizeOptions={[5, 10, 20, 30]}
           getRowId={(row) => row.count}
         />
       </div>

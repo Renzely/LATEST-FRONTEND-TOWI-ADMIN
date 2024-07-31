@@ -79,47 +79,47 @@ export default function Account() {
   };
 
   const [branches, setBranches] = React.useState([
-    "PUREGOLD PRICE CLUB - LA TRINIDAD BENGUET, ",
-    "PUREGOLD PRICE CLUB - BAGUIO, ",
-    "PUREGOLD PRICE CLUB - LAOAG",
-    "PUREGOLD PRICE CLUB (JR.)- OLD CENTRO",
-    "PUREGOLD PRICE CLUB - CONCEPCION TARLAC",
-    "PUREGOLD PRICE CLUB - CABANATUAN",
-    "PUREGOLD PRICE CLUB - ZARAGOZA",
-    "PUREGOLD PRICE CLUB - GAPAN",
-    "PUREGOLD PRICE CLUB - CAPAS",
-    "PUREGOLD PRICE CLUB - CAUAYAN ISABELA",
-    "PUREGOLD PRICE CLUB (JR.)- PALM PLAZA",
-    "PUREGOLD PRICE CLUB - PANIQUI",
-    "PUREGOLD PRICE CLUB - PUBLIC MARKET",
-    "PUREGOLD PRICE CLUB - ROXAS ISABELA",
-    "PUREGOLD PRICE CLUB - BALER (N.E)",
-    "PUREGOLD PRICE CLUB - MARIA AURORA",
-    "ROBINSONS EASYMART - BALER",
-    "PUREGOLD PRICE CLUB - TUMAUINI",
-    "PUREGOLD PRICE CLUB (EXTRA.)- TUGUEGARAO",
-    "ROBINSONS TUGUEGARAO",
-    "PUREGOLD PRICE CLUB - CENTRO SANTIAGO",
-    "PUREGOLD PRICE CLUB - VICTORY NORTE SANTIAGO (N.E)",
-    "PUREGOLD PRICE CLUB - VIGAN",
-    "PUREGOLD PRICE CLUB - BURNHAM PARK",
-    "PUREGOLD PRICE CLUB (JR.)- BAKAKENG",
-    "PUREGOLD PRICE CLUB - LA UNION",
-    "PUREGOLD PRICE CLUB - BACNOTAN",
-    "PUREGOLD PRICE CLUB - CALASIAO",
-    "PUREGOLD PRICE CLUB - MANAOAG",
-    "PUREGOLD PRICE CLUB (JR.)- BONUAN",
-    "PUREGOLD PRICE CLUB - MAYOMBO",
-    "PUREGOLD PRICE CLUB (JR.)- BAYAMBANG",
-    "PUREGOLD PRICE CLUB - VILLASIS",
-    "PUREGOLD PRICE CLUB - CROSSING (N.E)",
-    "PUREGOLD PRICE CLUB - SAN JOSE NUEVA ECIJA (N.E)",
-    "PUREGOLD PRICE CLUB - ZULUETA (N.E)",
-    "PUREGOLD PRICE CLUB - CABANATUAN PALENGKE (N.E)",
-    "PUREGOLD PRICE CLUB - PACIFIC MALL (N.E)",
-    "PUREGOLD PRICE CLUB - CIRCUMFERENCIAL (N.E)",
-    "PUREGOLD PRICE CLUB - TALAVERA",
-    "PUREGOLD PRICE CLUB - GUIMBA",
+    "PUREGOLD PRICE CLUB - LA TRINIDAD BENGUET ",
+    "PUREGOLD PRICE CLUB - BAGUIO ",
+    "PUREGOLD PRICE CLUB - LAOAG ",
+    "PUREGOLD PRICE CLUB (JR.)- OLD CENTRO ",
+    "PUREGOLD PRICE CLUB - CONCEPCION TARLAC ",
+    "PUREGOLD PRICE CLUB - CABANATUAN ",
+    "PUREGOLD PRICE CLUB - ZARAGOZA ",
+    "PUREGOLD PRICE CLUB - GAPAN ",
+    "PUREGOLD PRICE CLUB - CAPAS ",
+    "PUREGOLD PRICE CLUB - CAUAYAN ISABELA ",
+    "PUREGOLD PRICE CLUB (JR.)- PALM PLAZA ",
+    "PUREGOLD PRICE CLUB - PANIQUI ",
+    "PUREGOLD PRICE CLUB - PUBLIC MARKET ",
+    "PUREGOLD PRICE CLUB - ROXAS ISABELA ",
+    "PUREGOLD PRICE CLUB - BALER (N.E) ",
+    "PUREGOLD PRICE CLUB - MARIA AURORA ",
+    "ROBINSONS EASYMART - BALER ",
+    "PUREGOLD PRICE CLUB - TUMAUINI ",
+    "PUREGOLD PRICE CLUB (EXTRA.)- TUGUEGARAO ",
+    "ROBINSONS TUGUEGARAO ",
+    "PUREGOLD PRICE CLUB - CENTRO SANTIAGO ",
+    "PUREGOLD PRICE CLUB - VICTORY NORTE SANTIAGO (N.E) ",
+    "PUREGOLD PRICE CLUB - VIGAN ",
+    "PUREGOLD PRICE CLUB - BURNHAM PARK ",
+    "PUREGOLD PRICE CLUB (JR.)- BAKAKENG ",
+    "PUREGOLD PRICE CLUB - LA UNION ",
+    "PUREGOLD PRICE CLUB - BACNOTAN ",
+    "PUREGOLD PRICE CLUB - CALASIAO ",
+    "PUREGOLD PRICE CLUB - MANAOAG ",
+    "PUREGOLD PRICE CLUB (JR.)- BONUAN ",
+    "PUREGOLD PRICE CLUB - MAYOMBO ",
+    "PUREGOLD PRICE CLUB (JR.)- BAYAMBANG ",
+    "PUREGOLD PRICE CLUB - VILLASIS ",
+    "PUREGOLD PRICE CLUB - CROSSING (N.E) ",
+    "PUREGOLD PRICE CLUB - SAN JOSE NUEVA ECIJA (N.E) ",
+    "PUREGOLD PRICE CLUB - ZULUETA (N.E) ",
+    "PUREGOLD PRICE CLUB - CABANATUAN PALENGKE (N.E) ",
+    "PUREGOLD PRICE CLUB - PACIFIC MALL (N.E) ",
+    "PUREGOLD PRICE CLUB - CIRCUMFERENCIAL (N.E) ",
+    "PUREGOLD PRICE CLUB - TALAVERA ",
+    "PUREGOLD PRICE CLUB - GUIMBA ",
   ]); //Branches
 
   // State for the second modal
@@ -168,33 +168,53 @@ export default function Account() {
   };
 
   const columns = [
-    { field: "count", headerName: "#", width: 150 },
-    { field: "firstName", headerName: "First name", width: 150 },
-    { field: "middleName", headerName: "Middle name", width: 150 },
-    { field: "lastName", headerName: "Last name", width: 150 },
+    { field: "count", headerName: "#", width: 100 },
+    {
+      field: "firstName",
+      headerName: "First name",
+      width: 150,
+      headerClassName: "bold-header",
+    },
+    {
+      field: "middleName",
+      headerName: "Middle name",
+      width: 150,
+      headerClassName: "bold-header",
+    },
+    {
+      field: "lastName",
+      headerName: "Last name",
+      width: 150,
+      headerClassName: "bold-header",
+    },
     {
       field: "emailAddress",
       headerName: "Email",
       width: 250,
+      headerClassName: "bold-header",
     },
     {
       field: "remarks",
       headerName: "Remarks",
       width: 150,
+      headerClassName: "bold-header",
     },
     {
       field: "contactNum",
       headerName: "Contact Number",
       width: 150,
+      headerClassName: "bold-header",
     },
     {
       field: "Branch",
       headerName: "Account Name Branch",
       width: 250,
+      headerClassName: "bold-header",
     },
     {
       field: "isActive",
       headerName: "Status",
+      headerClassName: "bold-header",
       width: 150,
       sortable: false,
       disableClickEventBubbling: true,
@@ -216,11 +236,12 @@ export default function Account() {
               <Stack>
                 <ColorButton
                   variant="contained"
-                  size="primary"
+                  size="small"
                   style={{
                     width: "50%",
                     marginTop: "13px",
-                    backgroundColor: "#ccff90",
+                    backgroundColor: "#90EE90",
+                    color: "#000000",
                   }}
                   onClick={onClick}
                 >
@@ -246,6 +267,7 @@ export default function Account() {
     },
     {
       field: "action",
+      headerClassName: "bold-header",
       headerName: "Action",
       width: 90,
       sortable: false,
@@ -287,7 +309,8 @@ export default function Account() {
               style={{
                 width: "50%",
                 marginTop: "13px",
-                backgroundColor: "2979ff",
+                backgroundColor: "#008000",
+                color: "#FFFFF",
               }}
             >
               View
@@ -314,7 +337,6 @@ export default function Account() {
 
             Branch: data.accountNameBranchManning,
             emailAddress: data.emailAddress,
-            //address: data.address,
             contactNum: data.contactNum,
             isActive: data.isActivate,
           };
@@ -342,131 +364,139 @@ export default function Account() {
 
   return (
     <div className="account">
-        <Topbar/>
-         <div className="container">
-         <Sidebar/>
-      <div style={{ height: "100%", width: "100%", marginLeft: "100" }}>
-        <DataGrid
-          rows={userData}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 10 },
-            },
-            columns: {
-              columnVisibilityModel: {
-                // Hide columns status and traderName, the other columns will remain visible
-                address: false,
-                phone: false,
+      <Topbar />
+      <div className="container">
+        <Sidebar />
+        <div style={{ height: "100%", width: "100%", marginLeft: "100" }}>
+          <DataGrid
+            rows={userData}
+            columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 10 },
               },
-            },
-          }}
-          slots={{
-            toolbar: CustomToolbar,
-          }}
-          //   slots={{ toolbar: GridToolbar }}
-          pageSizeOptions={[5, 10]}
-          getRowId={(row) => row.count}
-          disableRowSelectionOnClick
-        />
-      </div>
-
-      <Modal
-        open={openModal}
-        onClose={handleCloseDialog}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Full Details :{/* <HighlightOffIcon/> */}
-            {/* {test} */}
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            <span className="detailTitle">Full name:</span>{" "}
-            <span className="detailDescription">{modalFullName}</span>
-            <br></br>
-            <span className="detailTitle">Email:</span>{" "}
-            <span className="detailDescription">{modalEmail}</span>
-            <br></br>
-            <span className="detailTitle">Contact Number:</span>{" "}
-            <span className="detailDescription">{modalPhone}</span>
-            <br></br>
-            <span className="detailTitle">Account Branch Name:</span>{" "}
-            <span className="detailDescription">{modalBranch}</span>
-            <br></br>
-            <br></br>
-            {/* Button to open branch selection modal */}
-            <Button variant="contained" onClick={handleOpenBranchModal}>
-              Select Branch
-            </Button>
-          </Typography>
-          <Stack>
-            <DialogActions>
-              <Button onClick={handleClose}>Close</Button>
-            </DialogActions>
-          </Stack>
-        </Box>
-      </Modal>
-
-      <Dialog
-        open={openBranchModal}
-        onClose={handleCloseBranchModal}
-        aria-labelledby="branch-dialog-title"
-        aria-describedby="branch-dialog-description"
-        fullWidth
-        maxWidth="md" // Set the maximum width to 'md' (medium)
-      >
-        <DialogTitle id="branch-dialog-title">Select Branch</DialogTitle>
-        <DialogContent>
-          <Autocomplete
-            multiple
-            id="branches-autocomplete"
-            options={branches}
-            defaultValue={selectedBranches}
-            onChange={(event, value) => setSelectedBranches(value)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="outlined"
-                label="Select Branch"
-                placeholder="Select Branch"
-              />
-            )}
+              columns: {
+                columnVisibilityModel: {
+                  // Hide columns status and traderName, the other columns will remain visible
+                  address: false,
+                  phone: false,
+                },
+              },
+            }}
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+                printOptions: { disableToolbarButton: true },
+                csvOptions: { disableToolbarButton: true },
+              },
+            }}
+            loading={!userData.length}
+            disableDensitySelector
+            disableColumnFilter
+            disableColumnSelector
+            pageSizeOptions={[5, 10]}
+            getRowId={(row) => row.count}
+            disableRowSelectionOnClick
           />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseBranchModal}>Cancel</Button>
-          <Button onClick={handleBranchSave} autoFocus>
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+        </div>
 
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Account Activation"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {updateStatus
-              ? "Are you sure you want to set this user as active?"
-              : "Are you sure you want to set this user as inactive?"}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={setStatus} autoFocus>
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+        <Modal
+          open={openModal}
+          onClose={handleCloseDialog}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Full Details :{/* <HighlightOffIcon/> */}
+              {/* {test} */}
+            </Typography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              <span className="detailTitle">Full name:</span>{" "}
+              <span className="detailDescription">{modalFullName}</span>
+              <br></br>
+              <span className="detailTitle">Email:</span>{" "}
+              <span className="detailDescription">{modalEmail}</span>
+              <br></br>
+              <span className="detailTitle">Contact Number:</span>{" "}
+              <span className="detailDescription">{modalPhone}</span>
+              <br></br>
+              <span className="detailTitle">Account Branch Name:</span>{" "}
+              <span className="detailDescription">{modalBranch}</span>
+              <br></br>
+              <br></br>
+              {/* Button to open branch selection modal */}
+              <Button variant="contained" onClick={handleOpenBranchModal}>
+                Select Branch
+              </Button>
+            </Typography>
+            <Stack>
+              <DialogActions>
+                <Button onClick={handleClose}>Close</Button>
+              </DialogActions>
+            </Stack>
+          </Box>
+        </Modal>
+
+        <Dialog
+          open={openBranchModal}
+          onClose={handleCloseBranchModal}
+          aria-labelledby="branch-dialog-title"
+          aria-describedby="branch-dialog-description"
+          fullWidth
+          maxWidth="md" // Set the maximum width to 'md' (medium)
+        >
+          <DialogTitle id="branch-dialog-title">Select Branch</DialogTitle>
+          <DialogContent>
+            <Autocomplete
+              multiple
+              id="branches-autocomplete"
+              options={branches}
+              defaultValue={selectedBranches}
+              onChange={(event, value) => setSelectedBranches(value)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label="Select Branch"
+                  placeholder="Select Branch"
+                />
+              )}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseBranchModal}>Cancel</Button>
+            <Button onClick={handleBranchSave} autoFocus>
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Account Activation"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {updateStatus
+                ? "Are you sure you want to set this user as active?"
+                : "Are you sure you want to set this user as inactive?"}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Cancel</Button>
+            <Button onClick={setStatus} autoFocus>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </div>
   );
 }
