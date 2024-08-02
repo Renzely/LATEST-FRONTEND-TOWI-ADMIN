@@ -14,6 +14,9 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 const style = {
   position: "absolute",
@@ -37,11 +40,29 @@ function CustomToolbar() {
 
 export default function Inventory() {
   const [userData, setUserData] = React.useState([]);
-
+  const [dateFilter, setDateFilter] = React.useState(null);
   const body = { test: "test" };
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  
+
+
+  const filterParcelDate = () => {
+
+    //let selectedDate = new Date(dateFilter.$d).toLocaleString('en-us',{month:'numeric', timeZone: 'Asia/Manila'});
+    let month = new Date(dateFilter.$d).toLocaleString('en-us',{month:'numeric', timeZone: 'Asia/Manila'});
+    let day = new Date(dateFilter.$d).toLocaleString('en-us',{day:'numeric', timeZone: 'Asia/Manila'});
+    let year = new Date(dateFilter.$d).toLocaleString('en-us',{year:'numeric', timeZone: 'Asia/Manila'});
+
+    if (month.length === 1) month = '0' + month
+    if (day.length === 1) day = '0' + day
+
+    const selectedDate = year + "-" + month + "-" + day
+    console.log(selectedDate);  
+    getDate(selectedDate)
+  };
+
 
   const columns = [
     {
@@ -154,20 +175,25 @@ export default function Inventory() {
     },
   ];
 
+  
+
   async function getUser() {
     await axios
       .post("http://192.168.50.217:8080/retrieve-parcel-data")
       .then(async (response) => {
         const data = await response.data.data;
         console.log(data, "test");
-
-        const newData = data.map((data, key) => {
+  
+        // Sort the data in descending order by date
+        const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+        const newData = sortedData.map((data, key) => {
           const value = (status, defaultValue) => {
             if (status === "Delisted") return "Delisted";
             if (status === "Not Carried") return "NC";
             return defaultValue || 0;
           };
-
+  
           return {
             count: key + 1,
             date: data.date,
@@ -195,10 +221,58 @@ export default function Inventory() {
         setUserData(newData);
       });
   }
+  
+  async function getDate(selectedDate) {
+    const data = { selectDate: selectedDate };
+    await axios
+      .post("http://192.168.50.217:8080/filter-date", data)
+      .then(async (response) => {
+        const data = await response.data.data;
+        console.log(data, "test");
+  
+        // Sort the data in descending order by date
+        const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+        const newData = sortedData.map((data, key) => {
+          const value = (status, defaultValue) => {
+            if (status === "Delisted") return "Delisted";
+            if (status === "Not Carried") return "NC";
+            return defaultValue || 0;
+          };
+  
+          return {
+            count: key + 1,
+            date: data.date,
+            inputId: data.inputId,
+            name: data.name,
+            UserEmail: data.userEmail,
+            accountNameBranchManning: data.accountNameBranchManning,
+            period: data.period,
+            month: data.month,
+            week: data.week,
+            category: data.category,
+            skuDescription: data.skuDescription,
+            products: data.products,
+            skuCode: data.skuCode,
+            status: data.status,
+            beginning: value(data.status, data.beginning),
+            delivery: value(data.status, data.delivery),
+            ending: value(data.status, data.ending),
+            offtake: value(data.status, data.offtake),
+            inventoryDaysLevel: value(data.status, data.inventoryDaysLevel),
+            noOfDaysOOS: value(data.status, data.noOfDaysOOS),
+          };
+        });
+        console.log(newData, "testing par");
+        setUserData(newData);
+      });
+  }
+  
 
   React.useEffect(() => {
     getUser();
   }, []);
+
 
   return (
     <div className="attendance">
@@ -206,7 +280,39 @@ export default function Inventory() {
       <div className="container">
         <Sidebar />
         <div style={{ height: "100%", width: "85%", marginLeft: "100" }}>
+
+        <Stack 
+            direction={{ xs: 'column', md: 'row',sm: 'row' }}
+            spacing={{ xs: 1, sm: 2, md: 4 }}
+            sx={{ marginBottom: '20px'
+             }} // Added marginBottom here
+            >      
+
+        <div class="MuiStack-root">
+
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Select Date"
+                  onChange={(newValue) => setDateFilter(newValue)}
+                  slotProps={{ textField: { size: 'small' } }}
+                ></DatePicker>
+              
+              </LocalizationProvider>
+
+              <Button
+                onClick={filterParcelDate}
+                variant="contained"
+                style={{marginLeft: 5}}
+                
+              >
+                Go
+              </Button>
+
+            </div>
+            </Stack>
+
           <DataGrid
+          
             rows={userData}
             columns={columns}
             initialState={{
@@ -224,7 +330,7 @@ export default function Inventory() {
               },
             }}
             //disableDensitySelector
-            disableColumnFilter
+            // disableColumnFilter
             disableColumnSelector
             disableRowSelectionOnClick
             pageSizeOptions={[5, 10, 20, 30]}
@@ -232,6 +338,7 @@ export default function Inventory() {
           />
         </div>
 
+     
         <Modal
           open={open}
           onClose={handleClose}
