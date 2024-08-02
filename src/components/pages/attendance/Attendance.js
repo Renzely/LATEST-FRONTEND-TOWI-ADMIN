@@ -2,11 +2,6 @@ import "./attendance.css";
 import * as React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
-import {
-  Inventory,
-  AssignmentInd,
-  AlignHorizontalCenter,
-} from "@mui/icons-material";
 import { Button, Stack } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
@@ -77,10 +72,8 @@ export default function Attendance() {
         return (
           <Stack>
             <Link
-              to={{
-                pathname: "/view-attendance",
-                state: { userEmail: params.row.emailAddress },
-              }}
+              to="/view-attendance"
+              state={{ userEmail: params.row.emailAddress }} // Pass email via state
               style={{ textDecoration: "none" }}
             >
               <Button
@@ -88,7 +81,7 @@ export default function Attendance() {
                 size="small"
                 style={{ backgroundColor: "#4caf50", color: "#ffffff" }} // Green color with white text
               >
-                View History
+                Attendance
               </Button>
             </Link>
           </Stack>
@@ -112,7 +105,6 @@ export default function Attendance() {
             emailAddress: data.emailAddress,
           };
         });
-        console.log(newData, "testing par");
         setUserData(newData);
       });
   }
