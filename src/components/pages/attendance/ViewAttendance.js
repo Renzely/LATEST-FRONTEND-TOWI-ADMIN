@@ -14,7 +14,7 @@ export default function ViewAttendance() {
 
   // Function to format date and time
   const formatDateTime = (dateTime) => {
-    if (!dateTime) return null; // Handle null dateTime
+    if (!dateTime) return { date: "N/A", time: "N/A" }; // Handle null dateTime
     const dateObj = new Date(dateTime);
     const options = { year: "numeric", month: "long", day: "numeric" };
     const date = dateObj.toLocaleDateString(undefined, options);
@@ -30,7 +30,7 @@ export default function ViewAttendance() {
   async function fetchAttendanceData(emailAddress) {
     try {
       const response = await axios.post(
-        "http://192.168.50.217:8080/get-attendance",
+        "http://192.168.50.55:8080/get-attendance",
         { userEmail: emailAddress }
       );
       let data = response.data.data;
@@ -51,6 +51,8 @@ export default function ViewAttendance() {
           date: today,
           timeIn: null,
           timeOut: null,
+          timeInLocation: "No location", // Default location for placeholder
+          timeOutLocation: "No location", // Default location for placeholder
         });
       }
 
@@ -61,9 +63,11 @@ export default function ViewAttendance() {
         const formattedTimeOut = formatDateTime(item.timeOut);
         return {
           ...item,
-          date: formattedDate ? formattedDate.date : "N/A",
-          timeIn: formattedTimeIn ? formattedTimeIn.time : "No Time In",
-          timeOut: formattedTimeOut ? formattedTimeOut.time : "No Time Out",
+          date: formattedDate.date || "N/A",
+          timeIn: formattedTimeIn.time || "No Time In",
+          timeOut: formattedTimeOut.time || "No Time Out",
+          timeInLocation: item.timeInLocation || "No location",
+          timeOutLocation: item.timeOutLocation || "No location",
         };
       });
 
@@ -90,9 +94,11 @@ export default function ViewAttendance() {
 
   const columns = [
     { field: "count", headerName: "#", width: 100, headerClassName: "bold-header" },
-    { field: "date", headerName: "Date", width: 200, headerClassName: "bold-header"},
-    { field: "timeIn", headerName: "Time In", width: 150, headerClassName: "bold-header"},
-    { field: "timeOut", headerName: "Time Out", width: 150, headerClassName: "bold-header"},
+    { field: "date", headerName: "Date", width: 200, headerClassName: "bold-header" },
+    { field: "timeIn", headerName: "Time In", width: 150, headerClassName: "bold-header" },
+    { field: "timeInLocation", headerName: "Time In Location", width: 200, headerClassName: "bold-header" },
+    { field: "timeOut", headerName: "Time Out", width: 150, headerClassName: "bold-header" },
+    { field: "timeOutLocation", headerName: "Time Out Location", width: 200, headerClassName: "bold-header" },
     {
       field: "currentAttendance",
       headerName: "",
@@ -120,7 +126,7 @@ export default function ViewAttendance() {
           <Typography variant="h4" gutterBottom>
             Attendance for {userEmail}
           </Typography>
-          <Box sx={{ height: 400, width: "200%" }}>
+          <Box sx={{ height: 400, width: "100%" }}>
             <DataGrid
               rows={attendanceData}
               columns={columns}
