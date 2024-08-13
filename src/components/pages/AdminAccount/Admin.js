@@ -697,7 +697,7 @@ export default function Admin() {
       <Topbar />
       <div className="container">
         <Sidebar />
-        <div style={{ height: "100%", width: "100%", marginLeft: "100" }}>
+        <div style={{ height: "100%", width: "85%", marginLeft: "100" }}>
           <div style={{ margin: 10 }}>
             <Button
               onClick={handleOpenDialog}

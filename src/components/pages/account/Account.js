@@ -367,7 +367,7 @@ export default function Account() {
       <Topbar />
       <div className="container">
         <Sidebar />
-        <div style={{ height: "100%", width: "100%", marginLeft: "100" }}>
+        <div style={{ height: "100%", width: "85%", marginLeft: "100" }}>
           <DataGrid
             rows={userData}
             columns={columns}

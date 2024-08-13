@@ -266,7 +266,7 @@ async function getDateRTV(selectedDate) {
             },
           }}
           //disableDensitySelector
-          // disableColumnFilter
+          disableColumnFilter
           disableColumnSelector
           disableRowSelectionOnClick
           pageSizeOptions={[5, 10, 20, 30]}
