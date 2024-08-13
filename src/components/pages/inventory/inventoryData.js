@@ -162,6 +162,18 @@ export default function Inventory() {
       headerClassName: "bold-header",
     },
     {
+      field: "ending",
+      headerName: "Ending",
+      width: 150,
+      headerClassName: "bold-header",
+    },
+    {
+      field: "offtake",
+      headerName: "Offtake",
+      width: 200,
+      headerClassName: "bold-header",
+    },
+    {
       field: "inventoryDaysLevel",
       headerName: "InventoryDaysLevel",
       width: 200,
@@ -170,7 +182,19 @@ export default function Inventory() {
     {
       field: "noOfDaysOOS",
       headerName: "No Of Days OOS",
+      width: 180,
+      headerClassName: "bold-header",
+    },
+    {
+      field: "remarksOOS",
+      headerName: "Remarks",
       width: 150,
+      headerClassName: "bold-header",
+    },
+    {
+      field: "reasonOOS",
+      headerName: "Reason",
+      width: 220,
       headerClassName: "bold-header",
     },
   ];
@@ -215,6 +239,8 @@ export default function Inventory() {
             offtake: value(data.status, data.offtake),
             inventoryDaysLevel: value(data.status, data.inventoryDaysLevel),
             noOfDaysOOS: value(data.status, data.noOfDaysOOS),
+            remarksOOS: data.remarksOOS,
+            reasonOOS: data.reasonOOS
           };
         });
         console.log(newData, "testing par");
@@ -261,6 +287,8 @@ export default function Inventory() {
             offtake: value(data.status, data.offtake),
             inventoryDaysLevel: value(data.status, data.inventoryDaysLevel),
             noOfDaysOOS: value(data.status, data.noOfDaysOOS),
+            remarksOOS: data.remarksOOS,
+            reasonOOS: data.reasonOOS
           };
         });
         console.log(newData, "testing par");
@@ -330,7 +358,7 @@ export default function Inventory() {
               },
             }}
             //disableDensitySelector
-            // disableColumnFilter
+            disableColumnFilter
             disableColumnSelector
             disableRowSelectionOnClick
             pageSizeOptions={[5, 10, 20, 30]}

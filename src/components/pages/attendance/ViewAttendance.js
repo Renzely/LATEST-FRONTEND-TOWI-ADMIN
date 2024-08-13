@@ -13,8 +13,9 @@ export default function ViewAttendance() {
   const userEmail = location.state?.userEmail || "";
 
   // Function to format date and time
-  const formatDateTime = (dateTime) => {
-    if (!dateTime) return { date: "N/A", time: "N/A" }; // Handle null dateTime
+  const formatDateTime = (dateTime, isTimeIn = false) => {
+    if (!dateTime) return isTimeIn ? "No Time In" : "No Time Out"; // Handle null dateTime for timeIn and timeOut
+  
     const dateObj = new Date(dateTime);
     const options = { year: "numeric", month: "long", day: "numeric" };
     const date = dateObj.toLocaleDateString(undefined, options);
@@ -23,7 +24,8 @@ export default function ViewAttendance() {
       minute: "2-digit",
       hour12: true,
     });
-    return { date, time };
+  
+    return isTimeIn ? { date, time } : { date, time }; // Return object for date and time, but keep original structure for compatibility
   };
 
   // Fetch attendance data for the specific user
@@ -96,7 +98,7 @@ export default function ViewAttendance() {
     { field: "count", headerName: "#", width: 100, headerClassName: "bold-header" },
     { field: "date", headerName: "Date", width: 200, headerClassName: "bold-header" },
     { field: "timeIn", headerName: "Time In", width: 150, headerClassName: "bold-header" },
-    { field: "timeInLocation", headerName: "Time In Location", width: 200, headerClassName: "bold-header" },
+    { field: "timeInLocation", headerName: "Location", width: 200, headerClassName: "bold-header" },
     { field: "timeOut", headerName: "Time Out", width: 150, headerClassName: "bold-header" },
     { field: "timeOutLocation", headerName: "Time Out Location", width: 200, headerClassName: "bold-header" },
     {
