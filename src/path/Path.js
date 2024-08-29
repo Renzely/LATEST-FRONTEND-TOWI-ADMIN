@@ -20,6 +20,7 @@ const Path = () => {
       case "/":
       case "/forgotpassword":
         return <Navigate to="/view-accounts" />;
+        case "/view-outlet":
       case "/view-accounts":
       case "/attendance":
       case "/view-attendance":

@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid,
+  GridToolbarContainer,
+  GridToolbarExport,
+  GridToolbar,  } from "@mui/x-data-grid";
 import { Box, Typography } from "@mui/material";
 import Topbar from "../../topbar/Topbar";
 import Sidebar from "../../sidebar/Sidebar";
@@ -132,9 +135,27 @@ export default function ViewAttendance() {
             <DataGrid
               rows={attendanceData}
               columns={columns}
-              pageSize={10}
-              rowsPerPageOptions={[5, 10, 20]}
-              getRowId={(row) => row._id}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 10 },
+                },
+              }}
+              slots={{
+                toolbar: GridToolbar,
+              }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                  printOptions: { disableToolbarButton: true },
+                },
+              }}
+              //disableDensitySelector
+              disableColumnFilter
+              disableColumnSelector
+              disableRowSelectionOnClick
+              pageSizeOptions={[5, 10, 20, 30]}
+              getRowId={(row) => row.count}
+  
             />
           </Box>
         </Box>
