@@ -13,6 +13,7 @@ import ViewAttendance from "./components/pages/attendance/ViewAttendance";
 import Attendance from "./components/pages/attendance/Attendance";
 import Account from "./components/pages/account/Account";
 import ViewParcel from "./components/pages/inventory/ViewParcel";
+import Branch from "./components/pages/Branches/Branch";
 import RTV from "./components/pages/ReturnToVendor/RTV";
 import Login from "./components/Admin/login";
 import Admin from "./components/pages/AdminAccount/Admin";
@@ -26,6 +27,7 @@ function App() {
       <Routes>
         <Route element={<Path />}>
           <Route path="/" element={<Login />} />
+          <Route path="/view-outlet" element={<Branch />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/view-admin-accounts" element={<Admin />} />
           <Route path="/inventory" element={<Inventory />} />

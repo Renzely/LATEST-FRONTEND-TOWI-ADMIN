@@ -4,6 +4,7 @@ import { Inventory, AssignmentInd, ManageAccounts } from "@mui/icons-material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import AssignmentReturnIcon from "@mui/icons-material/AssignmentReturn";
+import StoreIcon from '@mui/icons-material/Store';
 import { useLocation } from "react-router-dom";
 import * as React from "react";
 
@@ -87,6 +88,20 @@ export default function Sidebar() {
               >
                 <Inventory className="sidebarIcon" />
                 Inventory
+              </li>
+            </NavLink>
+            <NavLink
+              to="/view-outlet"
+              style={{ textDecoration: "none" }}
+              onClick={() => handleItemClick("/view-outlet")}
+            >
+              <li
+                className={`sidebarListItem ${
+                  activeItem === "/view-outlet" ? "active" : ""
+                }`}
+              >
+                <StoreIcon className="sidebarIcon" />
+                Branches
               </li>
             </NavLink>
             <NavLink
