@@ -13,6 +13,8 @@ import {
   Checkbox,
   TextField,
 } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+
 import Autocomplete from "@mui/material/Autocomplete";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
@@ -478,16 +480,74 @@ export default function OUTLET() {
   const [dateFilter, setDateFilter] = React.useState(null);
   const [selectedSKUs, setSelectedSKUs] = React.useState([]);
   const [disabledSKUs, setDisabledSKUs] = React.useState([]);
-const [highlightedSKUs, setHighlightedSKUs] = React.useState([]);
+  const [highlightedSKUs, setHighlightedSKUs] = React.useState([]);
+  const [openSavedSkusModal, setOpenSavedSkusModal] = React.useState(false);
+  const [savedSkus, setSavedSkus] = React.useState([]);
+  const [selectAll, setSelectAll] = React.useState(false);
+  const [openSecondaryModal, setOpenSecondaryModal] = React.useState(false);
+  const [selectedSku, setSelectedSku] = React.useState('');
+  const [openStatusModal, setOpenStatusModal] = React.useState(false);
+const [statusCategory, setStatusCategory] = React.useState("");
+const [status, setStatus] = React.useState("");
+const [statusSKU, setStatusSKU] = React.useState(null);
 
-  const handleOpen = (branch) => {
+const handleOpenStatusModal = (row) => {
+  setSelectedBranch(row.branchName); // Set the branch from the row data
+  setStatusCategory(""); // Reset the category
+  setStatus(""); // Reset the status
+  setStatusSKU(null); // Reset SKU
+  setOpenStatusModal(true);
+};
+
+// Handler to close the new status modal
+const handleCloseStatusModal = () => {
+  setOpenStatusModal(false);
+};
+
+// Handle category change in the status modal
+const handleStatusCategoryChange = (event) => {
+  setStatusCategory(event.target.value);
+  setStatusSKU(null); // Reset SKU when category changes
+};
+
+// Handle status change
+const handleStatusChange = (event) => {
+  setStatus(event.target.value);
+};
+
+// Handle SKU change in the status modal
+const handleStatusSKUChange = (event) => {
+  setStatusSKU(event.target.value);
+};
+  
+
+
+  const handleOpenSecondaryModal = () => {
+    setOpenSecondaryModal(true);
+  };
+
+  const handleCloseSecondaryModal = () => {
+    setOpenSecondaryModal(false);
+  };
+
+
+  const handleSkuChange = (event) => {
+    setSelectedSku(event.target.value);
+  };
+
+
+  const handleOpen = (branch, category) => {
+    setSelectedCategory(category);
     setSelectedBranch(branch);
     setSelectedCategory("");
     setSelectedSKU(null);
+    setSelectAll(false); // Reset select all to false when opening the modal
     setOpen(true);
   };
-
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setSelectedSKUs([]); // Clear the selected SKUs
+    setOpen(false); // Close the modal
+  };
 
   const handleDropdownChange = (event) => {
     setDropdownValue(event.target.value);
@@ -498,8 +558,6 @@ const [highlightedSKUs, setHighlightedSKUs] = React.useState([]);
     setSelectedCategory(event.target.value);
     setSelectedSKU(null);
   };
-
-  
 
   const columns = [
     { field: "id", headerName: "#", width: 75 },
@@ -523,6 +581,62 @@ const [highlightedSKUs, setHighlightedSKUs] = React.useState([]);
         </Button>
       ),
     },
+    {
+      field: "saveSkus",
+      headerName: "SKU Description",
+      width: 150,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          size="small"
+          onClick={() => handleOpenSavedSkus(params.row.branchName, 'V1')}
+        >
+          V1
+        </Button>
+      ),
+    },
+    {
+      field: "saveSkus2",
+      headerName: "SKU Description",
+      width: 150,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          size="small"
+          onClick={() => handleOpenSavedSkus(params.row.branchName, 'V2')}
+        >
+          V2
+        </Button>
+      ),
+    },
+    {
+      field: "saveSkus3",
+      headerName: "SKU Description",
+      width: 150,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          size="small"
+          onClick={() => handleOpenSavedSkus(params.row.branchName, "V3")}
+        >
+          V3
+        </Button>
+      ),
+    },
+    {
+      field: "STATUS",
+      headerName: "SKU STATUS",
+      width: 150,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          size="small"
+          onClick={() => handleOpenStatusModal(params.row)}
+        >
+          STATUS
+        </Button>
+      ),
+    }
   ];
 
   const rows = branches.map((branch, index) => ({
@@ -530,8 +644,52 @@ const [highlightedSKUs, setHighlightedSKUs] = React.useState([]);
     branchName: branch,
   }));
 
-  const handleSave = async () => {
+  const handleOpenSavedSkus = async (branch, category) => {
+    // Reset the saved SKUs before fetching new ones
+    setSavedSkus({});
+    setSelectedCategory(category);
+    // Set the selected branch
+    setSelectedBranch(branch);
+
     try {
+      // Fetch the saved SKUs for the selected branch
+      const response = await fetch(
+        `http://192.168.50.55:8080/get-skus?accountNameBranchManning=${encodeURIComponent(
+          branch
+        )}`
+      );
+      const data = await response.json();
+
+      if (response.ok) {
+        // Update the saved SKUs state with the data fetched for this branch
+        setSavedSkus(data || {});
+      } else {
+        console.error("Failed to fetch saved SKUs:", data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching saved SKUs:", error);
+    }
+
+    // Open the modal to show the SKUs
+    setOpenSavedSkusModal(true);
+  };
+
+  const handleCloseSavedSkusModal = () => setOpenSavedSkusModal(false);
+
+  const handleSave = async () => {
+    handleClose();
+    setSelectedSKUs([]);
+    try {
+      if (!selectedSKUs || selectedSKUs.length === 0) {
+        console.warn("No SKUs selected for saving.");
+        return;
+      }
+
+      const skusToSave = selectedSKUs.map((sku) => ({
+        SKUDescription: sku.SKUDescription || "Unknown SKU",
+        enabled: true, // or the appropriate value
+      }));
+
       const response = await fetch(
         "http://192.168.50.55:8080/save-branch-sku",
         {
@@ -539,36 +697,184 @@ const [highlightedSKUs, setHighlightedSKUs] = React.useState([]);
           body: JSON.stringify({
             accountNameBranchManning: selectedBranch,
             category: selectedCategory,
-            skus: selectedSKU.map((sku) => ({
-              SKUDescription: sku.SKUDescription || "Unknown SKU",
-              enabled: true, // or the appropriate value
-            })),
+            skus: skusToSave,
           }),
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const data = await response.json();
       console.log("Received response:", data);
-  
+
       if (data.data && data.data.length === 0) {
         console.error("No documents were inserted");
       } else {
         console.log("BranchSKUs saved successfully:", data);
         handleClose(); // Close the modal after successful save
+        // Optionally, update the dropdown with saved SKUs here
       }
     } catch (error) {
       console.error("Error saving BranchSKUs:", error);
+      // Handle the error appropriately (e.g., show an error message to the user)
     }
   };
+
+  const handleToggleSelectAll = () => {
+    if (selectAll) {
+      // Deselect all
+      setSelectedSKUs([]);
+      setSelectAll(false);
+    } else {
+      // Select all
+      setSelectedSKUs(skus[selectedCategory] || []);
+      setSelectAll(true);
+    }
+  };
+
+  const handleAutocompleteChange = (event, newValue) => {
+    setSelectedSKUs(newValue);
+    setSelectAll(newValue.length === (skus[selectedCategory] || []).length);
+  };
+
+  const handleNotCarried = async () => {
+    if (!selectedCategory || !selectedSku || !selectedBranch) {
+      // Handle case where no category or SKU is selected
+      alert('Please select a category and SKU first.');
+      return;
+    }
   
+    try {
+      const response = await fetch('http://192.168.50.55:8080/disable-sku', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          branch: selectedBranch, // Replace with the actual branch identifier
+          category: selectedCategory,
+          skuDescription: selectedSku,
+          enabled: false, // Set SKU as disabled
+          status: 'Not Carried', // Add a status tag
+        }),
+      });
   
+      if (response.ok) {
+        alert('SKU has been disabled.');
+        handleCloseSecondaryModal(); // Close modal on success
+      } else {
+        alert('Failed to disable SKU.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while disabling the SKU.');
+    }
+  };
+
+  const handleCarried = async () => {
+    if (!selectedCategory || !selectedSku) {
+      alert('Please select a category and SKU first.');
+      return;
+    }
+  
+    try {
+      const response = await fetch('http://192.168.50.55:8080/enable-sku', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          branch: selectedBranch,
+          category: selectedCategory,
+          skuDescription: selectedSku,
+          enabled: true, // Set SKU as enabled
+        }),
+      });
+  
+      if (response.ok) {
+        alert('SKU has been marked as Carried.');
+        await handleOpenSavedSkus(selectedBranch, selectedCategory); // Refresh SKUs
+        handleCloseSecondaryModal(); // Close modal on success
+      } else {
+        alert('Failed to mark SKU as Carried.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while marking the SKU as Carried.');
+    }
+  };
+
+
+  const handleDelisted = async () => {
+    if (!selectedCategory || !selectedSku) {
+      alert('Please select a category and SKU first.');
+      return;
+    }
+  
+    try {
+      const response = await fetch('http://192.168.50.55:8080/delisted-sku', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          branch: selectedBranch, // Use the selected branch state
+          category: selectedCategory,
+          skuDescription: selectedSku,
+          enabled: false, // Set SKU as disabled
+          status: 'Delisted', // Add a status tag
+        }),
+      });
+  
+      if (response.ok) {
+        alert('SKU has been marked as Delisted.');
+        await handleOpenSavedSkus(selectedBranch, selectedCategory); // Refresh SKUs
+        handleCloseSecondaryModal(); // Close modal on success
+      } else {
+        alert('Failed to mark SKU as Delisted.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while marking the SKU as Delisted.');
+    }
+  };
+
+  const handleSaveStatus = async () => {
+    if (!selectedCategory || !status || !selectedSku) {
+      alert('Please select category, status, and SKU.');
+      return;
+    }
+  
+    try {
+      const response = await fetch('http://192.168.50.55:8080/update-sku-status', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          branch: selectedBranch,
+          category: selectedCategory,
+          status: status,
+          skuDescription: selectedSku,
+        }),
+      });
+  
+      if (response.ok) {
+        alert('SKU status updated successfully.');
+        handleCloseStatusModal();
+      } else {
+        alert('Failed to update SKU status.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while updating SKU status.');
+    }
+  };
 
   return (
     <div className="attendance">
@@ -644,59 +950,47 @@ const [highlightedSKUs, setHighlightedSKUs] = React.useState([]);
             </FormControl>
 
             <FormControl fullWidth sx={{ mt: 2 }}>
-  <Autocomplete
-    multiple
-    options={skus[selectedCategory] || []}
-    disableCloseOnSelect
-    getOptionLabel={(option) => (
-      <span style={{ fontWeight: 'bold' }}>
-        {option.SKUDescription}
-        {selectedSKUs.includes(option.SKUDescription) && (
-          <span style={{ color: 'red', marginLeft: '5px' }}>✓</span>
-        )}
-      </span>
-    )}
-    value={selectedSKU || []}
-    onChange={(event, newValue) => setSelectedSKU(newValue)}
-    renderOption={(props, option, { selected }) => (
-      <li {...props}>
-        <Checkbox
-          icon={<span />}
-          checkedIcon={<span />}
-          style={{ marginRight: 8 }}
-          checked={selected}
-        />
-        {option.SKUDescription}
-      </li>
-    )}
-    renderInput={(params) => (
-      <TextField
-        {...params}
-        label="Select SKU(s)"
-        placeholder="Search SKU"
-      />
-    )}
-  />
-</FormControl>
+              <Autocomplete
+                multiple
+                disableCloseOnSelect
+                getOptionLabel={(option) => option.SKUDescription || ""}
+                value={selectedSKUs}
+                onChange={handleAutocompleteChange}
+                renderInput={(params) => (
+                  <TextField {...params} label="Select SKU(s)" />
+                )}
+                options={skus[selectedCategory] || []}
+                renderOption={(props, option, { selected }) => (
+                  <li {...props}>
+                    <Checkbox
+                      icon={<span />}
+                      checkedIcon={<span />}
+                      style={{ marginRight: 8 }}
+                      checked={selected}
+                    />
+                    {option.SKUDescription}
+                  </li>
+                )}
+              />
+            </FormControl>
 
-
-            {selectedSKU && selectedSKU.length > 0 && (
+            {selectedSKUs && selectedSKUs.length > 0 && (
               <Box sx={{ marginTop: 2 }}>
-                {selectedSKU.map((sku, index) => (
+                {selectedSKUs.map((sku, index) => (
                   <div key={index}>
-                    {/* <Typography variant="body1">
-                      <strong>SKU Description:</strong> {sku.SKUDescription}
-                    </Typography> */}
-                    {/* <Typography variant="body1">
-                      <strong>Product:</strong> {sku.product}
-                    </Typography>
-                    <Typography variant="body1">
-                      <strong>SKU Code:</strong> {sku.skuCode}
-                    </Typography> */}
+                    {/* Optionally display additional SKU details here */}
                   </div>
                 ))}
               </Box>
             )}
+
+            <Button
+              variant="contained"
+              onClick={handleToggleSelectAll}
+              sx={{ mt: 2 }} // Ensure consistent margin
+            >
+              {selectAll ? "Deselect All" : "Select All"}
+            </Button>
 
             <Box sx={{ marginTop: 2 }}>
               <Button variant="contained" color="primary" onClick={handleSave}>
@@ -705,6 +999,211 @@ const [highlightedSKUs, setHighlightedSKUs] = React.useState([]);
             </Box>
           </Box>
         </Modal>
+
+        <Modal
+  open={openSavedSkusModal}
+  onClose={() => setOpenSavedSkusModal(false)}
+  aria-labelledby="saved-skus-modal-title"
+  aria-describedby="saved-skus-modal-description"
+>
+  <Box sx={{ ...style, width: 1000 }}>
+    <Typography id="saved-skus-modal-title" variant="h6" component="h2">
+      Saved SKUs for {selectedBranch} - Category: {selectedCategory}
+    </Typography>
+    {Object.keys(savedSkus).length > 0 ? (
+      Object.entries(savedSkus).map(([category, skus], index) => (
+        category === selectedCategory && (
+          <Box key={index} sx={{ marginTop: 2 }}>
+            <Typography
+              variant="h6"
+              component="h3"
+              sx={{ fontSize: "0.75rem" }}
+            >
+              Category: {category}
+            </Typography>
+            {skus.map((skuArray, idx) =>
+              skuArray.map((sku, skuIdx) => (
+                <Typography
+                  key={skuIdx}
+                  variant="body1"
+                  sx={{ fontSize: "0.60rem" }}
+                >
+                  <strong>SKU Description:</strong> {sku.SKUDescription}
+                </Typography>
+              ))
+            )}
+          </Box>
+        )
+      ))
+    ) : (
+      <Typography variant="body1" sx={{ marginTop: 2 }}>
+        No SKUs saved for this branch in this category.
+      </Typography>
+    )}
+    <Box sx={{ marginTop: 2, display: 'flex', justifyContent: 'space-between' }}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => setOpenSavedSkusModal(false)}
+      >
+        Close
+      </Button>
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={handleOpenSecondaryModal}
+      >
+        Open Secondary Modal
+      </Button>
+    </Box>
+  </Box>
+</Modal>
+
+      {/* Secondary Modal */}
+    <Modal
+  open={openSecondaryModal}
+  onClose={handleCloseSecondaryModal}
+  aria-labelledby="secondary-modal-title"
+  aria-describedby="secondary-modal-description"
+>
+  <Box sx={{ ...style, width: 500 }}>
+    <Typography id="secondary-modal-title" variant="h6" component="h2">
+      Select Category and SKU
+    </Typography>
+    <FormControl fullWidth sx={{ marginTop: 2 }}>
+      <InputLabel>Category</InputLabel>
+      <Select
+        value={selectedCategory}
+        onChange={handleCategoryChange}
+      >
+        {/* Replace these with your actual categories */}
+        <MenuItem value="V1">V1</MenuItem>
+        <MenuItem value="V2">V2</MenuItem>
+        <MenuItem value="V3">V3</MenuItem>
+      </Select>
+    </FormControl>
+    <FormControl fullWidth sx={{ marginTop: 2 }}>
+      <InputLabel>SKU</InputLabel>
+      <Select
+        value={selectedSku}
+        onChange={handleSkuChange}
+        disabled={!selectedCategory} // Disable until a category is selected
+      >
+        {selectedCategory && savedSkus[selectedCategory] && savedSkus[selectedCategory].length > 0 ? (
+          savedSkus[selectedCategory].map((skuArray, idx) =>
+            skuArray.map((sku, skuIdx) => (
+              <MenuItem key={skuIdx} value={sku.SKUDescription}>
+                {sku.SKUDescription}
+              </MenuItem>
+            ))
+          )
+        ) : (
+          <MenuItem value="" disabled>
+            No SKUs available
+          </MenuItem>
+        )}
+      </Select>
+    </FormControl>
+    <Box sx={{ marginTop: 4, display: 'flex', justifyContent: 'space-between' }}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleCloseSecondaryModal}
+      >
+        Close
+      </Button>
+      <Button
+  variant="contained"
+  color="warning"
+  sx={{ backgroundColor: 'warning', color: 'white' }}
+  onClick={handleNotCarried}
+>
+  Not Carried
+</Button>
+      <Button
+        variant="contained"
+        color="error"
+        sx={{ backgroundColor: 'error', color: 'white' }}
+        onClick={handleDelisted}
+      >
+        Delisted
+      </Button>
+    
+    </Box>
+  </Box>
+</Modal>
+
+<Modal
+  open={openStatusModal}
+  onClose={handleCloseStatusModal}
+  aria-labelledby="status-modal-title"
+  aria-describedby="status-modal-description"
+>
+  <Box sx={{ ...style, width: 500 }}>
+    <Typography id="status-modal-title" variant="h6" component="h2">
+      Update SKU Status for {selectedBranch}
+    </Typography>
+    <FormControl fullWidth sx={{ marginTop: 2 }}>
+      <InputLabel>Category</InputLabel>
+      <Select
+        value={statusCategory}
+        onChange={handleStatusCategoryChange}
+      >
+        <MenuItem value="V1">V1</MenuItem>
+        <MenuItem value="V2">V2</MenuItem>
+        <MenuItem value="V3">V3</MenuItem>
+      </Select>
+    </FormControl>
+    <FormControl fullWidth sx={{ marginTop: 2 }}>
+      <InputLabel>Status</InputLabel>
+      <Select
+        value={status}
+        onChange={handleStatusChange}
+      >
+        <MenuItem value="Not Carried">Not Carried</MenuItem>
+        <MenuItem value="Delisted">Delisted</MenuItem>
+      </Select>
+    </FormControl>
+    <FormControl fullWidth sx={{ marginTop: 2 }}>
+      <InputLabel>SKU</InputLabel>
+      <Select
+        value={statusSKU}
+        onChange={handleStatusSKUChange}
+        disabled={!statusCategory} // Disable until a category is selected
+      >
+        {statusCategory && savedSkus[statusCategory] && savedSkus[statusCategory].length > 0 ? (
+          savedSkus[statusCategory].flat().map((sku, idx) => (
+            <MenuItem key={idx} value={sku.SKUDescription}>
+              {sku.SKUDescription}
+            </MenuItem>
+          ))
+        ) : (
+          <MenuItem value="" disabled>
+            No SKUs available
+          </MenuItem>
+        )}
+      </Select>
+    </FormControl>
+    <Box sx={{ marginTop: 4, display: 'flex', justifyContent: 'space-between' }}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleSaveStatus}
+      >
+        Save
+      </Button>
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={handleCloseStatusModal}
+      >
+        Close
+      </Button>
+    </Box>
+  </Box>
+</Modal>
+
+
       </div>
     </div>
   );
