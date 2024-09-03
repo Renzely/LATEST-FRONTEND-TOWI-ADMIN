@@ -131,7 +131,7 @@ export default function ViewAttendance() {
           <Typography variant="h4" gutterBottom>
             Attendance for {userEmail}
           </Typography>
-          <Box sx={{ height: 400, width: "100%" }}>
+          <Box sx={{ height: 400, width: "200%" }}>
             <DataGrid
               rows={attendanceData}
               columns={columns}
