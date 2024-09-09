@@ -45,7 +45,7 @@ export default function Login() {
     }
 
     try {
-      const response = await axios.post('http://192.168.50.55:8080/login-admin', body);
+      const response = await axios.post('https://latest-backend-towi-admin.onrender.com/login-admin', body);
       const data = await response.data;
 
       if (data.status === 200) {

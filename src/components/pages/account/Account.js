@@ -136,7 +136,7 @@ export default function Account() {
     try {
       // Update the user's branches with the selected branches
       const response = await axios.put(
-        "http://192.168.50.55:8080/update-user-branch",
+        "https://latest-backend-towi-admin.onrender.com/update-user-branch",
         {
           emailAddress: modalEmail,
           branches: selectedBranches,
@@ -323,7 +323,7 @@ export default function Account() {
 
   async function getUser() {
     await axios
-      .post("http://192.168.50.55:8080/get-all-user", requestBody)
+      .post("https://latest-backend-towi-admin.onrender.com/get-all-user", requestBody)
       .then(async (response) => {
         const data = await response.data.data;
 
@@ -349,7 +349,7 @@ export default function Account() {
   async function setStatus() {
     console.log("check body", requestBody);
     await axios
-      .put("http://192.168.50.55:8080/update-status", requestBody)
+      .put("https://latest-backend-towi-admin.onrender.com/update-status", requestBody)
       .then(async (response) => {
         const data = await response.data.data;
 

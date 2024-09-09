@@ -92,7 +92,7 @@ export default function Attendance() {
 
   async function getUser() {
     await axios
-      .post("http://192.168.50.55:8080/get-all-user", body)
+      .post("https://latest-backend-towi-admin.onrender.com/get-all-user", body)
       .then(async (response) => {
         const data = await response.data.data;
 
