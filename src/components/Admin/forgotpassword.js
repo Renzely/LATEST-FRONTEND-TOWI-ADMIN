@@ -63,7 +63,7 @@ export default function ForgotPassword() {
       return;
     }
 
-    await axios.post('http://192.168.50.55:8080/send-otp-forgotpassword', body)
+    await axios.post('https://latest-backend-towi-admin.onrender.com/send-otp-forgotpassword', body)
       .then(async response => {
         const res = await response.data;
         if (res.status === 200) {
@@ -139,7 +139,7 @@ export default function ForgotPassword() {
       password: password
     };
 
-    axios.put('http://192.168.50.55:8080/forgot-password-reset', body)
+    axios.put('https://latest-backend-towi-admin.onrender.com/forgot-password-reset', body)
       .then(async response => {
         const res = await response.data;
         if (res.status === 200) {

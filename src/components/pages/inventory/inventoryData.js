@@ -203,7 +203,7 @@ export default function Inventory() {
 
   async function getUser() {
     await axios
-      .post("http://192.168.50.55:8080/retrieve-parcel-data")
+      .post("https://latest-backend-towi-admin.onrender.com/retrieve-parcel-data")
       .then(async (response) => {
         const data = await response.data.data;
         console.log(data, "test");
@@ -251,7 +251,7 @@ export default function Inventory() {
   async function getDate(selectedDate) {
     const data = { selectDate: selectedDate };
     await axios
-      .post("http://192.168.50.55:8080/filter-date", data)
+      .post("https://latest-backend-towi-admin.onrender.com/filter-date", data)
       .then(async (response) => {
         const data = await response.data.data;
         console.log(data, "test");
