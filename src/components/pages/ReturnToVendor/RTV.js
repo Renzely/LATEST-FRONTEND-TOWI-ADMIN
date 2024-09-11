@@ -150,7 +150,7 @@ export default function RTV() {
 
   async function getUser() {
     await axios
-        .post("http://192.168.50.55:8080/retrieve-RTV-data")
+        .post("https://latest-backend-towi-admin.onrender.com/retrieve-RTV-data")
         .then(async (response) => {
             const data = await response.data.data;
             console.log(data, "test");
@@ -180,7 +180,7 @@ export default function RTV() {
 async function getDateRTV(selectedDate) {
     const data = { selectDate: selectedDate };
     await axios
-        .post("http://192.168.50.55:8080/filter-RTV-data", data)
+        .post("https://latest-backend-towi-admin.onrender.com/filter-RTV-data", data)
         .then(async (response) => {
             const data = await response.data.data;
             console.log(data, "test");

@@ -551,7 +551,7 @@ export default function OUTLET() {
     if (statusCategory && selectedStatus) {
       try {
         const response = await fetch(
-          `http://192.168.50.55:8080/get-skus-by-status?branch=${encodeURIComponent(
+          `https://latest-backend-towi-admin.onrender.com/get-skus-by-status?branch=${encodeURIComponent(
             selectedBranch
           )}&statusCategory=${encodeURIComponent(
             statusCategory
@@ -633,8 +633,8 @@ export default function OUTLET() {
     },
     {
       field: "actions",
-      headerName: "Actions",
-      width: 150,
+      headerName: "SKU DESCRIPTION",
+      width: 180,
       renderCell: (params) => (
         <Button
           variant="contained"
@@ -648,7 +648,7 @@ export default function OUTLET() {
     },
     {
       field: "saveSkus",
-      headerName: "SKU Description",
+      headerName: "CATEGORY",
       width: 150,
       renderCell: (params) => (
         <Button
@@ -662,7 +662,7 @@ export default function OUTLET() {
     },
     {
       field: "saveSkus2",
-      headerName: "SKU Description",
+      headerName: "CATEGORY",
       width: 150,
       renderCell: (params) => (
         <Button
@@ -676,7 +676,7 @@ export default function OUTLET() {
     },
     {
       field: "saveSkus3",
-      headerName: "SKU Description",
+      headerName: "CATEGORY",
       width: 150,
       renderCell: (params) => (
         <Button
@@ -717,7 +717,7 @@ export default function OUTLET() {
 
     try {
       const response = await fetch(
-        `http://192.168.50.55:8080/get-skus?accountNameBranchManning=${encodeURIComponent(
+        `https://latest-backend-towi-admin.onrender.com/get-skus?accountNameBranchManning=${encodeURIComponent(
           branch
         )}`
       );
@@ -753,7 +753,7 @@ export default function OUTLET() {
       }));
 
       const response = await fetch(
-        "http://192.168.50.55:8080/save-branch-sku",
+        "https://latest-backend-towi-admin.onrender.com/save-branch-sku",
         {
           method: "POST",
           body: JSON.stringify({
@@ -812,7 +812,7 @@ export default function OUTLET() {
     }
 
     try {
-      const response = await fetch("http://192.168.50.55:8080/disable-sku", {
+      const response = await fetch("https://latest-backend-towi-admin.onrender.com/disable-sku", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -845,7 +845,7 @@ export default function OUTLET() {
     }
 
     try {
-      const response = await fetch("http://192.168.50.55:8080/enable-sku", {
+      const response = await fetch("https://latest-backend-towi-admin.onrender.com/enable-sku", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -880,7 +880,7 @@ export default function OUTLET() {
     }
 
     try {
-      const response = await fetch("http://192.168.50.55:8080/delisted-sku", {
+      const response = await fetch("https://latest-backend-towi-admin.onrender.com/delisted-sku", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -915,7 +915,7 @@ export default function OUTLET() {
 
     try {
       const response = await fetch(
-        "http://192.168.50.55:8080/update-sku-status",
+        "https://latest-backend-towi-admin.onrender.com/update-sku-status",
         {
           method: "POST",
           headers: {
@@ -951,9 +951,9 @@ export default function OUTLET() {
           <Stack
             direction={{ xs: "column", md: "row", sm: "row" }}
             spacing={{ xs: 1, sm: 2, md: 4 }}
-            sx={{ marginBottom: "20px" }}
+            // sx={{ marginBottom: "20px" }}
           >
-            <div className="MuiStack-root">
+            {/* <div className="MuiStack-root">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label="Select Date"
@@ -961,7 +961,7 @@ export default function OUTLET() {
                   slotProps={{ textField: { size: "small" } }}
                 />
               </LocalizationProvider>
-            </div>
+            </div> */}
           </Stack>
           <DataGrid
             rows={rows}
@@ -1059,7 +1059,7 @@ export default function OUTLET() {
             </Button>
 
             <Box sx={{ marginTop: 2 }}>
-              <Button variant="contained" color="primary" onClick={handleSave}>
+              <Button variant="contained" color="success" onClick={handleSave}>
                 Save
               </Button>
             </Box>
@@ -1093,7 +1093,7 @@ export default function OUTLET() {
                           <Typography
                             key={skuIdx}
                             variant="body1"
-                            sx={{ fontSize: "0.60rem" }}
+                            sx={{ fontSize: "0.75rem" }}
                           >
                             <strong>SKU Description:</strong>{" "}
                             {sku.SKUDescription}
@@ -1117,7 +1117,7 @@ export default function OUTLET() {
             >
               <Button
                 variant="contained"
-                color="primary"
+                color="error"
                 onClick={() => setOpenSavedSkusModal(false)}
               >
                 Close
@@ -1187,7 +1187,7 @@ export default function OUTLET() {
             >
               <Button
                 variant="contained"
-                color="primary"
+                color="error"
                 onClick={handleCloseSecondaryModal}
               >
                 Close
@@ -1202,7 +1202,7 @@ export default function OUTLET() {
               </Button>
               <Button
                 variant="contained"
-                color="error"
+                color="secondary"
                 sx={{ backgroundColor: "error", color: "white" }}
                 onClick={handleDelisted}
               >
@@ -1288,7 +1288,7 @@ export default function OUTLET() {
               </Button>
               <Button
                 variant="contained"
-                color="secondary"
+                color="error"
                 onClick={handleCloseStatusModal}
               >
                 Close
