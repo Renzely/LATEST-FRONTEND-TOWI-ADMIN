@@ -69,6 +69,7 @@ export default function Account() {
   const [modalPhone, setModalPhone] = React.useState("");
 
   const [openDialog, setOpenDialog] = React.useState(false);
+  const roleAccount = localStorage.getItem("roleAccount"); // Get roleAccount from localStorage
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -579,12 +580,14 @@ export default function Account() {
       renderCell: (params) => {
         const status = params.row.isActive;
         const rowEmail = params.row.emailAddress;
+        const roleAccount = localStorage.getItem("roleAccount"); // Get role from localStorage
+
         const onClick = (e) => {
-          {
+          if (roleAccount === "ACCOUNT SUPERVISOR") {
             status ? setUpdateStatus(false) : setUpdateStatus(true);
+            setUserEmail(rowEmail);
+            handleOpenDialog();
           }
-          setUserEmail(rowEmail);
-          handleOpenDialog();
         };
 
         return (
@@ -601,6 +604,7 @@ export default function Account() {
                     color: "#000000",
                   }}
                   onClick={onClick}
+                  disabled={roleAccount !== "ACCOUNT SUPERVISOR"} // Disable if not Account Supervisor
                 >
                   Active
                 </ColorButton>
@@ -613,6 +617,7 @@ export default function Account() {
                   size="small"
                   style={{ width: "50%", marginTop: "13px" }}
                   onClick={onClick}
+                  disabled={roleAccount !== "ACCOUNT SUPERVISOR"} // Disable if not Account Supervisor
                 >
                   Inactive
                 </Button>
@@ -772,25 +777,28 @@ export default function Account() {
         >
           <Box sx={style}>
             <Typography id="modal-modal-title" variant="h6" component="h2">
-              Full Details :{/* <HighlightOffIcon/> */}
-              {/* {test} */}
+              Full Details :
             </Typography>
             <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              <span className="detailTitle">Full name:</span>{" "}
+              <span className="detailTitle">Full name:</span>
               <span className="detailDescription">{modalFullName}</span>
-              <br></br>
-              <span className="detailTitle">Email:</span>{" "}
+              <br />
+              <span className="detailTitle">Email:</span>
               <span className="detailDescription">{modalEmail}</span>
-              <br></br>
-              <span className="detailTitle">Contact Number:</span>{" "}
+              <br />
+              <span className="detailTitle">Contact Number:</span>
               <span className="detailDescription">{modalPhone}</span>
-              <br></br>
-              <span className="detailTitle">Account Branch Name:</span>{" "}
+              <br />
+              <span className="detailTitle">Account Branch Name:</span>
               <span className="detailDescription">{modalBranch}</span>
-              <br></br>
-              <br></br>
+              <br />
+              <br />
               {/* Button to open branch selection modal */}
-              <Button variant="contained" onClick={handleOpenBranchModal}>
+              <Button
+                variant="contained"
+                onClick={handleOpenBranchModal}
+                disabled={roleAccount !== "ACCOUNT SUPERVISOR"} // Disable if not Account Supervisor
+              >
                 Select Branch
               </Button>
             </Typography>
