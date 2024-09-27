@@ -218,7 +218,7 @@ async function getDateRTV(selectedDate) {
          <div className="container">
          <Sidebar/>
          
-      <div style={{ height: "100%", width: "85%", marginLeft: "100" }}>
+      <div style={{ height: "100%", width: "80%", marginLeft: "100" }}>
 
       <Stack 
             direction={{ xs: 'column', md: 'row',sm: 'row' }}
@@ -269,7 +269,7 @@ async function getDateRTV(selectedDate) {
           disableColumnFilter
           disableColumnSelector
           disableRowSelectionOnClick
-          pageSizeOptions={[5, 10, 20, 30]}
+          pageSizeOptions={[5, 10, 20, 30, 50, 100, 200]}
           getRowId={(row) => row.count}
         />
       </div>

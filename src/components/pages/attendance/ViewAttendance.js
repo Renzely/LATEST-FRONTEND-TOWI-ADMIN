@@ -103,7 +103,7 @@ export default function ViewAttendance() {
     { field: "timeIn", headerName: "Time In", width: 150, headerClassName: "bold-header" },
     { field: "timeInLocation", headerName: "Location", width: 200, headerClassName: "bold-header" },
     { field: "timeOut", headerName: "Time Out", width: 150, headerClassName: "bold-header" },
-    { field: "timeOutLocation", headerName: "Time Out Location", width: 200, headerClassName: "bold-header" },
+    { field: "timeOutLocation", headerName: "Time Out Location", width: 180, headerClassName: "bold-header" },
     {
       field: "currentAttendance",
       headerName: "",
@@ -131,7 +131,7 @@ export default function ViewAttendance() {
           <Typography variant="h4" gutterBottom>
             Attendance for {userEmail}
           </Typography>
-          <Box sx={{ height: 400, width: "200%" }}>
+          <Box sx={{ height: 400, width: "99%" }}>
             <DataGrid
               rows={attendanceData}
               columns={columns}
@@ -153,7 +153,7 @@ export default function ViewAttendance() {
               disableColumnFilter
               disableColumnSelector
               disableRowSelectionOnClick
-              pageSizeOptions={[5, 10, 20, 30]}
+              pageSizeOptions={[5, 10, 20, 30, 50, 100]}
               getRowId={(row) => row.count}
   
             />

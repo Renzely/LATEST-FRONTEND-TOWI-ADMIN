@@ -740,7 +740,7 @@ export default function Admin() {
             disableDensitySelector
             disableColumnFilter
             disableColumnSelector
-            pageSizeOptions={[5, 10]}
+            pageSizeOptions={[5, 10, 20, 50]}
             getRowId={(row) => row.count}
             disableRowSelectionOnClick
           />
