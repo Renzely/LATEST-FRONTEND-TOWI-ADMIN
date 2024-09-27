@@ -95,14 +95,17 @@ export default function Sidebar() {
               style={{ textDecoration: "none" }}
               onClick={() => handleItemClick("/view-outlet")}
             >
-              <li
+              {/* <li
                 className={`sidebarListItem ${
                   activeItem === "/view-outlet" ? "active" : ""
                 }`}
               >
                 <StoreIcon className="sidebarIcon" />
                 Branches
-              </li>
+              </li> */}
+
+              {/* FOR BRANCHES SIDEBAR */}
+
             </NavLink>
             <NavLink
               to="/view-RTV"

@@ -1,6 +1,6 @@
 import "./attendance.css";
 import * as React from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar, } from "@mui/x-data-grid";
 import axios from "axios";
 import { Button, Stack } from "@mui/material";
 import Typography from "@mui/material/Typography";
@@ -9,6 +9,7 @@ import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 import Topbar from "../../topbar/Topbar";
 import Sidebar from "../../sidebar/Sidebar";
+
 
 const style = {
   position: "absolute",
@@ -119,17 +120,28 @@ export default function Attendance() {
       <div className="container">
         <Sidebar />
 
-        <div style={{ height: "100%", width: "100%", marginLeft: "100" }}>
+        <div style={{ height: "100%", width: "85%", marginLeft: "100" }}>
           <DataGrid
             rows={userData}
             columns={columns}
             initialState={{
               pagination: {
-                paginationModel: { page: 0, pageSize: 10 },
+                paginationModel: { page: 0, pageSize: 20 },
               },
             }}
-            pageSizeOptions={[5, 10, 20]}
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+                printOptions: { disableToolbarButton: true },
+                csvOptions: { disableToolbarButton: true },
+              },
+            }}
+            pageSizeOptions={[5, 10, 20, 50, 100]}
             getRowId={(row) => row.count}
+            disableDensitySelector
+            disableColumnFilter
+            disableColumnSelector
           />
         </div>
       </div>
