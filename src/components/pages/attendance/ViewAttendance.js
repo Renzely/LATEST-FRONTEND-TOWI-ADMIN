@@ -20,15 +20,22 @@ export default function ViewAttendance() {
   const formatDateTime = (dateTime, isTimeIn = false) => {
     if (!dateTime) return isTimeIn ? "No Time In" : "No Time Out"; // Handle null dateTime for timeIn and timeOut
   
-  const dateObj = new Date(dateTime);
-    const options = { year: "numeric", month: "long", day: "numeric", timeZone: 'UTC' };
-    const localOptions = { hour: "2-digit", minute: "2-digit", hour12: true, timeZone: 'UTC' };
-    const date = dateObj.toLocaleDateString(undefined, options);
-    const time = dateObj.toLocaleTimeString([], localOptions);
-
+    const dateObj = new Date(dateTime);
   
-    return isTimeIn ? { date, time } : { date, time }; // Return object for date and time, but keep original structure for compatibility
+    // Get the date and time in ISO format (which is always UTC)
+    const isoDate = dateObj.toISOString();
+    
+    // Extract the date and time part
+    const date = isoDate.split('T')[0]; // yyyy-mm-dd
+    const time = isoDate.split('T')[1].slice(0, 5); // HH:mm in 24-hour format
+    
+    // Format it back to 12-hour format if needed
+    const [hours, minutes] = time.split(':');
+    const hour12Format = `${((+hours + 11) % 12 + 1)}:${minutes} ${+hours >= 12 ? 'PM' : 'AM'}`;
+    
+    return isTimeIn ? { date, time: hour12Format } : { date, time: hour12Format };
   };
+  
 
   // Fetch attendance data for the specific user
   async function fetchAttendanceData(emailAddress) {
