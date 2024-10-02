@@ -556,8 +556,6 @@ export default function Admin() {
     "PUREGOLD - GUADALUPE",
     "PUREGOLD- KASAMBAGAN",
     "PUREGOLD PRICE CLUB - SINDALAN"
-    
-    
   ];
 
   const handleRoleChange = (event) => {

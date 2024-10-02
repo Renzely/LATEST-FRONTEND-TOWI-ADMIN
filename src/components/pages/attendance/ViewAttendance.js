@@ -8,6 +8,7 @@ import { DataGrid,
 import { Box, Typography } from "@mui/material";
 import Topbar from "../../topbar/Topbar";
 import Sidebar from "../../sidebar/Sidebar";
+import { format, utcToZonedTime } from 'date-fns-tz';
 
 export default function ViewAttendance() {
   const location = useLocation();
@@ -19,14 +20,12 @@ export default function ViewAttendance() {
   const formatDateTime = (dateTime, isTimeIn = false) => {
     if (!dateTime) return isTimeIn ? "No Time In" : "No Time Out"; // Handle null dateTime for timeIn and timeOut
   
-    const dateObj = new Date(dateTime);
-    const options = { year: "numeric", month: "long", day: "numeric" };
+  const dateObj = new Date(dateTime);
+    const options = { year: "numeric", month: "long", day: "numeric", timeZone: 'Asia/Manila' };
+    const localOptions = { hour: "2-digit", minute: "2-digit", hour12: true, timeZone: 'Asia/Manila' };
     const date = dateObj.toLocaleDateString(undefined, options);
-    const time = dateObj.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
+    const time = dateObj.toLocaleTimeString([], localOptions);
+
   
     return isTimeIn ? { date, time } : { date, time }; // Return object for date and time, but keep original structure for compatibility
   };
