@@ -1288,6 +1288,8 @@ export default function Admin() {
                 <MenuItem value="ACCOUNT SUPERVISOR">
                   ACCOUNT SUPERVISOR
                 </MenuItem>
+                <MenuItem value="OPERATION OFFICER">OPERATION OFFICER</MenuItem>
+                <MenuItem value="OPERATION HEAD">OPERATION HEAD</MenuItem>
               </Select>
             </FormControl>
 
