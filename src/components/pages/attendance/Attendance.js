@@ -22,6 +22,33 @@ const style = {
   p: 4,
 };
 
+// DateTime Formatter Function (from ViewAttendance.js)
+const formatDateTime = (dateTime, isTimeIn = false) => {
+  if (!dateTime) return isTimeIn ? "No Time In" : "No Time Out"; // Handle null dateTime for timeIn and timeOut
+  
+  const dateObj = new Date(dateTime);
+  
+  // Get the date and time in ISO format (which is always UTC)
+  const isoDate = dateObj.toISOString();
+  
+  // Extract the date and time part
+  const dateParts = isoDate.split('T')[0].split('-'); // Split the date part
+  const year = dateParts[0]; // Get full year
+  const month = dateParts[1];
+  const day = dateParts[2];
+  
+  const formattedDate = `${month}-${day}-${year}`; // Format date as MM-DD-YYYY
+  
+  // Extract the time part
+  const time = isoDate.split('T')[1].slice(0, 5); // HH:mm in 24-hour format
+  
+  // Format it back to 12-hour format
+  const [hours, minutes] = time.split(':');
+  const hour12Format = `${((+hours + 11) % 12 + 1)}:${minutes} ${+hours >= 12 ? 'PM' : 'AM'}`;
+  
+  return isTimeIn ? { date: formattedDate, time: hour12Format } : { date: formattedDate, time: hour12Format };
+};
+
 export default function Attendance() {
   const [userData, setUserData] = React.useState([]);
 
@@ -107,106 +134,79 @@ export default function Attendance() {
       },
     },
   ];
-  
 
   // Function to fetch current attendance for a user
-async function fetchCurrentAttendance(emailAddress) {
-  try {
-    const response = await axios.post(
-      "https://latest-backend-towi-admin.onrender.com/get-attendance",
-      { userEmail: emailAddress }
-    );
-    const data = response.data.data;
+  async function fetchCurrentAttendance(emailAddress) {
+    try {
+      const response = await axios.post(
+        "https://latest-backend-towi-admin.onrender.com/get-attendance",
+        { userEmail: emailAddress }
+      );
+      const data = response.data.data;
 
-    // Helper function to convert server date to local date
-    const convertToLocalDate = (serverDate) => {
-      const utcDate = new Date(serverDate);
-      return new Date(utcDate.toLocaleString());
-    };
+      // Convert today's date to a comparable format
+      const today = new Date().toLocaleDateString();
 
-    // Convert today's date to a comparable format
-    const today = new Date().toLocaleDateString();
+      // Find today's attendance
+      const todaysAttendance = data.find(item =>
+        new Date(item.date).toLocaleDateString() === today
+      );
 
-    // Find today's attendance
-    const todaysAttendance = data.find(item => 
-      convertToLocalDate(item.date).toLocaleDateString() === today
-    );
+      if (todaysAttendance) {
+        // Format date and time using formatDateTime function
+        const formattedTimeIn = formatDateTime(todaysAttendance.timeIn, true);
+        const formattedTimeOut = formatDateTime(todaysAttendance.timeOut, false);
 
-    if (todaysAttendance) {
-      // Format date and time
-      const formatDate = (date) => {
-        const dateObj = new Date(date);
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-        const formattedDate = new Intl.DateTimeFormat('en-US', options).format(dateObj);
-        return formattedDate.replace(/\//g, '-');
-      };
+        return {
+          date: formattedTimeIn.date,
+          timeIn: formattedTimeIn.time,
+          timeOut: formattedTimeOut.time,
+        };
+      }
 
-      const formatTime = (time) => {
-        const timeObj = new Date(time);
-        const hours = String(timeObj.getHours()).padStart(2, '0');
-        const minutes = String(timeObj.getMinutes()).padStart(2, '0');
-        const ampm = timeObj.getHours() >= 12 ? 'PM' : 'AM';
-        return `${hours}:${minutes} ${ampm}`;
-      };
-
-      // Return separated Date, Time In, and Time Out
+      // If no attendance for today
       return {
-        date: formatDate(todaysAttendance.date),
-        timeIn: todaysAttendance.timeIn
-          ? formatTime(convertToLocalDate(todaysAttendance.timeIn))
-          : "No Time In",
-        timeOut: todaysAttendance.timeOut
-          ? formatTime(convertToLocalDate(todaysAttendance.timeOut))
-          : "No Time Out",
+        date: "No attendance today",
+        timeIn: "No Time In",
+        timeOut: "No Time Out",
+      };
+    } catch (error) {
+      console.error("Error fetching attendance:", error);
+      return {
+        date: "Error fetching attendance",
+        timeIn: "Error",
+        timeOut: "Error",
       };
     }
-
-    // If no attendance for today
-    return {
-      date: "No attendance today",
-      timeIn: "",
-      timeOut: "",
-    };
-  } catch (error) {
-    console.error("Error fetching attendance:", error);
-    return {
-      date: "Error fetching attendance",
-      timeIn: "",
-      timeOut: "",
-    };
   }
-}
 
+  // Fetch users and their current attendance
+  async function getUser() {
+    await axios
+      .post("https://latest-backend-towi-admin.onrender.com/get-all-user", body)
+      .then(async (response) => {
+        const data = await response.data.data;
 
+        // Fetch attendance data for each user
+        const newData = await Promise.all(
+          data.map(async (data, key) => {
+            const attendance = await fetchCurrentAttendance(data.emailAddress);
 
- // Fetch users and their current attendance
-async function getUser() {
-  await axios
-    .post("https://latest-backend-towi-admin.onrender.com/get-all-user", body)
-    .then(async (response) => {
-      const data = await response.data.data;
-
-      // Fetch attendance data for each user
-      const newData = await Promise.all(
-        data.map(async (data, key) => {
-          const attendance = await fetchCurrentAttendance(data.emailAddress);
-
-          return {
-            count: key + 1,
-            firstName: data.firstName,
-            middleName: data.middleName ? data.middleName : "null",
-            lastName: data.lastName,
-            emailAddress: data.emailAddress,
-            date: attendance.date,
-            timeIn: attendance.timeIn,
-            timeOut: attendance.timeOut,
-          };
-        })
-      );
-      setUserData(newData);
-    });
-}
-
+            return {
+              count: key + 1,
+              firstName: data.firstName,
+              middleName: data.middleName ? data.middleName : "null",
+              lastName: data.lastName,
+              emailAddress: data.emailAddress,
+              date: attendance.date,
+              timeIn: attendance.timeIn,
+              timeOut: attendance.timeOut,
+            };
+          })
+        );
+        setUserData(newData);
+      });
+  }
 
   React.useEffect(() => {
     getUser();
