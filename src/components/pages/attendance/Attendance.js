@@ -113,7 +113,7 @@ export default function Attendance() {
 async function fetchCurrentAttendance(emailAddress) {
   try {
     const response = await axios.post(
-      "http://192.168.50.55:8080/get-attendance",
+      "https://latest-backend-towi-admin.onrender.com/get-attendance",
       { userEmail: emailAddress }
     );
     const data = response.data.data;
@@ -182,7 +182,7 @@ async function fetchCurrentAttendance(emailAddress) {
  // Fetch users and their current attendance
 async function getUser() {
   await axios
-    .post("http://192.168.50.55:8080/get-all-user", body)
+    .post("https://latest-backend-towi-admin.onrender.com/get-all-user", body)
     .then(async (response) => {
       const data = await response.data.data;
 
