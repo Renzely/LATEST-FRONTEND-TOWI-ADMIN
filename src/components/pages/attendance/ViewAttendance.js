@@ -17,24 +17,32 @@ export default function ViewAttendance() {
   const userEmail = location.state?.userEmail || "";
 
   // Function to format date and time
-  const formatDateTime = (dateTime, isTimeIn = false) => {
-    if (!dateTime) return isTimeIn ? "No Time In" : "No Time Out"; // Handle null dateTime for timeIn and timeOut
+const formatDateTime = (dateTime, isTimeIn = false) => {
+  if (!dateTime) return isTimeIn ? "No Time In" : "No Time Out"; // Handle null dateTime for timeIn and timeOut
   
-    const dateObj = new Date(dateTime);
+  const dateObj = new Date(dateTime);
   
-    // Get the date and time in ISO format (which is always UTC)
-    const isoDate = dateObj.toISOString();
-    
-    // Extract the date and time part
-    const date = isoDate.split('T')[0]; // yyyy-mm-dd
-    const time = isoDate.split('T')[1].slice(0, 5); // HH:mm in 24-hour format
-    
-    // Format it back to 12-hour format if needed
-    const [hours, minutes] = time.split(':');
-    const hour12Format = `${((+hours + 11) % 12 + 1)}:${minutes} ${+hours >= 12 ? 'PM' : 'AM'}`;
-    
-    return isTimeIn ? { date, time: hour12Format } : { date, time: hour12Format };
-  };
+  // Get the date and time in ISO format (which is always UTC)
+  const isoDate = dateObj.toISOString();
+  
+  // Extract the date and time part
+  const dateParts = isoDate.split('T')[0].split('-'); // Split the date part
+  const year = dateParts[0]; // Get full year
+  const month = dateParts[1];
+  const day = dateParts[2];
+  
+  const formattedDate = `${month}-${day}-${year}`; // Format date as MM-DD-YYYY
+  
+  // Extract the time part
+  const time = isoDate.split('T')[1].slice(0, 5); // HH:mm in 24-hour format
+  
+  // Format it back to 12-hour format
+  const [hours, minutes] = time.split(':');
+  const hour12Format = `${((+hours + 11) % 12 + 1)}:${minutes} ${+hours >= 12 ? 'PM' : 'AM'}`;
+  
+  return isTimeIn ? { date: formattedDate, time: hour12Format } : { date: formattedDate, time: hour12Format };
+};
+
   
 
   // Fetch attendance data for the specific user
