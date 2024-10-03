@@ -24,29 +24,32 @@ const style = {
 
 // DateTime Formatter Function (from ViewAttendance.js)
 const formatDateTime = (dateTime, isTimeIn = false) => {
-  if (!dateTime) return isTimeIn ? "No Time In" : "No Time Out"; // Handle null dateTime for timeIn and timeOut
-  
+  if (!dateTime) return isTimeIn ? "No Time In" : "No Time Out";
+
+  // Create a new Date object with the provided dateTime
   const dateObj = new Date(dateTime);
-  
-  // Get the date and time in ISO format (which is always UTC)
-  const isoDate = dateObj.toISOString();
-  
-  // Extract the date and time part
-  const dateParts = isoDate.split('T')[0].split('-'); // Split the date part
-  const year = dateParts[0]; // Get full year
-  const month = dateParts[1];
-  const day = dateParts[2];
-  
-  const formattedDate = `${month}-${day}-${year}`; // Format date as MM-DD-YYYY
-  
-  // Extract the time part
-  const time = isoDate.split('T')[1].slice(0, 5); // HH:mm in 24-hour format
-  
-  // Format it back to 12-hour format
-  const [hours, minutes] = time.split(':');
-  const hour12Format = `${((+hours + 11) % 12 + 1)}:${minutes} ${+hours >= 12 ? 'PM' : 'AM'}`;
-  
-  return isTimeIn ? { date: formattedDate, time: hour12Format } : { date: formattedDate, time: hour12Format };
+
+  // Get the offset in minutes between the local time and UTC
+  const offset = dateObj.getTimezoneOffset();
+
+  // Adjust the date object to the correct timezone (UTC+8 for Philippines)
+  const adjustedDateObj = new Date(dateObj.getTime() + offset * 60 * 1000);
+
+  // Format the date
+  const year = adjustedDateObj.getFullYear();
+  const month = String(adjustedDateObj.getMonth() + 1).padStart(2, '0');
+  const day = String(adjustedDateObj.getDate()).padStart(2, '0');
+
+  const formattedDate = `${month}-${day}-${year}`;
+
+  // Format the time
+  const hours = String(adjustedDateObj.getHours()).padStart(2, '0');
+  const minutes = String(adjustedDateObj.getMinutes()).padStart(2, '0');
+  const ampm = adjustedDateObj.getHours() >= 12 ? 'PM' : 'AM';
+
+  const formattedTime = `${hours}:${minutes} ${ampm}`;
+
+  return isTimeIn ? { date: formattedDate, time: formattedTime } : { date: formattedDate, time: formattedTime };
 };
 
 export default function Attendance() {
@@ -135,50 +138,48 @@ export default function Attendance() {
     },
   ];
 
-  // Function to fetch current attendance for a user
-  async function fetchCurrentAttendance(emailAddress) {
-    try {
-      const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/get-attendance",
-        { userEmail: emailAddress }
-      );
-      const data = response.data.data;
+ // Function to fetch current attendance for a user
+async function fetchCurrentAttendance(emailAddress) {
+  try {
+    const response = await axios.post(
+      "https://latest-backend-towi-admin.onrender.com/get-attendance",
+      { userEmail: emailAddress }
+    );
+    const data = response.data.data;
 
-      // Convert today's date to a comparable format
-      const today = new Date().toLocaleDateString();
+    const today = new Date().toLocaleDateString();
 
-      // Find today's attendance
-      const todaysAttendance = data.find(item =>
-        new Date(item.date).toLocaleDateString() === today
-      );
+    const todaysAttendance = data.find(
+      (item) => new Date(item.date).toLocaleDateString() === today
+    );
 
-      if (todaysAttendance) {
-        // Format date and time using formatDateTime function
-        const formattedTimeIn = formatDateTime(todaysAttendance.timeIn, true);
-        const formattedTimeOut = formatDateTime(todaysAttendance.timeOut, false);
+    if (todaysAttendance) {
+      const formattedTimeIn = formatDateTime(todaysAttendance.timeIn, true);
+      const formattedTimeOut = todaysAttendance.timeOut
+        ? formatDateTime(todaysAttendance.timeOut, false)
+        : { date: formattedTimeIn.date, time: "Time Out" }; // If no time out, keep default "Time Out"
 
-        return {
-          date: formattedTimeIn.date,
-          timeIn: formattedTimeIn.time,
-          timeOut: formattedTimeOut.time,
-        };
-      }
-
-      // If no attendance for today
       return {
-        date: "No attendance today",
-        timeIn: "No Time In",
-        timeOut: "No Time Out",
-      };
-    } catch (error) {
-      console.error("Error fetching attendance:", error);
-      return {
-        date: "Error fetching attendance",
-        timeIn: "Error",
-        timeOut: "Error",
+        date: formattedTimeIn.date,
+        timeIn: formattedTimeIn.time,
+        timeOut: formattedTimeOut.time, // Time out is either the real time or the placeholder text
       };
     }
+
+    return {
+      date: "No attendance today",
+      timeIn: "No Time In",
+      timeOut: "Time Out", // Default when no clock-out has occurred
+    };
+  } catch (error) {
+    console.error("Error fetching attendance:", error);
+    return {
+      date: "Error fetching attendance",
+      timeIn: "Error",
+      timeOut: "Error",
+    };
   }
+}
 
   // Fetch users and their current attendance
   async function getUser() {
