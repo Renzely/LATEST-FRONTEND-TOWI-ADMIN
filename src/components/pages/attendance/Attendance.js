@@ -64,25 +64,25 @@ export default function Attendance() {
     {
       field: "count",
       headerName: "#",
-      width: 150,
+      width: 100,
       headerClassName: "bold-header",
     },
     {
       field: "firstName",
       headerName: "First name",
-      width: 200,
+      width: 150,
       headerClassName: "bold-header",
     },
     {
       field: "middleName",
       headerName: "Middle name",
-      width: 200,
+      width: 150,
       headerClassName: "bold-header",
     },
     {
       field: "lastName",
       headerName: "Last name",
-      width: 200,
+      width: 150,
       headerClassName: "bold-header",
     },
     {
@@ -232,7 +232,7 @@ async function fetchCurrentAttendance(emailAddress) {
               toolbar: {
                 showQuickFilter: true,
                 printOptions: { disableToolbarButton: true },
-                csvOptions: { disableToolbarButton: true },
+                csvOptions: { disableToolbarButton: false },
               },
             }}
             pageSizeOptions={[5, 10, 20, 50, 100]}

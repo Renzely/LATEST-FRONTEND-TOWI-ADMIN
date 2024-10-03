@@ -44,22 +44,25 @@ export default function Sidebar() {
                 Accounts
               </li>
             </NavLink>
-            {roleAccount === "ACCOUNT SUPERVISOR" && (
-              <NavLink
-                to="/view-admin-accounts"
-                style={{ textDecoration: "none" }}
-                onClick={() => handleItemClick("/view-admin-accounts")}
-              >
-                <li
-                  className={`sidebarListItem ${
-                    activeItem === "/view-admin-accounts" ? "active" : ""
-                  }`}
-                >
-                  <SupervisorAccountIcon className="sidebarIcon" />
-                  Admin Account
-                </li>
-              </NavLink>
-            )}
+            {(roleAccount === "ACCOUNT SUPERVISOR" || 
+  roleAccount === "OPERATION OFFICER" || 
+  roleAccount === "HEAD") && (
+  <NavLink
+    to="/view-admin-accounts"
+    style={{ textDecoration: "none" }}
+    onClick={() => handleItemClick("/view-admin-accounts")}
+  >
+    <li
+      className={`sidebarListItem ${
+        activeItem === "/view-admin-accounts" ? "active" : ""
+      }`}
+    >
+      <SupervisorAccountIcon className="sidebarIcon" />
+      Admin Account
+    </li>
+  </NavLink>
+)}
+
 
             <NavLink
               to="/attendance"

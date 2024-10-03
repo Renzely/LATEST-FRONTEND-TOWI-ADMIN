@@ -777,7 +777,7 @@ export default function Account() {
               toolbar: {
                 showQuickFilter: true,
                 printOptions: { disableToolbarButton: true },
-                csvOptions: { disableToolbarButton: true },
+                csvOptions: { disableToolbarButton: false },
               },
             }}
             loading={!userData.length}
