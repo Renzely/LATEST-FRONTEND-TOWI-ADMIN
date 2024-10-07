@@ -1250,7 +1250,7 @@ export default function Account() {
         const roleAccount = localStorage.getItem("roleAccount"); // Get role from localStorage
 
         const onClick = (e) => {
-          if (roleAccount === "ACCOUNT SUPERVISOR") {
+          if (roleAccount === "ACCOUNT SUPERVISOR" && "OPERATION OFFICER" && "OPERATION HEAD") {
             status ? setUpdateStatus(false) : setUpdateStatus(true);
             setUserEmail(rowEmail);
             handleOpenDialog();
@@ -1271,7 +1271,7 @@ export default function Account() {
                     color: "#000000",
                   }}
                   onClick={onClick}
-                  disabled={roleAccount !== "ACCOUNT SUPERVISOR"} // Disable if not Account Supervisor
+                  disabled={roleAccount !== "ACCOUNT SUPERVISOR" && "OPERATION OFFICER" && "OPERATION HEAD"} // Disable if not Account Supervisor
                 >
                   Active
                 </ColorButton>
@@ -1284,7 +1284,7 @@ export default function Account() {
                   size="small"
                   style={{ width: "50%", marginTop: "13px" }}
                   onClick={onClick}
-                  disabled={roleAccount !== "ACCOUNT SUPERVISOR"} // Disable if not Account Supervisor
+                  disabled={roleAccount !== "ACCOUNT SUPERVISOR" && "OPERATION OFFICER" && "OPERATION HEAD"} // Disable if not Account Supervisor
                 >
                   Inactive
                 </Button>
@@ -1464,7 +1464,7 @@ export default function Account() {
               <Button
                 variant="contained"
                 onClick={handleOpenBranchModal}
-                disabled={roleAccount !== "ACCOUNT SUPERVISOR"} // Disable if not Account Supervisor
+                disabled={roleAccount !== "ACCOUNT SUPERVISOR" && "OPERATION SUPERVISOR" && "OPERATION HEAD"} // Disable if not Account Supervisor
               >
                 Select Branch
               </Button>
