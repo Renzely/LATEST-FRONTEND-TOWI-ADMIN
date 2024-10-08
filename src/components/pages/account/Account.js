@@ -1185,7 +1185,7 @@ export default function Account() {
 
       // After successful update, you might want to refresh the user data
       getUser();
-
+      setTimeout(() => window.location.reload(), 1000);
       handleCloseBranchModal(); // Close the branch selection modal after saving
     } catch (error) {
       console.error("Error updating user branches:", error);
@@ -1457,7 +1457,12 @@ export default function Account() {
               <span className="detailDescription">{modalPhone}</span>
               <br />
               <span className="detailTitle">Account Branch Name:</span>
-              <span className="detailDescription">{modalBranch}</span>
+<span className="detailDescription">
+  {Array.isArray(modalBranch) 
+    ? modalBranch.join(", ") // Join with a comma and space if it's an array
+    : modalBranch}
+</span>
+
               <br />
               <br />
               {/* Button to open branch selection modal */}
