@@ -138,21 +138,21 @@ export default function Admin() {
   const [selectedBranches, setSelectedBranches] = React.useState([]);
   const [modalEmail, setModalEmail] = React.useState("");
 
-  const handleBranchSave = async () => {
+  const handleBranchSave = async (email) => {
     try {
       const response = await axios.put(
         "https://latest-backend-towi-admin.onrender.com/update-user-branch",
         {
-          emailAddress: modalEmail,
+          emailAddress: email, // Use the passed email directly
           branches: selectedBranches,
         }
       );
   
       console.log("User branches updated:", response.data);
   
-      // Update the branch field in the userData state
+      // Update the branch field in the userData state immediately
       const updatedUserData = userData.map((user) => {
-        if (user.emailAddress === modalEmail) {
+        if (user.emailAddress === email) {
           return {
             ...user,
             Branch: selectedBranches.join(", "),
@@ -164,12 +164,19 @@ export default function Admin() {
       setUserData(updatedUserData);
       
       handleCloseBranchModal();
+      
+      // Refresh the page after closing the modal
+      setTimeout(() => window.location.reload(), 1000);
     } catch (error) {
-      console.error("Error updating user branches:", error);
+      console.error("Error updating user branches:", error.response?.data || error.message);
+      handleCloseBranchModal();
     }
   };
   
-
+  
+  const refreshPage = () => {
+    window.location.reload();
+  };
 
   const merchandiser = [];
 
@@ -1887,41 +1894,39 @@ export default function Admin() {
       <p>Full Details :</p>
 
       <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-        <span className="detailTitle">Account Branch Name:</span>{" "}
-        <span className="detailDescription">{adminViewBranch}</span>
-        <br></br>
-        <br></br>
-      </Typography>
+  <span className="detailTitle">Account Branch Name:</span>{" "}
+  <span className="detailDescription">
+    {Array.isArray(adminViewBranch) 
+      ? adminViewBranch.join(", ") // Join with comma and space if it's an array
+      : adminViewBranch}
+  </span>
+  <br />
+  <br />
+</Typography>
+
 
       {/* Add this new section for branch editing */}
-     
-        <>
-        <Autocomplete
-  multiple
-  id="branches-autocomplete"
-  options={branches}
-  defaultValue={selectedBranches} // Use defaultValue instead of value
-  onChange={(event, newValue) => setSelectedBranches(newValue)}
-  renderInput={(params) => (
-    <TextField
-      {...params}
-      variant="outlined"
-      label="Select Branch"
-      placeholder="Select Branch"
-    />
-  )}
-/>
-          <Button 
-            onClick={() => {
-              setModalEmail(adminViewEmail);
-              handleBranchSave();
-            }}
-            variant="contained"
-          >
-            Save Branch Changes
-          </Button>
-        </>
-
+      <Autocomplete
+        multiple
+        id="branches-autocomplete"
+        options={branches}
+        value={selectedBranches} // Use value instead of defaultValue
+        onChange={(event, newValue) => setSelectedBranches(newValue)}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="outlined"
+            label="Select Branch"
+            placeholder="Select Branch"
+          />
+        )}
+      />
+      <Button 
+        onClick={() => handleBranchSave(adminViewEmail)} // Call handleBranchSave directly
+        variant="contained"
+      >
+        Save Branch Changes
+      </Button>
 
       <TextField
         label="Email"
@@ -1942,13 +1947,6 @@ export default function Admin() {
 
       <DialogActions>
         <Button onClick={handleViewCloseModal}>Close</Button>
-        {/* <Button
-          onClick={handleUpdate}
-          color="primary"
-          variant="contained"
-        >
-          Update
-        </Button> */}
       </DialogActions>
     </Stack>
   </Box>
