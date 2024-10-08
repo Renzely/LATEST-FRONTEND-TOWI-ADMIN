@@ -134,9 +134,47 @@ export default function Admin() {
   const [adminViewPhone, setAdminViewPhone] = React.useState("");
   const [adminViewJDate, setAdminViewJDate] = React.useState("");
 
+  const [openBranchModal, setOpenBranchModal] = React.useState(false);
+  const [selectedBranches, setSelectedBranches] = React.useState([]);
+  const [modalEmail, setModalEmail] = React.useState("");
+
+  const handleBranchSave = async () => {
+    try {
+      const response = await axios.put(
+        "https://latest-backend-towi-admin.onrender.com/update-user-branch",
+        {
+          emailAddress: modalEmail,
+          branches: selectedBranches,
+        }
+      );
+  
+      console.log("User branches updated:", response.data);
+  
+      // Update the branch field in the userData state
+      const updatedUserData = userData.map((user) => {
+        if (user.emailAddress === modalEmail) {
+          return {
+            ...user,
+            Branch: selectedBranches.join(", "),
+          };
+        }
+        return user;
+      });
+  
+      setUserData(updatedUserData);
+      
+      handleCloseBranchModal();
+    } catch (error) {
+      console.error("Error updating user branches:", error);
+    }
+  };
+  
+
+
   const merchandiser = [];
 
   const branches = [
+  
    "PUREGOLD PRICE CLUB - LA TRINIDAD BENGUET",
     "PUREGOLD PRICE CLUB - BAGUIO",
     "PUREGOLD PRICE CLUB - LAOAG",
@@ -1294,6 +1332,11 @@ export default function Admin() {
     }
   };
 
+  const handleCloseBranchModal = () => {
+    setOpenBranchModal(false);
+  };
+  
+
   const handleOtpCodeChange = (e) => {
     if (e.target.value.length > 4) return;
 
@@ -1834,78 +1877,82 @@ export default function Admin() {
         </Dialog>
 
         <Modal
-          open={openViewModal}
-          onClose={handleViewCloseModal}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Stack spacing={3}>
-              <p>Full Details :</p>
+  open={openViewModal}
+  onClose={handleViewCloseModal}
+  aria-labelledby="modal-modal-title"
+  aria-describedby="modal-modal-description"
+>
+  <Box sx={style}>
+    <Stack spacing={3}>
+      <p>Full Details :</p>
 
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                <span className="detailTitle">Account Branch Name:</span>{" "}
-                <span className="detailDescription">{adminViewBranch}</span>
-                <br></br>
-                <br></br>
-              </Typography>
+      <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+        <span className="detailTitle">Account Branch Name:</span>{" "}
+        <span className="detailDescription">{adminViewBranch}</span>
+        <br></br>
+        <br></br>
+      </Typography>
 
-              {/* <FormControl fullWidth sx={{ m: 1 }}>
-        <InputLabel id="merchandiser-select-label"></InputLabel>
+      {/* Add this new section for branch editing */}
+     
+        <>
         <Autocomplete
-          multiple
-          id="merchandiser-select"
-          options={merchandiserData}
-          getOptionLabel={(option) => `${option.emailAddress}`}
-          value={adminSelectedMerchandiser}
-          onChange={handleDiserChange}
-          renderOption={(props, option, { selected }) => (
-            <li {...props}>
-              <Checkbox checked={selected} style={{ marginRight: 8 }} />
-              {`${option.label}`}
-            </li>
-          )}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="outlined"
-              label="Merchandisers"
-              placeholder="Select Merchandisers"
-            />
-          )}
-        />
-      </FormControl> */}
+  multiple
+  id="branches-autocomplete"
+  options={branches}
+  defaultValue={selectedBranches} // Use defaultValue instead of value
+  onChange={(event, newValue) => setSelectedBranches(newValue)}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      variant="outlined"
+      label="Select Branch"
+      placeholder="Select Branch"
+    />
+  )}
+/>
+          <Button 
+            onClick={() => {
+              setModalEmail(adminViewEmail);
+              handleBranchSave();
+            }}
+            variant="contained"
+          >
+            Save Branch Changes
+          </Button>
+        </>
 
-              <TextField
-                label="Email"
-                id="outlined-read-only-input"
-                defaultValue={adminViewEmail}
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-              <TextField
-                label="Contact Number"
-                id="outlined-read-only-input"
-                defaultValue={adminViewPhone}
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
 
-              <DialogActions>
-                <Button onClick={handleViewCloseModal}>Close</Button>
-                <Button
-                  onClick={handleUpdate}
-                  color="primary"
-                  variant="contained"
-                >
-                  Update
-                </Button>
-              </DialogActions>
-            </Stack>
-          </Box>
-        </Modal>
+      <TextField
+        label="Email"
+        id="outlined-read-only-input"
+        defaultValue={adminViewEmail}
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+      <TextField
+        label="Contact Number"
+        id="outlined-read-only-input"
+        defaultValue={adminViewPhone}
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+
+      <DialogActions>
+        <Button onClick={handleViewCloseModal}>Close</Button>
+        {/* <Button
+          onClick={handleUpdate}
+          color="primary"
+          variant="contained"
+        >
+          Update
+        </Button> */}
+      </DialogActions>
+    </Stack>
+  </Box>
+</Modal>
 
         <Modal
           open={openModal}
