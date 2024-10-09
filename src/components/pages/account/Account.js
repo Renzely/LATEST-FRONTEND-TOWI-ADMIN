@@ -70,6 +70,9 @@ export default function Account() {
 
   const [openDialog, setOpenDialog] = React.useState(false);
   const roleAccount = localStorage.getItem("roleAccount"); // Get roleAccount from localStorage
+  const allowedRoles = ["ACCOUNT SUPERVISOR", "OPERATION OFFICER", "OPERATION HEAD", "COORDINATOR"];
+const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowed
+
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -1250,10 +1253,10 @@ export default function Account() {
         const roleAccount = localStorage.getItem("roleAccount"); // Get role from localStorage
 
         const onClick = (e) => {
-          if (roleAccount === "ACCOUNT SUPERVISOR" && "OPERATION OFFICER" && "OPERATION HEAD") {
-            status ? setUpdateStatus(false) : setUpdateStatus(true);
-            setUserEmail(rowEmail);
-            handleOpenDialog();
+          if (allowedRoles.includes(roleAccount)) {
+            setUpdateStatus(params.row.isActive ? false : true); // Set status based on current state
+            setUserEmail(params.row.emailAddress);
+            handleOpenDialog(); // Open the dialog
           }
         };
 
@@ -1271,7 +1274,7 @@ export default function Account() {
                     color: "#000000",
                   }}
                   onClick={onClick}
-                  disabled={roleAccount !== "ACCOUNT SUPERVISOR" && "OPERATION OFFICER" && "OPERATION HEAD"} // Disable if not Account Supervisor
+                  disabled={!isAllowed}
                 >
                   Active
                 </ColorButton>
@@ -1284,7 +1287,7 @@ export default function Account() {
                   size="small"
                   style={{ width: "50%", marginTop: "13px" }}
                   onClick={onClick}
-                  disabled={roleAccount !== "ACCOUNT SUPERVISOR" && "OPERATION OFFICER" && "OPERATION HEAD"} // Disable if not Account Supervisor
+                  disabled={!isAllowed}
                 >
                   Inactive
                 </Button>
@@ -1469,7 +1472,7 @@ export default function Account() {
               <Button
                 variant="contained"
                 onClick={handleOpenBranchModal}
-                disabled={roleAccount !== "ACCOUNT SUPERVISOR" && "OPERATION SUPERVISOR" && "OPERATION HEAD"} // Disable if not Account Supervisor
+                disabled={!isAllowed} 
               >
                 Select Branch
               </Button>
