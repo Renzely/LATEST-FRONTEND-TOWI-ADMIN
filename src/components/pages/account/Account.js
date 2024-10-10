@@ -1166,7 +1166,7 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     try {
       // Update the user's branches with the selected branches
       const response = await axios.put(
-        "https://latest-backend-towi-admin.onrender.com/update-user-branch",
+        "http://192.168.50.55:8080/update-user-branch",
         {
           emailAddress: modalEmail,
           branches: selectedBranches,
@@ -1364,7 +1364,7 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
   async function getUser() {
     await axios
       .post(
-        "https://latest-backend-towi-admin.onrender.com/get-all-user",
+        "http://192.168.50.55:8080/get-all-user",
         requestBody
       )
       .then(async (response) => {
@@ -1393,7 +1393,7 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     console.log("check body", requestBody);
     await axios
       .put(
-        "https://latest-backend-towi-admin.onrender.com/update-status",
+        "http://192.168.50.55:8080/update-status",
         requestBody
       )
       .then(async (response) => {
@@ -1406,7 +1406,10 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
 
   React.useEffect(() => {
     getUser();
-  }, []);
+    if (Array.isArray(modalBranch)) {
+      setSelectedBranches(modalBranch); // Pre-select branches based on modalBranch
+    }
+  }, [modalBranch]);
 
   return (
     <div className="account">
@@ -1448,84 +1451,83 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
         </div>
 
         <Modal
-          open={openModal}
-          onClose={handleCloseDialog}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Full Details :
-            </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              <span className="detailTitle">Full name:</span>
-              <span className="detailDescription">{modalFullName}</span>
-              <br />
-              <span className="detailTitle">Email:</span>
-              <span className="detailDescription">{modalEmail}</span>
-              <br />
-              <span className="detailTitle">Contact Number:</span>
-              <span className="detailDescription">{modalPhone}</span>
-              <br />
-              <span className="detailTitle">Account Branch Name:</span>
-<span className="detailDescription">
-  {Array.isArray(modalBranch) 
-    ? modalBranch.join(", ") // Join with a comma and space if it's an array
-    : modalBranch}
-</span>
+  open={openModal}
+  onClose={handleCloseDialog}
+  aria-labelledby="modal-modal-title"
+  aria-describedby="modal-modal-description"
+>
+  <Box sx={style}>
+    <Typography id="modal-modal-title" variant="h6" component="h2">
+      Full Details :
+    </Typography>
+    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+      <span className="detailTitle">Full name:</span>
+      <span className="detailDescription">{modalFullName}</span>
+      <br />
+      <span className="detailTitle">Email:</span>
+      <span className="detailDescription">{modalEmail}</span>
+      <br />
+      <span className="detailTitle">Contact Number:</span>
+      <span className="detailDescription">{modalPhone}</span>
+      <br />
+      <span className="detailTitle">Account Branch Name:</span>
+      <span className="detailDescription">
+        {Array.isArray(modalBranch) 
+          ? modalBranch.join(", ") // Join with a comma and space if it's an array
+          : modalBranch}
+      </span>
+      <br />
+      <br />
+      {/* Button to open branch selection modal */}
+      <Button
+        variant="contained"
+        onClick={handleOpenBranchModal}
+        disabled={!isAllowed} 
+      >
+        Select Branch
+      </Button>
+    </Typography>
+    <Stack>
+      <DialogActions>
+        <Button onClick={handleClose}>Close</Button>
+      </DialogActions>
+    </Stack>
+  </Box>
+</Modal>
 
-              <br />
-              <br />
-              {/* Button to open branch selection modal */}
-              <Button
-                variant="contained"
-                onClick={handleOpenBranchModal}
-                disabled={!isAllowed} 
-              >
-                Select Branch
-              </Button>
-            </Typography>
-            <Stack>
-              <DialogActions>
-                <Button onClick={handleClose}>Close</Button>
-              </DialogActions>
-            </Stack>
-          </Box>
-        </Modal>
-
-        <Dialog
-          open={openBranchModal}
-          onClose={handleCloseBranchModal}
-          aria-labelledby="branch-dialog-title"
-          aria-describedby="branch-dialog-description"
-          fullWidth
-          maxWidth="md" // Set the maximum width to 'md' (medium)
-        >
-          <DialogTitle id="branch-dialog-title">Select Branch</DialogTitle>
-          <DialogContent>
-            <Autocomplete
-              multiple
-              id="branches-autocomplete"
-              options={branches}
-              defaultValue={selectedBranches}
-              onChange={(event, value) => setSelectedBranches(value)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  label="Select Branch"
-                  placeholder="Select Branch"
-                />
-              )}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseBranchModal}>Cancel</Button>
-            <Button onClick={handleBranchSave} autoFocus>
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
+<Dialog
+  open={openBranchModal}
+  onClose={handleCloseBranchModal}
+  aria-labelledby="branch-dialog-title"
+  aria-describedby="branch-dialog-description"
+  fullWidth
+  maxWidth="md"
+>
+  <DialogTitle id="branch-dialog-title">Select Branch</DialogTitle>
+  <DialogContent>
+    <Autocomplete
+      multiple
+      id="branches-autocomplete"
+      options={branches}
+      defaultValue={selectedBranches}
+      onChange={(event, value) => setSelectedBranches(value)}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          variant="outlined"
+          label="Select Branch"
+          placeholder="Select Branch"
+        />
+      )}
+    />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseBranchModal}>Cancel</Button>
+    <Button onClick={handleBranchSave} autoFocus>
+      Save
+    </Button>
+  </DialogActions>
+</Dialog>
 
         <Dialog
           open={openDialog}

@@ -135,13 +135,14 @@ export default function Admin() {
   const [adminViewJDate, setAdminViewJDate] = React.useState("");
 
   const [openBranchModal, setOpenBranchModal] = React.useState(false);
-  const [selectedBranches, setSelectedBranches] = React.useState([]);
+  const [selectedBranches, setSelectedBranches] = useState(adminViewBranch || []);
+
   const [modalEmail, setModalEmail] = React.useState("");
 
   const handleBranchSave = async (email) => {
     try {
       const response = await axios.put(
-        "https://latest-backend-towi-admin.onrender.com/update-user-branch",
+        "http://192.168.50.55:8080/update-user-branch",
         {
           emailAddress: email, // Use the passed email directly
           branches: selectedBranches,
@@ -1391,7 +1392,7 @@ export default function Admin() {
 
       // Send the emails to the backend
       const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/update-coor-details",
+        "http://192.168.50.55:8080/update-coor-details",
         {
           emails: selectedEmails,
         }
@@ -1574,7 +1575,7 @@ export default function Admin() {
   async function getUser() {
     try {
       const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/get-all-user"
+        "http://192.168.50.55:8080/get-all-user"
       );
       const data = response.data.data;
 
@@ -1593,7 +1594,7 @@ export default function Admin() {
   async function getMerchandiserData() {
     try {
       const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/get-all-merchandiser"
+        "http://192.168.50.55:8080/get-all-merchandiser"
       );
       const data = response.data.data;
 
@@ -1618,7 +1619,7 @@ export default function Admin() {
 
   async function getUser() {
     await axios
-      .post("https://latest-backend-towi-admin.onrender.com/get-admin-user", requestBody)
+      .post("http://192.168.50.55:8080/get-admin-user", requestBody)
       .then(async (response) => {
         const data = await response.data.data;
 
@@ -1643,7 +1644,7 @@ export default function Admin() {
 
   async function setStatus() {
     await axios
-      .put("https://latest-backend-towi-admin.onrender.com/update-status", requestBody)
+      .put("http://192.168.50.55:8080/update-status", requestBody)
       .then(async (response) => {
         const data = await response.data.data;
 
@@ -1671,7 +1672,7 @@ export default function Admin() {
     }
 
     await axios
-      .post("https://latest-backend-towi-admin.onrender.com/send-otp-register", {
+      .post("http://192.168.50.55:8080/send-otp-register", {
         email: adminEmail,
       })
       .then(async (response) => {
@@ -1728,7 +1729,7 @@ export default function Admin() {
       };
 
       axios
-        .post("https://latest-backend-towi-admin.onrender.com/register-user-admin", userDetails)
+        .post("http://192.168.50.55:8080/register-user-admin", userDetails)
         .then(async (response) => {
           const data = response.data;
 
@@ -1766,7 +1767,10 @@ export default function Admin() {
 
   React.useEffect(() => {
     getUser();
-  }, []);
+    if (adminViewBranch && Array.isArray(adminViewBranch)) {
+      setSelectedBranches(adminViewBranch); // Pre-select branches based on adminViewBranch
+    }
+  }, [adminViewBranch]);
 
   return (
     <div className="account">
@@ -1884,6 +1888,8 @@ export default function Admin() {
           </DialogActions>
         </Dialog>
 
+        
+
         <Modal
   open={openViewModal}
   onClose={handleViewCloseModal}
@@ -1895,24 +1901,23 @@ export default function Admin() {
       <p>Full Details :</p>
 
       <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-  <span className="detailTitle">Account Branch Name:</span>{" "}
-  <span className="detailDescription">
-    {Array.isArray(adminViewBranch) 
-      ? adminViewBranch.join(", ") // Join with comma and space if it's an array
-      : adminViewBranch}
-  </span>
-  <br />
-  <br />
-</Typography>
+        <span className="detailTitle">Account Branch Name:</span>{" "}
+        <span className="detailDescription">
+          {Array.isArray(adminViewBranch) 
+            ? adminViewBranch.join(", ") // Display branches in text
+            : adminViewBranch}
+        </span>
+        <br />
+        <br />
+      </Typography>
 
-
-      {/* Add this new section for branch editing */}
+      {/* Autocomplete with pre-selected branches */}
       <Autocomplete
         multiple
         id="branches-autocomplete"
-        options={branches}
-        value={selectedBranches} // Use value instead of defaultValue
-        onChange={(event, newValue) => setSelectedBranches(newValue)}
+        options={branches} // Available branch options
+        value={selectedBranches} // Pre-selected branches from state
+        onChange={(event, newValue) => setSelectedBranches(newValue)} // Update state on change
         renderInput={(params) => (
           <TextField
             {...params}
@@ -1922,8 +1927,9 @@ export default function Admin() {
           />
         )}
       />
+
       <Button 
-        onClick={() => handleBranchSave(adminViewEmail)} // Call handleBranchSave directly
+        onClick={() => handleBranchSave(adminViewEmail)} // Call save function
         variant="contained"
       >
         Save Branch Changes
@@ -1952,6 +1958,7 @@ export default function Admin() {
     </Stack>
   </Box>
 </Modal>
+
 
 <Modal
   open={openModal}
