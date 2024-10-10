@@ -35,7 +35,7 @@
   margin-bottom: 6px;
   transition: backgroud-color 0.3s;
   width: 150px;
-  /* color: rgb(0, 100, 0) */
+  color: rgb(0, 100, 0)
 }
 
 .sidebarListItem.active,

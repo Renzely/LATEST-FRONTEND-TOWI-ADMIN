@@ -20,6 +20,7 @@ import Admin from "./components/pages/AdminAccount/Admin";
 import ForgotPassword from "./components/Admin/forgotpassword";
 import Path from "./path/Path";
 import Inventory from "./components/pages/inventory/inventoryData";
+import OutletInputs from "./components/pages/OutletInputs/outletinputs";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route element={<Path />}>
           <Route path="/" element={<Login />} />
           <Route path="/view-outlet" element={<Branch />} />
+          <Route path="/view-outletinputs" element={<OutletInputs />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/view-admin-accounts" element={<Admin />} />
           <Route path="/inventory" element={<Inventory />} />

@@ -93,6 +93,7 @@ export default function Sidebar() {
                 Inventory
               </li>
             </NavLink>
+            
             <NavLink
               to="/view-outlet"
               style={{ textDecoration: "none" }}
@@ -110,6 +111,27 @@ export default function Sidebar() {
               {/* FOR BRANCHES SIDEBAR */}
 
             </NavLink>
+
+            <NavLink
+              to="/view-outletinputs"
+              style={{ textDecoration: "none" }}
+              onClick={() => handleItemClick("/view-outlet")}
+            >
+              <li
+                className={`sidebarListItem ${
+                  activeItem === "/view-outletinputs" ? "active" : ""
+                }`}
+              >
+                <StoreIcon className="sidebarIcon" />
+                Outlet Inputs
+              </li>
+
+              {/* FOR OUTLETINPUTS SIDEBAR */}
+
+              
+
+            </NavLink>
+
             <NavLink
               to="/view-RTV"
               style={{ textDecoration: "none" }}
