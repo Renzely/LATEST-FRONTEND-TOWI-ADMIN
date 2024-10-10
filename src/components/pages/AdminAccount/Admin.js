@@ -1953,18 +1953,26 @@ export default function Admin() {
   </Box>
 </Modal>
 
-        <Modal
-          open={openModal}
-          onClose={handleCloseDialog}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-          tabindex="-1"
-          data-bs-focus="false"
-        >
-          <Box components="form" noValidate sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Admin Details :{/* {test} */}
-            </Typography>
+<Modal
+  open={openModal}
+  onClose={handleCloseDialog}
+  aria-labelledby="modal-modal-title"
+  aria-describedby="modal-modal-description"
+  tabindex="-1"
+  data-bs-focus="false"
+>
+  <Box
+    component="form"
+    noValidate
+    sx={{
+      ...style,
+      maxHeight: "80vh", // Limit the height to 80% of the viewport
+      overflowY: "auto", // Enable scrolling when content exceeds the height
+    }}
+  >
+    <Typography id="modal-modal-title" variant="h6" component="h2">
+      Admin Details :
+    </Typography>
             {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}> */}
 
             <FormControl fullWidth sx={{ m: 1 }}>
@@ -2114,6 +2122,9 @@ export default function Admin() {
             </DialogActions>
           </Box>
         </Modal>
+
+
+
       </div>
     </div>
   );
