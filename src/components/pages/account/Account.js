@@ -491,6 +491,7 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "PUREGOLD PRICE CLUB - ALANG-ALANG",
     "PUREGOLD PRICE CLUB - PALO",
     "PUREGOLD PRICE CLUB - BORONGAN",
+    "PUREGOLD PRICE CLUB - PAGASA BINANGONAN",
     "PUREGOLD PRICE CLUB - DOLORES",
     "PUREGOLD PRICE CLUB - BAYBAY LEYTE",
     "PUREGOLD PRICE CLUB - ORMOC",
@@ -1148,6 +1149,7 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "WALTERMART SUPERMARKET, INC. - TAYTAY",
     "WALTERMART SUPERMARKET, INC. - TRECE MAR",
     "WALTERMART SUPERMARKET, INC. - VISAYAS AVE",
+    ""
   ]); //Branches
 
   // State for the second modal
@@ -1212,6 +1214,12 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     {
       field: "lastName",
       headerName: "Last name",
+      width: 150,
+      headerClassName: "bold-header",
+    },
+    {
+      field: "username",
+      headerName: "Username",
       width: 150,
       headerClassName: "bold-header",
     },
@@ -1369,7 +1377,7 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
             firstName: data.firstName,
             middleName: data.middleName ? data.middleName : "Null",
             lastName: data.lastName,
-
+            username: data.username,
             Branch: data.accountNameBranchManning,
             emailAddress: data.emailAddress,
             contactNum: data.contactNum,
