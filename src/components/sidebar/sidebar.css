@@ -55,3 +55,23 @@
 }
 
 
+.label {
+  font-weight: bold; /* Keep the label bold */
+  font-size: 0.9rem; /* Adjust the size as needed (smaller than the default) */
+}
+
+.sidebarUserName  {
+  font-weight: normal; /* Set default font weight to normal */
+  font-size: 0.85rem; /* Ensure that the normal text is larger than the label */
+  color: rgb(0, 100, 0);
+}
+.sidebarUserRole {
+  font-weight: normal; /* Set default font weight to normal */
+  font-size: 0.85rem; /* Ensure that the normal text is larger than the label */
+  color: rgb(0, 100, 0);
+}
+
+
+.bold {
+  font-weight: bold; /* Bold only for .bold class */
+}
