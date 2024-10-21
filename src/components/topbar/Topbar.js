@@ -6,7 +6,7 @@ export default function Topbar() {
     <div className="topbar">
       <div className="topbarWrapper">
         <div className="topLeft">
-          <span className="logo">Towi Admin</span>
+          <span className="logo">TOWI Admin</span>
         </div>
       </div>
     </div>

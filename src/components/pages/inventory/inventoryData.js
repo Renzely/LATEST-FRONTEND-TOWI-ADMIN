@@ -339,7 +339,7 @@ export default function Inventory() {
       <Topbar />
       <div className="container">
         <Sidebar />
-        <div style={{ height: "100%", width: "80%", marginLeft: "100" }}>
+        <div style={{ height: "100%", width: "85%", marginLeft: "100" }}>
 
         <Stack 
             direction={{ xs: 'column', md: 'row',sm: 'row' }}

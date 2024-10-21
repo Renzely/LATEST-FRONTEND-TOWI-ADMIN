@@ -23,12 +23,26 @@ export default function Sidebar() {
   };
 
   const roleAccount = localStorage.getItem("roleAccount"); // Get roleAccount from localStorage
+  const firstName = localStorage.getItem("firstName");     // Get firstName from localStorage
+  const lastName = localStorage.getItem("lastName");       // Get lastName from localStorage
 
   return (
     <div className="sidebar">
-      <div className="sidebarWrapper">
+    <div className="sidebarWrapper">
+      {/* Display User Info */}
+      <div className="sidebarUserInfo">
+        <h4 className="sidebarUserName">
+          <span className="bold">NAME:</span> {firstName} {lastName}
+        </h4>
+        <p className="sidebarUserRole">
+          <span className="bold">ROLE:</span> {roleAccount}
+        </p>
+      </div>
+  
+
+        {/* Sidebar Menu */}
         <div className="sidebarMenu">
-          <h3 className="sidebarTitle">Dashboard</h3>
+          {/* <h3 className="sidebarTitle">Dashboard</h3> */}
           <ul className="sidebarList">
             <NavLink
               to="/view-accounts"
@@ -45,24 +59,23 @@ export default function Sidebar() {
               </li>
             </NavLink>
             {(roleAccount === "ACCOUNT SUPERVISOR" || 
-  roleAccount === "OPERATION OFFICER" || 
-  roleAccount === "OPERATION HEAD") && (
-  <NavLink
-    to="/view-admin-accounts"
-    style={{ textDecoration: "none" }}
-    onClick={() => handleItemClick("/view-admin-accounts")}
-  >
-    <li
-      className={`sidebarListItem ${
-        activeItem === "/view-admin-accounts" ? "active" : ""
-      }`}
-    >
-      <SupervisorAccountIcon className="sidebarIcon" />
-      Admin Account
-    </li>
-  </NavLink>
-)}
-
+            roleAccount === "OPERATION OFFICER" || 
+            roleAccount === "OPERATION HEAD") && (
+            <NavLink
+              to="/view-admin-accounts"
+              style={{ textDecoration: "none" }}
+              onClick={() => handleItemClick("/view-admin-accounts")}
+            >
+              <li
+                className={`sidebarListItem ${
+                  activeItem === "/view-admin-accounts" ? "active" : ""
+                }`}
+              >
+                <SupervisorAccountIcon className="sidebarIcon" />
+                Admin Account
+              </li>
+            </NavLink>
+            )}
 
             <NavLink
               to="/attendance"
@@ -93,30 +106,11 @@ export default function Sidebar() {
                 Inventory
               </li>
             </NavLink>
-            
-            <NavLink
-              to="/view-outlet"
-              style={{ textDecoration: "none" }}
-              onClick={() => handleItemClick("/view-outlet")}
-            >
-              {/* <li
-                className={`sidebarListItem ${
-                  activeItem === "/view-outlet" ? "active" : ""
-                }`}
-              >
-                <StoreIcon className="sidebarIcon" />
-                Branches
-              </li> */}
-
-              {/* FOR BRANCHES SIDEBAR */}
-
-            </NavLink>
 
             <NavLink
               to="/view-outletinputs"
               style={{ textDecoration: "none" }}
-              onClick={() => handleItemClick("/view-outlet")}
-            >
+              onClick={() => handleItemClick("/view-outlet")}>
               <li
                 className={`sidebarListItem ${
                   activeItem === "/view-outletinputs" ? "active" : ""
@@ -125,11 +119,6 @@ export default function Sidebar() {
                 <StoreIcon className="sidebarIcon" />
                 Outlet Inputs
               </li>
-
-              {/* FOR OUTLETINPUTS SIDEBAR */}
-
-              
-
             </NavLink>
 
             <NavLink

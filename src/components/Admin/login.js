@@ -41,11 +41,11 @@ export default function Login() {
         text: "Please input your credentials",
         icon: "warning"
       });
-      return
+      return;
     }
 
     try {
-      const response = await axios.post('https://latest-backend-towi-admin.onrender.com/login-admin', body);
+      const response = await axios.post('http://192.168.50.55:8080/login-admin', body);
       const data = await response.data;
 
       if (data.status === 200) {
@@ -56,10 +56,8 @@ export default function Login() {
         }).then((result) => {
           if (result.isConfirmed) {
             localStorage.setItem('isLoggedIn', "admin");
-            localStorage.setItem('roleAccount', data.data.roleAccount); // Store roleAccount
-            window.location.href = '/view-accounts';
-          } else {
-            localStorage.setItem('isLoggedIn', "admin");
+            localStorage.setItem('firstName', data.data.firstName); // Store firstName
+            localStorage.setItem('lastName', data.data.lastName);   // Store lastName
             localStorage.setItem('roleAccount', data.data.roleAccount); // Store roleAccount
             window.location.href = '/view-accounts';
           }

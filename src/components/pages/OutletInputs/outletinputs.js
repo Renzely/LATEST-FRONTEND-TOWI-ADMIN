@@ -1195,7 +1195,7 @@ export default function OUTLET() {
       <Topbar />
       <div className="container">
         <Sidebar />
-        <div style={{ height: "100%", width: "100%", marginLeft: "100" }}>
+        <div style={{ height: "100%", width: "85%", marginLeft: "100" }}>
           <Stack
             direction={{ xs: "column", md: "row", sm: "row" }}
             spacing={{ xs: 1, sm: 2, md: 4 }}
@@ -1234,12 +1234,12 @@ export default function OUTLET() {
                 width: "50%",
               }}
             >
-              <Typography variant="h6">Users for {selectedBranch}</Typography>
+              <Typography variant="h6">Merchandiser for {selectedBranch}</Typography>
               <ul>
                 {users.length > 0 ? (
                   users.map((user) => (
                     <li key={user._id}>
-                      {user.name} ({user.email})
+                      {user.name}
                     </li>
                   ))
                 ) : (
