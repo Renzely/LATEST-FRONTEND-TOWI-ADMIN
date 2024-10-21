@@ -1,9 +1,8 @@
-import "./outletinputs.css";
 import * as React from "react";
 import Topbar from "../../topbar/Topbar";
 import Sidebar from "../../sidebar/Sidebar";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { Stack } from "@mui/material";
+import { Stack, Button, Modal, Box, Typography } from "@mui/material";
 import axios from "axios";
 
 export default function OUTLET() {
@@ -1077,15 +1076,13 @@ export default function OUTLET() {
   ]);
 
   const [inventoryCount, setInventoryCount] = React.useState({});
+  const [selectedBranch, setSelectedBranch] = React.useState(null); // Branch for the modal
+  const [users, setUsers] = React.useState([]); // Users to display in the modal
+  const [open, setOpen] = React.useState(false); // Modal open state
 
   const getToday = () => {
     const today = new Date();
-    const mm = String(today.getMonth() + 1).padStart(2, '0'); // Month is zero-indexed
-    const dd = String(today.getDate()).padStart(2, '0');
-    const yyyy = today.getFullYear();
     return today.toISOString().split("T")[0]; // Returns date in YYYY-MM-DD format
-    
-    
   };
 
   const fetchInventoryCount = async () => {
@@ -1093,22 +1090,19 @@ export default function OUTLET() {
     const data = { selectDate: today };
 
     try {
-      // Fetch inventory data for today from your backend
       const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/filter-date", // Change the URL if necessary
+        "https://latest-backend-towi-admin.onrender.com/filter-date",
         data
       );
       const inventoryData = response.data.data;
-
       const counts = {};
 
-      // Count how many submissions per branch for today
       inventoryData.forEach((item) => {
         const branch = item.accountNameBranchManning;
         if (counts[branch]) {
-          counts[branch] += 1; // Increment count if branch exists in counts object
+          counts[branch] += 1;
         } else {
-          counts[branch] = 1; // Initialize count if branch is encountered for the first time
+          counts[branch] = 1;
         }
       });
 
@@ -1118,21 +1112,55 @@ export default function OUTLET() {
     }
   };
 
+  const fetchUsersByBranch = async (branch) => {
+    try {
+      // Fetch users for the selected branch, regardless of inventory
+      const response = await axios.post(
+        "https://latest-backend-towi-admin.onrender.com/get-users-by-branch",
+        { branch }
+      );
+      const users = response.data.users;
+
+      // Filter users to ensure uniqueness by name and branch
+      const filteredUsers = users.reduce((acc, currentUser) => {
+        const userExists = acc.find(
+          (user) =>
+            user.name === currentUser.name && user.branch === currentUser.branch
+        );
+        if (!userExists) {
+          acc.push(currentUser);
+        }
+        return acc;
+      }, []);
+
+      // Set the filtered users to display in the modal
+      setUsers(filteredUsers);
+      setSelectedBranch(branch);
+      setOpen(true); // Open the modal
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
   React.useEffect(() => {
     fetchInventoryCount(); // Fetch data when the component mounts
   }, []);
 
-  // Create rows for DataGrid with inventory counts
   const rows = branches.map((accountNameBranchManning, index) => ({
     id: index + 1,
     branchName: accountNameBranchManning,
-    count: inventoryCount[accountNameBranchManning] || 0,
-    date: getToday(), // Default to 0 if no data for this branch
+    count: inventoryCount[accountNameBranchManning] || 0, // Show 0 if no inventory
+    date: getToday(),
   }));
 
   const columns = [
-    { field: "id", headerName: "#", width: 75, headerClassName: "bold-header", },
-    { field: "branchName", headerName: "ACCOUNT BRANCH", width: 400, headerClassName: "bold-header", },
+    { field: "id", headerName: "#", width: 75, headerClassName: "bold-header" },
+    {
+      field: "branchName",
+      headerName: "ACCOUNT BRANCH",
+      width: 400,
+      headerClassName: "bold-header",
+    },
     {
       field: "count",
       headerName: "INVENTORY COUNT (Today)",
@@ -1140,11 +1168,26 @@ export default function OUTLET() {
       headerClassName: "bold-header",
     },
     {
-        field: "date",
-        headerName: "DATE",
-        width: 200,
-        headerClassName: "bold-header",
-      },
+      field: "date",
+      headerName: "DATE",
+      width: 200,
+      headerClassName: "bold-header",
+    },
+    {
+      field: "viewUsers",
+      headerName: "MERCHANDISERS",
+      width: 160,
+      headerClassName: "bold-header",
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          onClick={() => fetchUsersByBranch(params.row.branchName)}
+          style={{ backgroundColor: "#4caf50", color: "#ffffff" }} // Green color with white text
+        >
+          View
+        </Button>
+      ),
+    },
   ];
 
   return (
@@ -1153,9 +1196,10 @@ export default function OUTLET() {
       <div className="container">
         <Sidebar />
         <div style={{ height: "100%", width: "100%", marginLeft: "100" }}>
-          <Stack direction={{ xs: "column", md: "row", sm: "row" }} spacing={{ xs: 1, sm: 2, md: 4 }}>
-            {/* You can add additional controls here if needed */}
-          </Stack>
+          <Stack
+            direction={{ xs: "column", md: "row", sm: "row" }}
+            spacing={{ xs: 1, sm: 2, md: 4 }}
+          ></Stack>
           <DataGrid
             rows={rows}
             columns={columns}
@@ -1179,6 +1223,32 @@ export default function OUTLET() {
             pageSizeOptions={[5, 10, 20, 30, 50, 100]}
             getRowId={(row) => row.id}
           />
+
+          {/* Modal to display users */}
+          <Modal open={open} onClose={() => setOpen(false)}>
+            <Box
+              sx={{
+                padding: 4,
+                backgroundColor: "white",
+                margin: "auto",
+                width: "50%",
+              }}
+            >
+              <Typography variant="h6">Users for {selectedBranch}</Typography>
+              <ul>
+                {users.length > 0 ? (
+                  users.map((user) => (
+                    <li key={user._id}>
+                      {user.name} ({user.email})
+                    </li>
+                  ))
+                ) : (
+                  <Typography>No users available for this branch</Typography>
+                )}
+              </ul>
+              <Button onClick={() => setOpen(false)}>Close</Button>
+            </Box>
+          </Modal>
         </div>
       </div>
     </div>
