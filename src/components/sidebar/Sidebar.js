@@ -60,7 +60,8 @@ export default function Sidebar() {
             </NavLink>
             {(roleAccount === "ACCOUNT SUPERVISOR" || 
             roleAccount === "OPERATION OFFICER" || 
-            roleAccount === "OPERATION HEAD") && (
+            roleAccount === "OPERATION HEAD" ||
+            roleAccount === "SENIOR OPERATION MANAGER") && (
             <NavLink
               to="/view-admin-accounts"
               style={{ textDecoration: "none" }}
