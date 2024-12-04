@@ -2060,6 +2060,7 @@ export default function Admin() {
                 </MenuItem>
                 <MenuItem value="OPERATION OFFICER">OPERATION OFFICER</MenuItem>
                 <MenuItem value="OPERATION HEAD">OPERATION HEAD</MenuItem>
+                <MenuItem value="SENIOR OPERATION MANAGER">SENIOR OPERATION MANAGER</MenuItem>
               </Select>
             </FormControl>
 
