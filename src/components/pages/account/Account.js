@@ -70,7 +70,7 @@ export default function Account() {
 
   const [openDialog, setOpenDialog] = React.useState(false);
   const roleAccount = localStorage.getItem("roleAccount"); // Get roleAccount from localStorage
-  const allowedRoles = ["ACCOUNT SUPERVISOR", "OPERATION OFFICER", "OPERATION HEAD", "COORDINATOR"];
+  const allowedRoles = ["ACCOUNT SUPERVISOR", "OPERATION OFFICER", "OPERATION HEAD", "COORDINATOR", "SENIOR OPERATION MANAGER"];
 const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowed
 
 
