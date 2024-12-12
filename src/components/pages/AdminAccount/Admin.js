@@ -1312,6 +1312,7 @@ export default function Admin() {
     "SUPER MAGIC -MG-3",
     "TROPICAL HUT -BF HOMES",
     "TROPICAL HUT -FTI TAGUIG",
+    "Branch"
   ];
 
   const handleRoleChange = (event) => {
@@ -1960,67 +1961,121 @@ export default function Admin() {
   aria-describedby="modal-modal-description"
 >
   <Box sx={style}>
-    <Stack spacing={3}>
-      <p>Full Details :</p>
+    {/* Scrollable container */}
+    <Box
+      sx={{
+        maxHeight: '80vh', // Limit height to 80% of the viewport
+        overflowY: 'auto', // Enable vertical scrolling
+        padding: '16px', // Optional padding for content
+      }}
+    >
+      <Stack spacing={3}>
+        <p>Full Details :</p>
 
-      <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-        <span className="detailTitle">Account Branch Name:</span>{" "}
-        <span className="detailDescription">
-          {Array.isArray(adminViewBranch) 
-            ? adminViewBranch.join(", ") // Display branches in text
-            : adminViewBranch}
-        </span>
-        <br />
-        <br />
-      </Typography>
+        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+          <span className="detailTitle">OUTLETS:</span>{" "}
+          <span className="detailDescription">
+            {Array.isArray(adminViewBranch)
+              ? adminViewBranch.join(", ") // Display branches in text
+              : adminViewBranch}
+          </span>
+          <br />
+          <br />
+        </Typography>
 
-      {/* Autocomplete with pre-selected branches */}
-      <Autocomplete
-        multiple
-        id="branches-autocomplete"
-        options={branches} // Available branch options
-        value={selectedBranches} // Pre-selected branches from state
-        onChange={(event, newValue) => setSelectedBranches(newValue)} // Update state on change
-        renderInput={(params) => (
-          <TextField
-            {...params}
+        {/* Autocomplete with pre-selected branches */}
+        <Autocomplete
+          multiple
+          id="branches-autocomplete"
+          options={branches} // Available branch options
+          value={selectedBranches} // Pre-selected branches from state
+          onChange={(event, newValue) => setSelectedBranches(newValue)} // Update state on change
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="outlined"
+              label="Select Outlet"
+              placeholder="Select Outlet"
+            />
+          )}
+        />
+
+        {/* Buttons for Select All and Remove All */}
+        <Stack
+          direction="row"
+          spacing={2}
+          justifyContent="center" // Center the buttons horizontally
+          sx={{ marginBottom: 2 }} // Optional margin for spacing below
+        >
+          <Button
+            onClick={() => setSelectedBranches(branches)} // Select all branches
             variant="outlined"
-            label="Select Branch"
-            placeholder="Select Branch"
-          />
-        )}
-      />
+            sx={{
+              backgroundColor: "rgb(220, 220, 255)", // Light background for "outlined" button
+              color: "rgb(26, 20, 71)", // Text color
+              borderColor: "rgb(26, 20, 71)", // Border color
+              "&:hover": {
+                backgroundColor: "rgb(190, 190, 255)", // Hover effect
+              },
+            }}
+          >
+            Select All
+          </Button>
+          <Button
+            onClick={() => setSelectedBranches([])} // Clear all selections
+            variant="outlined"
+            sx={{
+              backgroundColor: "rgb(255, 220, 220)", // Light red background for "outlined" button
+              color: "rgb(71, 20, 20)", // Text color
+              borderColor: "rgb(71, 20, 20)", // Border color
+              "&:hover": {
+                backgroundColor: "rgb(255, 190, 190)", // Hover effect
+              },
+            }}
+          >
+            Remove All
+          </Button>
+        </Stack>
 
-      <Button 
-        onClick={() => handleBranchSave(adminViewEmail)} // Call save function
-        variant="contained"
-      >
-        Save Branch Changes
-      </Button>
+        <Button
+          onClick={() => handleBranchSave(adminViewEmail)} // Call save function
+          variant="contained"
+          sx={{
+            backgroundColor: "rgb(26, 20, 71)", // Dark background color
+            color: "white", // Text color
+            "&:hover": {
+              backgroundColor: "rgb(40, 30, 100)", // Hover background color
+            },
+          }}
+        >
+          Save Outlet Changes
+        </Button>
 
-      <TextField
-        label="Email"
-        id="outlined-read-only-input"
-        defaultValue={adminViewEmail}
-        InputProps={{
-          readOnly: true,
-        }}
-      />
-      <TextField
-        label="Contact Number"
-        id="outlined-read-only-input"
-        defaultValue={adminViewPhone}
-        InputProps={{
-          readOnly: true,
-        }}
-      />
+        <TextField
+          label="Email"
+          id="outlined-read-only-input"
+          defaultValue={adminViewEmail}
+          InputProps={{
+            readOnly: true,
+          }}
+        />
+        <TextField
+          label="Contact Number"
+          id="outlined-read-only-input"
+          defaultValue={adminViewPhone}
+          InputProps={{
+            readOnly: true,
+          }}
+        />
 
-      <DialogActions>
-        <Button onClick={handleViewCloseModal}>Close</Button>
-      </DialogActions>
-    </Stack>
+        <DialogActions>
+          <Button onClick={handleViewCloseModal}>Close</Button>
+        </DialogActions>
+      </Stack>
+    </Box>
   </Box>
 </Modal>
+
 
 
 <Modal

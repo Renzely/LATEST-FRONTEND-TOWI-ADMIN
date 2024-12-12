@@ -70,6 +70,12 @@ export default function RTV() {
       headerClassName: 'bold-header'
     },
     {
+      field: "outlet",
+      headerName: "Outlet",
+      width: 220,
+      headerClassName: 'bold-header'
+    },
+    {
       field: "item",
       headerName: "Item",
       width: 220,
@@ -149,63 +155,89 @@ export default function RTV() {
 
 
   async function getUser() {
-    await axios
-        .post("https://latest-backend-towi-admin.onrender.com/retrieve-RTV-data")
-        .then(async (response) => {
-            const data = await response.data.data;
-            console.log(data, "test");
+    try {
+      // Retrieve the logged-in admin's branches from localStorage
+      const loggedInBranch = localStorage.getItem("accountNameBranchManning");
+  
+      if (!loggedInBranch) {
+        console.error("No branch information found for the logged-in admin.");
+        return;
+      }
+  
+      const branches = loggedInBranch.split(",").map((branch) => branch.trim());
+  
+      // Send request to fetch RTV data filtered by branches
+      const response = await axios.post("https://latest-backend-towi-admin.onrender.com/retrieve-RTV-data", {
+        branches,
+      });
+  
+      const data = response.data.data;
+  
+      // Sort and map the data
+      const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const newData = sortedData.map((data, key) => ({
+        count: key + 1,
+        date: data.date,
+        merchandiserName: data.merchandiserName,
+        UserEmail: data.userEmail,
+        outlet: data.outlet,
+        item: data.item,
+        quantity: data.quantity,
+        driverName: data.driverName,
+        plateNumber: data.plateNumber,
+        pullOutReason: data.pullOutReason,
+      }));
+  
+      console.log("Filtered RTV data:", newData);
+      setUserData(newData); // Set the filtered data
+    } catch (error) {
+      console.error("Error fetching RTV data:", error);
+    }
+  }
+  
 
-            // Sort the data in descending order by date
-            const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            const newData = sortedData.map((data, key) => {
-                return {
-                    count: key + 1,
-                    date: data.date,
-                    merchandiserName: data.merchandiserName,
-                    UserEmail: data.userEmail,
-                    outlet: data.outlet,
-                    item: data.item,
-                    quantity: data.quantity,
-                    driverName: data.driverName,
-                    plateNumber: data.plateNumber,
-                    pullOutReason: data.pullOutReason,
-                };
-            });
-            console.log(newData, "testing par");
-            setUserData(newData);
-        });
-}
-
-async function getDateRTV(selectedDate) {
-    const data = { selectDate: selectedDate };
-    await axios
-        .post("https://latest-backend-towi-admin.onrender.com/filter-RTV-data", data)
-        .then(async (response) => {
-            const data = await response.data.data;
-            console.log(data, "test");
-
-            // Sort the data in descending order by date
-            const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            const newData = sortedData.map((data, key) => {
-                return {
-                    count: key + 1,
-                    date: data.date,
-                    merchandiserName: data.merchandiserName,
-                    UserEmail: data.userEmail,
-                    outlet: data.outlet,
-                    item: data.item,
-                    quantity: data.quantity,
-                    driverName: data.driverName,
-                    plateNumber: data.plateNumber,
-                    pullOutReason: data.pullOutReason,
-                };
-            });
-            console.log(newData, "testing par");
-            setUserData(newData);
-        });
-}
+  async function getDateRTV(selectedDate) {
+    try {
+      // Retrieve the logged-in admin's branches from localStorage
+      const loggedInBranch = localStorage.getItem("accountNameBranchManning");
+  
+      if (!loggedInBranch) {
+        console.error("No branch information found for the logged-in admin.");
+        return;
+      }
+  
+      const branches = loggedInBranch.split(",").map((branch) => branch.trim());
+  
+      // Send request to filter RTV data by date and branches
+      const response = await axios.post("https://latest-backend-towi-admin.onrender.com/filter-RTV-data", {
+        selectDate: selectedDate,
+        branches,
+      });
+  
+      const data = response.data.data;
+  
+      // Sort and map the data
+      const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const newData = sortedData.map((data, key) => ({
+        count: key + 1,
+        date: data.date,
+        merchandiserName: data.merchandiserName,
+        UserEmail: data.userEmail,
+        outlet: data.outlet,
+        item: data.item,
+        quantity: data.quantity,
+        driverName: data.driverName,
+        plateNumber: data.plateNumber,
+        pullOutReason: data.pullOutReason,
+      }));
+  
+      console.log("Filtered RTV data by date:", newData);
+      setUserData(newData); // Set the filtered data
+    } catch (error) {
+      console.error("Error filtering RTV data by date:", error);
+    }
+  }
+  
 
 
   React.useEffect(() => {
@@ -269,7 +301,7 @@ async function getDateRTV(selectedDate) {
           disableColumnFilter
           disableColumnSelector
           disableRowSelectionOnClick
-          pageSizeOptions={[5, 10, 20, 30, 50, 100, 200]}
+          pageSizeOptions={[5, 10, 20, 30, 50, 100]}
           getRowId={(row) => row.count}
         />
       </div>

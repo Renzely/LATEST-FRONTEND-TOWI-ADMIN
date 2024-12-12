@@ -139,75 +139,159 @@ export default function Attendance() {
   ];
 
  // Function to fetch current attendance for a user
-async function fetchCurrentAttendance(emailAddress) {
+ async function fetchCurrentAttendance(
+  emailAddress,
+  currentDate = new Date()
+) {
+  // Format date as dd-MM-yyyy
+  const formattedDate = `${String(currentDate.getDate()).padStart(
+    2,
+    "0"
+  )}-${String(currentDate.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}-${currentDate.getFullYear()}`;
+
   try {
     const response = await axios.post(
       "https://latest-backend-towi-admin.onrender.com/get-attendance",
-      { userEmail: emailAddress }
+      { userEmail: emailAddress, date: formattedDate }
     );
     const data = response.data.data;
 
-    const today = new Date().toLocaleDateString();
+    if (!Array.isArray(data)) {
+      throw new Error("Invalid data format");
+    }
 
-    const todaysAttendance = data.find(
-      (item) => new Date(item.date).toLocaleDateString() === today
-    );
-
-    if (todaysAttendance) {
-      const formattedTimeIn = formatDateTime(todaysAttendance.timeIn, true);
-      const formattedTimeOut = todaysAttendance.timeOut
-        ? formatDateTime(todaysAttendance.timeOut, false)
-        : { date: formattedTimeIn.date, time: "Time Out" }; // If no time out, keep default "Time Out"
-
+    if (data.length === 0) {
+      // No logs found, return default values
       return {
-        date: formattedTimeIn.date,
-        timeIn: formattedTimeIn.time,
-        timeOut: formattedTimeOut.time, // Time out is either the real time or the placeholder text
+        date: formattedDate,
+        timeIn: "No Time In",
+        timeOut: "No Time Out",
+        accountNameBranchManning: "",
       };
     }
 
+    const latestLog = data[data.length - 1];
+    const latestLogDate = latestLog.date.split("T")[0]; // Assuming date is in ISO format
+    const latestFormattedDate = latestLogDate.split("-").reverse().join("-"); // Convert to dd-MM-yyyy
+
+    let accountNameBranchManning = latestLog.accountNameBranchManning || "";
+
+    if (latestFormattedDate !== formattedDate) {
+      // New day has started, reset attendance and set branch to "No Branch"
+      return {
+        date: formattedDate,
+        timeIn: "No Time In",
+        timeOut: "No Time Out",
+        accountNameBranchManning: "No Branch",
+      };
+    }
+
+    if (!latestLog.timeLogs || latestLog.timeLogs.length === 0) {
+      return {
+        date: formattedDate,
+        timeIn: "No Time In",
+        timeOut: "No Time Out",
+        accountNameBranchManning: accountNameBranchManning,
+      };
+    }
+
+    const timeLog = latestLog.timeLogs[latestLog.timeLogs.length - 1];
+
+    const timeIn = timeLog.timeIn
+      ? formatDateTime(timeLog.timeIn).time
+      : "No Time In";
+    const timeOut = timeLog.timeOut
+      ? formatDateTime(timeLog.timeOut).time
+      : "No Time Out";
+
     return {
-      date: "No attendance today",
-      timeIn: "No Time In",
-      timeOut: "Time Out", // Default when no clock-out has occurred
+      date: timeLog.timeIn
+        ? timeLog.timeIn.slice(0, 10).split("-").reverse().join("-")
+        : formattedDate,
+      timeIn: timeIn,
+      timeOut: timeOut,
+      accountNameBranchManning: accountNameBranchManning,
     };
   } catch (error) {
     console.error("Error fetching attendance:", error);
     return {
-      date: "Error fetching attendance",
+      date: formattedDate,
       timeIn: "Error",
       timeOut: "Error",
+      accountNameBranchManning: "",
     };
   }
 }
 
-  // Fetch users and their current attendance
-  async function getUser() {
-    await axios
-      .post("https://latest-backend-towi-admin.onrender.com/get-all-user", body)
-      .then(async (response) => {
-        const data = await response.data.data;
+const capitalizeWords = (words) => {
+  if (!words || !Array.isArray(words)) return [];
 
-        // Fetch attendance data for each user
-        const newData = await Promise.all(
-          data.map(async (data, key) => {
-            const attendance = await fetchCurrentAttendance(data.emailAddress);
+  return words.map((word) =>
+    word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : ""
+  );
+};
 
-            return {
-              count: key + 1,
-              firstName: data.firstName,
-              middleName: data.middleName ? data.middleName : "null",
-              lastName: data.lastName,
-              emailAddress: data.emailAddress,
-              date: attendance.date,
-              timeIn: attendance.timeIn,
-              timeOut: attendance.timeOut,
-            };
-          })
-        );
-        setUserData(newData);
-      });
+async function getUser() {
+  try {
+    // Retrieve the logged-in admin's branches from localStorage
+    const loggedInBranch = localStorage.getItem("accountNameBranchManning");
+
+    if (!loggedInBranch) {
+      console.error("No branch information found for the logged-in admin.");
+      return;
+    }
+
+    // Split the branches into an array
+    const branches = loggedInBranch.split(",").map((branch) => branch.trim());
+
+    // Fetch users filtered by branches
+    const response = await axios.post("https://latest-backend-towi-admin.onrender.com/get-all-user", {
+      branches
+    });
+
+    const data = response.data.data;
+
+    // Process users and map the attendance
+    const filteredData = await Promise.all(
+      data.map(async (user, key) => {
+        const attendance = await fetchCurrentAttendance(
+          user.emailAddress
+        ).catch(() => null);
+
+        const displayedBranch = attendance?.accountNameBranchManning || "No Branch";
+
+        // Capitalize names
+        const capitalizedNames = capitalizeWords([
+          user.firstName,
+          user.middleName || "",
+          user.lastName,
+        ]);
+
+        return {
+          count: key + 1,
+          fullName: `${capitalizedNames[0]} ${capitalizedNames[2]}`,
+          firstName: capitalizedNames[0],
+          middleName: capitalizedNames[1] || "Null",
+          lastName: capitalizedNames[2],
+          emailAddress: user.emailAddress,
+          outlet: displayedBranch,
+          date: attendance?.date || "No Date",
+          timeIn: attendance?.timeIn || "No Time In",
+          timeOut: attendance?.timeOut || "No Time Out",
+        };
+      })
+    );
+
+    // Set the filtered data to state
+    setUserData(filteredData);
+  } catch (error) {
+    console.error("Error fetching user data:", error);
   }
+}
+
 
   React.useEffect(() => {
     getUser();
