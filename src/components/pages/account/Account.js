@@ -1423,33 +1423,67 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     },
   ];
 
-  async function getUser() {
-    await axios
-      .post(
-        "https://latest-backend-towi-admin.onrender.com/get-all-user",
-        requestBody
-      )
-      .then(async (response) => {
-        const data = await response.data.data;
+  const capitalizeWords = (words) => {
+    if (!words || !Array.isArray(words)) return [];
 
-        const newData = data.map((data, key) => {
-          return {
-            count: key + 1,
-            remarks: data.remarks,
-            firstName: data.firstName,
-            middleName: data.middleName ? data.middleName : "Null",
-            lastName: data.lastName,
-            username: data.username,
-            Branch: data.accountNameBranchManning,
-            emailAddress: data.emailAddress,
-            contactNum: data.contactNum,
-            isActive: data.isActivate,
-          };
-        });
-        console.log(newData, "testing par");
-        setUserData(newData);
+    return words.map((word) =>
+      word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : ""
+    );
+  };
+
+  async function getUser() {
+    try {
+      // Retrieve the logged-in admin's branches from localStorage
+      const loggedInBranch = localStorage.getItem("accountNameBranchManning");
+  
+      console.log("Logged in branch:", loggedInBranch); // Debugging line
+  
+      if (!loggedInBranch) {
+        console.error("No branch information found for the logged-in admin.");
+        return;
+      }
+  
+      // Convert the branch string into an array
+      const branches = loggedInBranch.split(",").map((branch) => branch.trim());
+  
+      // Send request to fetch accounts filtered by branches
+      const response = await axios.post("https://latest-backend-towi-admin.onrender.com/get-all-user", {
+        branches
       });
+  
+      const data = response.data.data;
+  
+      console.log("Filtered user data from backend:", data); // Debugging line
+  
+      // Map the filtered user data for rendering
+      const newData = data.map((user, key) => {
+        const capitalizedNames = capitalizeWords([
+          user.firstName,
+          user.middleName || "",
+          user.lastName,
+        ]);
+  
+        return {
+          count: key + 1,
+          remarks: user.remarks,
+          firstName: capitalizedNames[0],
+          middleName: capitalizedNames[1] || "Null",
+          lastName: capitalizedNames[2],
+          username: user.username,
+          Branch: user.accountNameBranchManning,
+          emailAddress: user.emailAddress,
+          contactNum: user.contactNum,
+          isActive: user.isActivate,
+        };
+      });
+  
+      console.log("Mapped user data for rendering:", newData); // Debugging line
+      setUserData(newData); // Update state with mapped user data
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
   }
+  
 
   async function setStatus() {
     console.log("check body", requestBody);
@@ -1506,7 +1540,7 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
             disableDensitySelector
             disableColumnFilter
             disableColumnSelector
-            pageSizeOptions={[5, 10, 20, 50, 100, 200]}
+            pageSizeOptions={[5, 10, 20, 50, 100]}
             getRowId={(row) => row.count}
             disableRowSelectionOnClick
           />
