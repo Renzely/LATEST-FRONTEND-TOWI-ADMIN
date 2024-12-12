@@ -2041,10 +2041,10 @@ export default function Admin() {
           onClick={() => handleBranchSave(adminViewEmail)} // Call save function
           variant="contained"
           sx={{
-            backgroundColor: "rgb(26, 20, 71)", // Dark background color
+            backgroundColor: "rgb(38, 173, 83)", // Dark background color
             color: "white", // Text color
             "&:hover": {
-              backgroundColor: "rgb(40, 30, 100)", // Hover background color
+              backgroundColor: "rgb(38, 173, 83)", // Hover background color
             },
           }}
         >
