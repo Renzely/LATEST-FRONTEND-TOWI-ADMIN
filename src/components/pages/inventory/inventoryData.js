@@ -226,84 +226,59 @@ export default function Inventory() {
   
 
   async function getUser() {
-    try {
-      // Retrieve the logged-in admin's accountNameBranchManning from localStorage
-      const loggedInBranch = localStorage.getItem("accountNameBranchManning");
+
+    
+    await axios
+      .post("https://latest-backend-towi-admin.onrender.com/retrieve-parcel-data")
+      .then(async (response) => {
+
+
+        const data = await response.data.data;
+        console.log(data, "test");
   
-      console.log("Logged in branch:", loggedInBranch);
+        // Sort the data in descending order by date
+        const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
   
-      if (!loggedInBranch) {
-        console.error("No branch information found for the logged-in admin.");
-        return;
-      }
+        const newData = sortedData.map((data, key) => {
+          const value = (status, defaultValue) => {
+            if (status === "Delisted") return "Delisted";
+            if (status === "Not Carried") return "NC";
+            return defaultValue || 0;
+          };
   
-      // Prepare the branch list for the request
-      const branches = loggedInBranch.split(",");
-  
-      // Fetch the inventory data filtered by branches
-      const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/retrieve-parcel-data",
-        { branches } // Pass branches in the request body
-      );
-  
-      const data = response.data.data;
-  
-      // Filter the data based on both logged-in admin's branches and user's branches
-      const filteredData = data.filter(item => 
-        branches.includes(item.accountNameBranchManning)
-      );
-  
-      console.log(filteredData, "filtered backend response");
-  
-      // Sort the filtered data by date in descending order
-      const sortedData = filteredData.sort((a, b) => new Date(b.date) - new Date(a.date));
-  
-      // Map the data for rendering
-      const newData = sortedData.map((data, key) => {
-        const value = (status, defaultValue) => {
-          if (status === "Delisted") return "Delisted";
-          if (status === "Not Carried") return "NC";
-          return defaultValue || 0;
-        };
-  
-        return {
-          count: key + 1,
-          date: data.date,
-          inputId: data.inputId,
-          name: data.name,
-          UserEmail: data.userEmail,
-          accountNameBranchManning: data.accountNameBranchManning,
-          period: data.period,
-          month: data.month,
-          week: data.week,
-          category: data.category,
-          skuDescription: data.skuDescription,
-          products: data.products,
-          skuCode: data.skuCode,
-          status: data.status,
-          beginningSA: value(data.status, data.beginningSA),
-          beginningWA: value(data.status, data.beginningWA),
-          beginning: value(data.status, data.beginning),
-          delivery: value(data.status, data.delivery),
-          endingSA: value(data.status, data.endingSA),
-          endingWA: value(data.status, data.endingWA),
-          ending: value(data.status, data.ending),
-          offtake: value(data.status, data.offtake),
-          inventoryDaysLevel: value(data.status, data.inventoryDaysLevel),
-          noOfDaysOOS: value(data.status, data.noOfDaysOOS),
-          remarksOOS: data.remarksOOS,
-          reasonOOS: data.reasonOOS
-        };
+          return {
+            count: key + 1,
+            date: data.date,
+            inputId: data.inputId,
+            name: data.name,
+            UserEmail: data.userEmail,
+            accountNameBranchManning: data.accountNameBranchManning,
+            period: data.period,
+            month: data.month,
+            week: data.week,
+            category: data.category,
+            skuDescription: data.skuDescription,
+            products: data.products,
+            skuCode: data.skuCode,
+            status: data.status,
+            beginningSA: value(data.status, data.beginningSA),
+            beginningWA: value(data.status, data.beginningWA),
+            beginning: value(data.status, data.beginning),
+            delivery: value(data.status, data.delivery),
+            endingSA: value(data.status, data.endingSA),
+            endingWA: value(data.status, data.endingWA),
+            ending: value(data.status, data.ending),
+            offtake: value(data.status, data.offtake),
+            inventoryDaysLevel: value(data.status, data.inventoryDaysLevel),
+            noOfDaysOOS: value(data.status, data.noOfDaysOOS),
+            remarksOOS: data.remarksOOS,
+            reasonOOS: data.reasonOOS
+          };
+        });
+        console.log(newData, "testing par");
+        setUserData(newData);
       });
-  
-      console.log(newData, "mapped data");
-      setUserData(newData); // Set the filtered data for rendering
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
   }
-  
-  
   
   async function getDate(selectedDate) {
     const data = { selectDate: selectedDate };
@@ -422,7 +397,7 @@ export default function Inventory() {
             disableColumnFilter
             disableColumnSelector
             disableRowSelectionOnClick
-            pageSizeOptions={[5, 10, 20, 30, 50, 100]}
+            pageSizeOptions={[5, 10, 20, 30, 50, 100, 200]}
             getRowId={(row) => row.count}
           />
         </div>
