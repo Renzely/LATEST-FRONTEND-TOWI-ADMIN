@@ -70,9 +70,14 @@ export default function Account() {
 
   const [openDialog, setOpenDialog] = React.useState(false);
   const roleAccount = localStorage.getItem("roleAccount"); // Get roleAccount from localStorage
-  const allowedRoles = ["ACCOUNT SUPERVISOR", "OPERATION OFFICER", "OPERATION HEAD", "COORDINATOR", "SENIOR OPERATION MANAGER"];
-const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowed
-
+  const allowedRoles = [
+    "ACCOUNT SUPERVISOR",
+    "OPERATION OFFICER",
+    "OPERATION HEAD",
+    "COORDINATOR",
+    "SENIOR OPERATION MANAGER",
+  ];
+  const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowed
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -163,8 +168,6 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "PUREGOLD PRICE CLUB - BALANGA",
     "PUREGOLD PRICE CLUB (JR.)- ABUCAY",
     "PUREGOLD PRICE CLUB - IBA ZAMBALES",
-    "ROYAL DUTY FREE 1",
-    "ROYAL DUTY FREE 2",
     "PUREGOLD PRICE CLUB (JR.)- SF 2 CAFÉ FERNANDINO",
     "PUREGOLD PRICE CLUB - BULAON",
     "PUREGOLD PRICE CLUB (JR.)- SF 1 DOLORES",
@@ -503,11 +506,16 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "PUREGOLD - GUADALUPE",
     "PUREGOLD- KASAMBAGAN",
     "PUREGOLD PRICE CLUB - SINDALAN",
+
+    "ROYAL DUTY FREE 1",
+    "ROYAL DUTY FREE 2",
+
     "AFPCES - BNS C&X NAVAL GATE 3 FORT BONFACIO",
     "AFPCES - C&X V. LUNA",
     "AFPCES - FB C&X FORT BONIFACIO",
     "AFPCES - MAIN C&X MAIN DRUGSTORE CAMP AGUINALDO",
     "AFPCES - MALACANANG",
+
     "GAISANO CAPITAL - CASUNTINGAN",
     "GAISANO CAPITAL - DANAO",
     "GAISANO CAPITAL - MACTAN",
@@ -542,6 +550,10 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "METRO GAISANO - AYALA",
     "METRO GUN-OB",
     "METRO LG GARDEN",
+    "SUPER METRO - BOGO",
+    "SUPER METRO - CARCAR",
+    "SUPER METRO - OPON",
+    "SUPER METRO - TOLEDO",
     "SAVEMORE - EMALL",
     "SAVEMORE - PARKMALL",
     "SM - CONSOLACION",
@@ -550,13 +562,10 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "SM - MACTAN",
     "SM - MARIBAGO",
     "SM - SEA SIDE CITY",
-    "SUPER METRO - BOGO",
-    "SUPER METRO - CARCAR",
-    "SUPER METRO - OPON",
-    "SUPER METRO - TOLEDO",
     "JEREMYS - LEMERY",
     "RC ALVAREZ - LEMERY",
     "EVER SANTOLAN",
+
     "EVERPLUS SUPERSTORE INC - YUSECO",
     "EVERPLUS SUPERSTORE INC. - 10TH AVE.",
     "EVERPLUS SUPERSTORE INC. - 11TH AVE.",
@@ -609,16 +618,19 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "EVERPLUS SUPERSTORE INC. - TRECE",
     "EVERPLUS SUPERSTORE INC. - VICAS",
     "EVERPLUS SUPERSTORE INC. - ZAPOTE",
+
     "ISETANN - CARRIEDO",
     "ISETANN - CUBAO",
     "ISETANN - P. TUAZON",
     "ISETANN - RECTO",
     "ISETANN - STA MESA",
+
     "LANDMARK - ALABANG",
     "LANDMARK - MAKATI",
     "LANDMARK - NUVALI",
     "LANDMARK - TRINOMA COMPLEX",
     "LANDMARK - TRINOMA MAIN",
+
     "LIANA'S SUPERMARKET - ALABANG",
     "LIANA'S SUPERMARKET - CALAMBA",
     "LIANA'S SUPERMARKET - EVACOM",
@@ -628,12 +640,16 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "LIANA'S SUPERMARKET - SAMPALOC",
     "LIANA'S SUPERMARKET - SAN PABLO",
     "LIANA'S SUPERMARKET - STO TOMAS",
+
     "FISHERMALL MALABON",
     "FISHERMALL Q. AVENUE",
+
     "HI-TOP SUPERMARKET - AURORA BLVD",
     "HI-TOP SUPERMARKET - Q.AVE.",
+
     "MAKATI SUP. - ALABANG",
     "MERRYMART DOUBLE DRAGON",
+
     "METRO GAISANO LEGAZPI",
     "METRO GAISANO NAGA",
     "METRO LUCENA",
@@ -647,15 +663,20 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "METRO RETAILS STORES GROUP, INC. - NEW PORT",
     "METRO RETAILS STORES GROUP, INC. - SHAW",
     "METRO RETAILS STORES GROUP, INC. - TAGAYTAY",
+
     "PIONEER CENTRE",
+
     "STA LUCIA - PHASE1",
     "STA LUCIA - PHASE3",
+
     "TROPICAL HUT - BF AGUIRRE",
     "TROPICAL HUT - FTI",
     "TROPICAL HUT - PANAY",
     "TROPICAL HUT - SHAW",
+
     "UNIMART - CAPITAL COMMON PASIG",
     "UNIMART - SAN JUAN",
+
     "ROBINSON - ILOCOS",
     "ROBINSON - NEW VALENCIA",
     "ROBINSON EASYMART - NOVALICHES",
@@ -926,9 +947,43 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "ROBINSONS PLACE - JARO ILOILO",
     "ROBINSONS STA. CRUZ",
     "ROBINSONS TUGUEGARAO",
+
     "THE MARKET PLACE - MAGALLANES",
     "THE MARKETPLACE - SHANGRI-LA",
     "THE MARKETPALCE - TOMAS MORATO",
+    "THE MARKET PLACE - METLIVE",
+    "THE MARKET PLACE - PARQAL",
+    "THE MARKETPLACE - 30TH",
+    "THE MARKETPLACE - ALPHALAND",
+    "THE MARKETPLACE - ANTIPOLO",
+    "THE MARKETPLACE - AYALA",
+    "THE MARKETPLACE - AYALA ALABANG",
+    "THE MARKETPLACE - BAGUIO",
+    "THE MARKETPLACE - BANAWA",
+    "THE MARKETPLACE - BGC",
+    "THE MARKETPLACE - CDOC",
+    "THE MARKETPLACE - CENTURY",
+    "THE MARKETPLACE - CORINTHIAN",
+    "THE MARKETPLACE - EASTBAY",
+    "THE MARKETPLACE - EASTWOOD",
+    "THE MARKETPLACE - FESTIVE WALK",
+    "THE MARKETPLACE - GALLERIA SELECTION CEBU",
+    "THE MARKETPLACE - GATEWAY",
+    "THE MARKETPLACE - GREENBELT",
+    "THE MARKETPLACE - GROOVE",
+    "THE MARKETPLACE - KATIPUNAN",
+    "THE MARKETPLACE - MAKATI",
+    "THE MARKETPLACE - OAKRIDGE",
+    "THE MARKETPLACE - P.GUEVARRA",
+    "THE MARKETPLACE - PASEO DE ROXAS",
+    "THE MARKETPLACE - ROCKWELL",
+    "THE MARKETPLACE - SAN ANTONIO",
+    "THE MARKETPLACE - SANTOLAN",
+    "THE MARKETPLACE - TWO CENTRAL",
+    "THE MARKETPLACE - UPTOWN",
+    "THE MARKETPLACE - MAGNOLIA",
+    "THE MARKETPLACE - WESTBORROUGH",
+
     "SHOPWISE - ALABANG",
     "SHOPWISE - AMIGO",
     "SHOPWISE - ANTIPOLO",
@@ -945,6 +1000,7 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "SHOPWISE - STA.ROSA (PASEO)",
     "SHOPWISE - SUCAT",
     "SHOPWISE EXPRESS - Q. AVE",
+
     "SOUTH - GROCERS BF",
     "SOUTH BRENT",
     "SOUTH LIPA",
@@ -957,6 +1013,7 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "SOUTH SUPERMARKET - LOS BANOS",
     "SOUTH SUPERMARKET - MALOLOS",
     "SOUTH SUPERMARKET - PASEO STA ROSA",
+
     "SUPER 8 - ALABANG",
     "SUPER 8 - ANGELES",
     "SUPER 8 - ANGONO",
@@ -1032,38 +1089,7 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "SUPER 8 - TINAJEROS",
     "SUPER 8 - TRECE",
     "SUPER 8 - URDANETA",
-    "THE MARKET PLACE - METLIVE",
-    "THE MARKET PLACE - PARQAL",
-    "THE MARKETPLACE - 30TH",
-    "THE MARKETPLACE - ALPHALAND",
-    "THE MARKETPLACE - ANTIPOLO",
-    "THE MARKETPLACE - AYALA",
-    "THE MARKETPLACE - AYALA ALABANG",
-    "THE MARKETPLACE - BAGUIO",
-    "THE MARKETPLACE - BANAWA",
-    "THE MARKETPLACE - BGC",
-    "THE MARKETPLACE - CDOC",
-    "THE MARKETPLACE - CENTURY",
-    "THE MARKETPLACE - CORINTHIAN",
-    "THE MARKETPLACE - EASTBAY",
-    "THE MARKETPLACE - EASTWOOD",
-    "THE MARKETPLACE - FESTIVE WALK",
-    "THE MARKETPLACE - GALLERIA SELECTION CEBU",
-    "THE MARKETPLACE - GATEWAY",
-    "THE MARKETPLACE - GREENBELT",
-    "THE MARKETPLACE - GROOVE",
-    "THE MARKETPLACE - KATIPUNAN",
-    "THE MARKETPLACE - MAKATI",
-    "THE MARKETPLACE - OAKRIDGE",
-    "THE MARKETPLACE - P.GUEVARRA",
-    "THE MARKETPLACE - PASEO DE ROXAS",
-    "THE MARKETPLACE - ROCKWELL",
-    "THE MARKETPLACE - SAN ANTONIO",
-    "THE MARKETPLACE - SANTOLAN",
-    "THE MARKETPLACE - TWO CENTRAL",
-    "THE MARKETPLACE - UPTOWN",
-    "THE MARKETPLACE - MAGNOLIA",
-    "THE MARKETPLACE - WESTBORROUGH",
+
     "ULTRAMEGA - ANTIPOLO",
     "ULTRAMEGA - ARAYAT",
     "ULTRAMEGA - ARITAO",
@@ -1102,6 +1128,8 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "ULTRAMEGA - TANAY",
     "ULTRAMEGA - TARLAC",
     "ULTRAMEGA - TUTUBAN",
+
+    "WALTERMART SUPERMARKET, INC. - GEN. TRIAS",
     "WALTERMART - CANDELARIA",
     "WALTERMART SUPERMARKET, INC. - ALTARAZA",
     "WALTERMART SUPERMARKET, INC. - ANTIPOLO",
@@ -1121,7 +1149,6 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "WALTERMART SUPERMARKET, INC. - DASMA",
     "WALTERMART SUPERMARKET, INC. - E.ROD",
     "WALTERMART SUPERMARKET, INC. - GAPAN",
-    "WALTERMART SUPERMARKET, INC. - GEN. TRIAS",
     "WALTERMART SUPERMARKET, INC. - GUIGUINTO",
     "WALTERMART SUPERMARKET, INC. - IMUS",
     "WALTERMART SUPERMARKET, INC. - JUNCTION",
@@ -1149,6 +1176,7 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "WALTERMART SUPERMARKET, INC. - TAYTAY",
     "WALTERMART SUPERMARKET, INC. - TRECE MAR",
     "WALTERMART SUPERMARKET, INC. - VISAYAS AVE",
+
     "CAPITAL CASUNTINGAN",
     "CAPITAL DANAO",
     "CAPITAL MACTAN",
@@ -1156,10 +1184,14 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "CAPITAL SVM BASAK",
     "CAPITAL SVM T.PADILLA",
     "CAPITAL TISA",
+
     "FISHER FRESH SHOP -FISHERFOODS CORP",
     "FISHER RETAIL, INC. - MALABON",
+
     "FRIENDSHIP SUPERMARKET INC.",
+
     "GAISANO SOUTH COLON",
+
     "GRAND BALAMBAN",
     "GRAND CARCAR",
     "GRAND CORDOVA",
@@ -1171,8 +1203,7 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "GRAND MOALBOAL",
     "GRAND TABUNOK",
     "GRAND TALAMBAN",
-    "HI-TOP SUPERMARKET -AURORA BLVD.",
-    "HI-TOP SUPERMARKET -Q.AVE.",
+
     "MAGIC ALAMINOS -MG-5",
     "MAGIC BAYAMBANG -MG-22",
     "MAGIC BINMALEY -MG-10",
@@ -1191,7 +1222,9 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "MAGIC TAYUG -MG-18",
     "MAGIC VILLASIS -MG-9",
     "MAGIC ZAMBALES -MG-20",
+
     "magicmall Annex",
+
     "PIONEER CENTER",
     "SAVEMORE - EMALL",
     "SAVEMORE - PARKMALL",
@@ -1200,18 +1233,14 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     "SAVEWISE POZORRUBIO",
     "SAVEWISE ROSALES",
     "SAVEWISE TAYUG",
-    "SM CONSOLACION",
-    "SM HYPER JMALL",
-    "SM HYPER LAPULAPU",
-    "SM INSULAR",
-    "SM MACTAN",
-    "SM MARIBAGO",
-    "SM SEA SIDE CITY",
+
     "STA. LUCIA EAST SUPERMARKET",
     "STA. LUCIA EAST SUPERMARKET -PHASE 3",
+
     "SUPER MAGIC -MG-3",
     "TROPICAL HUT -BF HOMES",
     "TROPICAL HUT -FTI TAGUIG",
+
   ]); //Branches
 
   // State for the second modal
@@ -1242,7 +1271,7 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
         if (user.emailAddress === modalEmail) {
           return {
             ...user,
-            Branch: selectedBranches.join(", "), // Update the Branch field
+            Branch: selectedBranches.join(","), // Update the Branch field
           };
         }
         return user;
@@ -1435,26 +1464,29 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
     try {
       // Retrieve the logged-in admin's branches from localStorage
       const loggedInBranch = localStorage.getItem("accountNameBranchManning");
-  
+
       console.log("Logged in branch:", loggedInBranch); // Debugging line
-  
+
       if (!loggedInBranch) {
         console.error("No branch information found for the logged-in admin.");
         return;
       }
-  
+
       // Convert the branch string into an array
       const branches = loggedInBranch.split(",").map((branch) => branch.trim());
-  
+
       // Send request to fetch accounts filtered by branches
-      const response = await axios.post("https://latest-backend-towi-admin.onrender.com/get-all-user", {
-        branches
-      });
-  
+      const response = await axios.post(
+        "https://latest-backend-towi-admin.onrender.com/get-all-user",
+        {
+          branches,
+        }
+      );
+
       const data = response.data.data;
-  
+
       console.log("Filtered user data from backend:", data); // Debugging line
-  
+
       // Map the filtered user data for rendering
       const newData = data.map((user, key) => {
         const capitalizedNames = capitalizeWords([
@@ -1462,7 +1494,7 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
           user.middleName || "",
           user.lastName,
         ]);
-  
+
         return {
           count: key + 1,
           remarks: user.remarks,
@@ -1476,14 +1508,13 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
           isActive: user.isActivate,
         };
       });
-  
+
       console.log("Mapped user data for rendering:", newData); // Debugging line
       setUserData(newData); // Update state with mapped user data
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
   }
-  
 
   async function setStatus() {
     console.log("check body", requestBody);
@@ -1547,83 +1578,83 @@ const isAllowed = allowedRoles.includes(roleAccount); // Check if role is allowe
         </div>
 
         <Modal
-  open={openModal}
-  onClose={handleCloseDialog}
-  aria-labelledby="modal-modal-title"
-  aria-describedby="modal-modal-description"
->
-  <Box sx={style}>
-    <Typography id="modal-modal-title" variant="h6" component="h2">
-      Full Details :
-    </Typography>
-    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-      <span className="detailTitle">Full name:</span>
-      <span className="detailDescription">{modalFullName}</span>
-      <br />
-      <span className="detailTitle">Email:</span>
-      <span className="detailDescription">{modalEmail}</span>
-      <br />
-      <span className="detailTitle">Contact Number:</span>
-      <span className="detailDescription">{modalPhone}</span>
-      <br />
-      <span className="detailTitle">Account Branch Name:</span>
-      <span className="detailDescription">
-        {Array.isArray(modalBranch) 
-          ? modalBranch.join(", ") // Join with a comma and space if it's an array
-          : modalBranch}
-      </span>
-      <br />
-      <br />
-      {/* Button to open branch selection modal */}
-      <Button
-        variant="contained"
-        onClick={handleOpenBranchModal}
-        disabled={!isAllowed} 
-      >
-        Select Branch
-      </Button>
-    </Typography>
-    <Stack>
-      <DialogActions>
-        <Button onClick={handleClose}>Close</Button>
-      </DialogActions>
-    </Stack>
-  </Box>
-</Modal>
+          open={openModal}
+          onClose={handleCloseDialog}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Full Details :
+            </Typography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              <span className="detailTitle">Full name:</span>
+              <span className="detailDescription">{modalFullName}</span>
+              <br />
+              <span className="detailTitle">Email:</span>
+              <span className="detailDescription">{modalEmail}</span>
+              <br />
+              <span className="detailTitle">Contact Number:</span>
+              <span className="detailDescription">{modalPhone}</span>
+              <br />
+              <span className="detailTitle">Account Branch Name:</span>
+              <span className="detailDescription">
+                {Array.isArray(modalBranch)
+                  ? modalBranch.join(", ") // Join with a comma and space if it's an array
+                  : modalBranch}
+              </span>
+              <br />
+              <br />
+              {/* Button to open branch selection modal */}
+              <Button
+                variant="contained"
+                onClick={handleOpenBranchModal}
+                disabled={!isAllowed}
+              >
+                Select Branch
+              </Button>
+            </Typography>
+            <Stack>
+              <DialogActions>
+                <Button onClick={handleClose}>Close</Button>
+              </DialogActions>
+            </Stack>
+          </Box>
+        </Modal>
 
-<Dialog
-  open={openBranchModal}
-  onClose={handleCloseBranchModal}
-  aria-labelledby="branch-dialog-title"
-  aria-describedby="branch-dialog-description"
-  fullWidth
-  maxWidth="md"
->
-  <DialogTitle id="branch-dialog-title">Select Branch</DialogTitle>
-  <DialogContent>
-    <Autocomplete
-      multiple
-      id="branches-autocomplete"
-      options={branches}
-      defaultValue={selectedBranches}
-      onChange={(event, value) => setSelectedBranches(value)}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          variant="outlined"
-          label="Select Branch"
-          placeholder="Select Branch"
-        />
-      )}
-    />
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={handleCloseBranchModal}>Cancel</Button>
-    <Button onClick={handleBranchSave} autoFocus>
-      Save
-    </Button>
-  </DialogActions>
-</Dialog>
+        <Dialog
+          open={openBranchModal}
+          onClose={handleCloseBranchModal}
+          aria-labelledby="branch-dialog-title"
+          aria-describedby="branch-dialog-description"
+          fullWidth
+          maxWidth="md"
+        >
+          <DialogTitle id="branch-dialog-title">Select Branch</DialogTitle>
+          <DialogContent>
+            <Autocomplete
+              multiple
+              id="branches-autocomplete"
+              options={branches}
+              defaultValue={selectedBranches}
+              onChange={(event, value) => setSelectedBranches(value)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label="Select Branch"
+                  placeholder="Select Branch"
+                />
+              )}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseBranchModal}>Cancel</Button>
+            <Button onClick={handleBranchSave} autoFocus>
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
 
         <Dialog
           open={openDialog}
