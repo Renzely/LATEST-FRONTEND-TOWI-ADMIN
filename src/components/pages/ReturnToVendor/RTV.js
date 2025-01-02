@@ -170,7 +170,7 @@ export default function RTV() {
       const branches = loggedInBranch.split(",").map((branch) => branch.trim());
   
       // Send request to fetch RTV data filtered by branches
-      const response = await axios.post("https://towiadmin.vercel.app/retrieve-RTV-data", {
+      const response = await axios.post("https://latest-backend-towi-admin.onrender.com/retrieve-RTV-data", {
         branches,
       });
   
@@ -212,7 +212,7 @@ export default function RTV() {
       const branches = loggedInBranch.split(",").map((branch) => branch.trim());
   
       // Send request to filter RTV data by date and branches
-      const response = await axios.post("https://towiadmin.vercel.app/filter-RTV-data", {
+      const response = await axios.post("https://latest-backend-towi-admin.onrender.com/filter-RTV-data", {
         selectDate: selectedDate,
         branches,
       });
@@ -255,7 +255,7 @@ export default function RTV() {
 
     try {
       const response = await axios.post(
-        "https://towiadmin.vercel.app/export-RTV-data",
+        "https://latest-backend-towi-admin.onrender.com/export-RTV-data",
         {
           start: bDate,
           end: eDate,
