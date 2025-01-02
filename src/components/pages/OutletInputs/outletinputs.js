@@ -1142,49 +1142,249 @@ export default function OUTLET() {
   const [selectedBranch, setSelectedBranch] = React.useState(null); // Branch for the modal
   const [users, setUsers] = React.useState([]); // Users to display in the modal
   const [open, setOpen] = React.useState(false); // Modal open state
+  const [delistedSkus, setDelistedSkus] = React.useState({});
+  const [skuCount, setSkuCount] = React.useState({
+    V1: 0,
+    V2: 0,
+    V3: 0,
+  });
 
-  const getToday = () => {
-    const today = new Date();
-    return today.toISOString().split("T")[0]; // Returns date in YYYY-MM-DD format
+  const SKUS = {
+    V1: [
+      "BENG BENG CHOCOLATE 12 X 10 X 26.5G",
+      "BENG BENG SHARE IT 16 X 95G",
+      "CAL CHEESE 10X20X8.5G",
+      "CAL CHEESE 20 X 10 X 20G",
+      "CAL CHEESE 20 X 20 X 8.5G",
+      "CAL CHEESE 60 X 48G",
+      "CAL CHEESE 60X35G",
+      "CAL CHEESE 60X53.5G",
+      "CAL CHEESE CHOCO 20 X 10 X 20.5G",
+      "CAL CHEESE CHOCO 60 X 48G",
+      "DANISA BUTTER COOKIES 12X454G",
+      "MALKIST CAPPUCCINO 30X10X18G PH",
+      "MALKIST CHOCOLATE 30X10X18G",
+      "ROMA Cream Crackers",
+      "SUPERSTAR TRIPLE CHOCOLATE 12 X10 X 18G",
+      "VALMER CHOCOLATE 12X10X54G",
+      "VALMER SANDWICH CHOCOLATE 12X10X36G",
+      "WAFELLO BUTTER CARAMEL 20.5G X 10 X 20",
+      "WAFELLO BUTTER CARAMEL 48G X 60",
+      "WAFELLO CHOCOLATE 21G X 10 X 20",
+      "WAFELLO CHOCOLATE 48G X 60",
+      "WAFELLO COCO CRÈME 48G X 60",
+      "WAFELLO COCO CREME 60X35G",
+      "WAFELLO COCO CREME 60X53.5G",
+      "WAFELLO COCONUT CRÈME 20.5G X 10 X 20",
+      "WAFELLO CREAMY VANILLA 60X48G PH",
+      "WAFELLO CREAMY VANILLA 20X10X20.5G PH",
+      "FRES APPLE PEACH 24 X 50 X 3G",
+      "FRES BARLEY MINT 24X50X3G",
+      "FRES CHERRY CANDY, 24 X 50 X 3G",
+      "FRES CHERRY JAR, 12X 200 X 3G",
+      "FRES GRAPE CANDY, 24 X 50 X 3G",
+      "FRES GRAPE JAR, 12 X 200 X 3G",
+      "FRES MINT BARLEY JAR 12X200X3G",
+      "FRES MIXED CANDY JAR 12 X 600G",
+      "KOPIKO CAPPUCCINO CANDY 24X175G",
+      "KOPIKO COFFEE CANDY 24X175G",
+      "KOPIKO COFFEE CANDY JAR 6X560G",
+      "MALKIST SWEET GLAZED 12X10X28G PH",
+      "MALKIST BARBECUE 12X10X28G PH",
+      "WOW PASTA CARBONARA",
+      "WOW PASTA SPAGHETTI",
+    ],
+    V2: [
+      "Kopiko Blanca hanger 24x10x30g",
+      "Kopiko Blanca Twinpack 12 X 10 X 2 X 29G",
+      "KOPIKO BLANCA, BAG 8 X 30 X 30G",
+      "KOPIKO BLANCA, POUCH 24 X 10 X 30G",
+      "Kopiko Brown Promo Twin 12 x 10 x 53g",
+      "Kopiko Brown Coffee Bag 8x30x27.5g",
+      "Kopiko Black 3 in One Promo Twin 12 x 10 x 2 x 30g",
+      "Kopiko Black 3 in One Hanger 24 x 10 x 30g",
+      "ENERGEN VANILLA HANGER 24 X 10 X 40G",
+      "Kopiko Brown Coffee hg 27.5g 24x10x27.5g",
+      "Kopiko Brown Coffee Pouch 24x10x27.5g",
+      "KOPIKO BLACK 3-IN-1 BAG 8 X 30 X 30G",
+      "KOPIKO BLACK 3-IN-1 POUCH 24 X 10 X 30G",
+      "KOPIKO BLACK 3IN1 TWINPACK 12X10X2X28G",
+      "Kopiko Cappuccino Bag 8x30x25g",
+      "Kopiko Cappuccino Hanger 24 x 10 x 25g",
+      "Kopiko Cappuccino Pouch 24x10x25g",
+      "Kopiko Double Cups 24 x 10 x 36g",
+      "Kopiko L.A. Coffee hanger 24x10x25g",
+      "Kopiko LA Coffee Pouch 24x10x25g",
+      "Energen Chocolate Bag 8x30x40g",
+      "ENERGEN CHOCOLATE HANGER 24 X 10 X 40G",
+      "Energen Chocolate Pouch 24x10x40g",
+      "Energen Vanilla Bag 8x30x40g",
+      "Energen Vanilla Pouch 24x10x40g",
+      "Energen Pandesal Mate 24 x 10 x 30g",
+      "ENERGEN CHAMPION 12X10X2X35G PH",
+      "Energen Champion NBA Hanger 24 x 10 x 35g",
+      "Energen Champion NBA TP 15 x 8 x 2 x30g ph",
+      "Kopiko Creamy Caramelo 12 x (10 x 2) x 25g",
+      "Toracafe White and Creamy 12 X (10 X 2) X 26G",
+      "Kopiko Cafe Mocha TP 12X10X(2X25.5G) PH",
+      "ENERGEN CHAMPION 40X345G",
+      "KOPIKO VOLCANIC DRIP- JAVA 24X10X8G PH",
+      "KOPIKO VOLCANIC DRIP - MANDHELING 24X10X8G PH",
+      "KOPIKO VOLCANIC DRIP - TORAJA 24X10X8G PH",
+    ],
+    V3: [
+      "KOPIKO LUCKY DAY 24BTL X 180ML",
+      "Le Minerale 12x1500ml",
+      "Le Minerale 24x330ml",
+      "Le Minerale 24x600ml",
+      "LE MINERALE 4 X 5000ML",
+    ],
   };
 
-  const fetchInventoryCount = async () => {
-    const today = getToday();
-    const data = { selectDate: today };
+  // const getToday = () => {
+  //   const today = new Date();
+  //   return today.toISOString().split("T")[0]; // Returns date in YYYY-MM-DD format
+  // };
 
+  const getWeekRange = () => {
+    const today = new Date(); // Automatically uses local timezone
+    const dayOfWeek = today.getDay();
+  
+    // Calculate the most recent Friday
+    const lastFriday = new Date(today);
+    lastFriday.setDate(today.getDate() - ((dayOfWeek + 1) % 7)); // Adjust to last Friday
+  
+    // Determine the "active" week based on today
+    const activeFriday = new Date(lastFriday);
+    if (dayOfWeek >= 5) {
+      activeFriday.setDate(lastFriday.getDate() + 7);
+    }
+  
+    // Calculate display range for the previous week (activeFriday - 7 days)
+    const displayStartDate = new Date(activeFriday);
+    displayStartDate.setDate(activeFriday.getDate() - 7); // Previous week's Friday
+  
+    const displayEndDate = new Date(displayStartDate);
+    displayEndDate.setDate(displayStartDate.getDate() + 6); // Previous week's Thursday
+  
+    // Format dates for display range (e.g., Dec 14-20)
+    const formatDate = (date) => {
+      const options = { month: "short", day: "2-digit" };
+      return date.toLocaleDateString("en-PH", options).replace(" ", "");
+    };
+  
+    // Data range for fetching records (activeFriday to activeFriday + 6 days)
+    const startDate = new Date(activeFriday);
+    startDate.setHours(0, 0, 0, 0); // Start of the active Friday (midnight)
+
+    const endDate = new Date(activeFriday);
+    endDate.setDate(activeFriday.getDate() + 6); // Active Friday + 6 (end of the week)
+    endDate.setHours(23, 59, 59, 999); // End of the active week (just before midnight)
+
+    // Return formatted display range and start/end date for backend in ISO format
+    return {
+      displayRange: `${formatDate(displayStartDate)}-${formatDate(displayEndDate)}`, // Previous week's range
+      startDate: startDate.toISOString().split("T")[0], // Start date in ISO format (e.g., 2024-12-20)
+      endDate: endDate.toISOString().split("T")[0], // End date in ISO format (e.g., 2024-12-26)
+    };
+  };
+
+
+  // Update the delisted SKUs state when an SKU's status changes
+const updateDelistedSkuState = (skuStatusChange) => {
+  const { branch, skuStatus } = skuStatusChange;
+
+  // If SKU is delisted, add it to the delisted count for that branch
+  if (skuStatus === 'Delisted') {
+    setDelistedSkus((prevState) => ({
+      ...prevState,
+      [branch]: (prevState[branch] || 0) + 1,
+    }));
+  } else if (skuStatus !== 'Delisted') {
+    // If SKU is no longer delisted, subtract from the count
+    setDelistedSkus((prevState) => ({
+      ...prevState,
+      [branch]: Math.max((prevState[branch] || 0) - 1, 0), // Prevent going below zero
+    }));
+  }
+};
+
+  
+  // Test
+  console.log(getWeekRange());
+
+  const fetchInventoryCount = async () => {
+    const { startDate, endDate } = getWeekRange(); // Get the previous week's date range
+    const data = { startDate, endDate };
+    
     try {
       const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/filter-date",
+        "https://latest-backend-towi-admin.onrender.com/filter-date-range", // Endpoint to filter inventory by date range
         data
       );
+  
       const inventoryData = response.data.data;
-      const counts = {};
-
-      inventoryData.forEach((item) => {
+      const filteredInventoryData = inventoryData.filter((item) => {
+        // Ensure item date is strictly within the startDate and endDate
+        const itemDate = new Date(item.date);
+        return itemDate >= new Date(startDate) && itemDate <= new Date(endDate);
+      });
+  
+      const counts = {}; // Total SKU count per branch
+      const newDelistedSkus = {}; // Track delisted SKUs for this fetch
+  
+      filteredInventoryData.forEach((item) => {
         const branch = item.accountNameBranchManning;
-        if (counts[branch]) {
-          counts[branch] += 1;
-        } else {
-          counts[branch] = 1;
+        
+        // Track delisted SKUs
+        if (item.status === "Delisted") {
+          newDelistedSkus[branch] = (newDelistedSkus[branch] || 0) + 1;
+        }
+  
+        // Track total counts (including non-delisted SKUs)
+        counts[branch] = (counts[branch] || 0) + 1;
+      });
+  
+      // Merge new delisted SKUs with existing state
+      setDelistedSkus((prevState) => {
+        const updatedDelistedSkus = { ...prevState };
+        for (const branch in newDelistedSkus) {
+          updatedDelistedSkus[branch] =
+            (updatedDelistedSkus[branch] || 0) + newDelistedSkus[branch];
+        }
+        return updatedDelistedSkus;
+      });
+  
+      // Ensure every branch has an entry, even if no data was returned
+      branches.forEach((branch) => {
+        // If no data exists for this branch, initialize the count to 0
+        if (!counts[branch]) {
+          counts[branch] = 0; // Set to zero if no data was returned for this branch
         }
       });
-
-      setInventoryCount(counts);
+  
+      setInventoryCount(counts); // Update state with filtered counts
+  
     } catch (error) {
       console.error("Error fetching inventory count:", error);
     }
   };
+  
+  
+  // Fetch inventory count on component mount
+  React.useEffect(() => {
+    fetchInventoryCount();
+  }, []);
+  
 
   const fetchUsersByBranch = async (branch) => {
     try {
-      // Fetch users for the selected branch, regardless of inventory
       const response = await axios.post(
         "https://latest-backend-towi-admin.onrender.com/get-users-by-branch",
         { branch }
       );
       const users = response.data.users;
-
-      // Filter users to ensure uniqueness by name and branch
+  
       const filteredUsers = users.reduce((acc, currentUser) => {
         const userExists = acc.find(
           (user) =>
@@ -1195,11 +1395,10 @@ export default function OUTLET() {
         }
         return acc;
       }, []);
-
-      // Set the filtered users to display in the modal
+  
       setUsers(filteredUsers);
       setSelectedBranch(branch);
-      setOpen(true); // Open the modal
+      setOpen(true);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -1207,14 +1406,40 @@ export default function OUTLET() {
 
   React.useEffect(() => {
     fetchInventoryCount(); // Fetch data when the component mounts
+    const totalSKUs = {
+      V1: SKUS.V1.length,
+      V2: SKUS.V2.length,
+      V3: SKUS.V3.length,
+    };
+    setSkuCount(totalSKUs);
   }, []);
 
-  const rows = branches.map((accountNameBranchManning, index) => ({
-    id: index + 1,
-    branchName: accountNameBranchManning,
-    count: inventoryCount[accountNameBranchManning] || 0, // Show 0 if no inventory
-    date: getToday(),
-  }));
+  const decrementSkuCount = (category) => {
+    setSkuCount((prevCount) => ({
+      ...prevCount,
+      [category]: prevCount[category] > 0 ? prevCount[category] - 1 : 0,
+    }));
+  };
+
+  const rows = branches.map((accountNameBranchManning, index) => {
+    const delistedCount = delistedSkus[accountNameBranchManning] || 0; // Persistent delisted count
+    const totalSkuCount = skuCount.V1 + skuCount.V2 + skuCount.V3 - delistedCount; // Adjusted total SKUs
+  
+    return {
+      id: index + 1,
+      branchName: accountNameBranchManning,
+      count: inventoryCount[accountNameBranchManning] || 0, // Show 0 if no inventory
+      totalSkus: totalSkuCount, // Adjusted total SKUs
+      date: getWeekRange().displayRange, // Correctly referencing the displayRange
+    };
+  });
+  
+  console.log("Branches:", branches);
+console.log("Inventory Count:", inventoryCount);
+console.log("Delisted SKUs:", delistedSkus);
+console.log("Rows Data:", rows);
+
+  
 
   const columns = [
     { field: "id", headerName: "#", width: 75, headerClassName: "bold-header" },
@@ -1231,9 +1456,15 @@ export default function OUTLET() {
       headerClassName: "bold-header",
     },
     {
+      field: "totalSkus",
+      headerName: "TOTAL SKUS",
+      width: 250,
+      headerClassName: "bold-header",
+    },
+    {
       field: "date",
-      headerName: "DATE",
-      width: 200,
+      headerName: "WEEK'S COVERED",
+      width: 250,
       headerClassName: "bold-header",
     },
     {
@@ -1297,14 +1528,12 @@ export default function OUTLET() {
                 width: "50%",
               }}
             >
-              <Typography variant="h6">Merchandiser for {selectedBranch}</Typography>
+              <Typography variant="h6">
+                Merchandiser for {selectedBranch}
+              </Typography>
               <ul>
                 {users.length > 0 ? (
-                  users.map((user) => (
-                    <li key={user._id}>
-                      {user.name}
-                    </li>
-                  ))
+                  users.map((user) => <li key={user._id}>{user.name}</li>)
                 ) : (
                   <Typography>No users available for this branch</Typography>
                 )}
