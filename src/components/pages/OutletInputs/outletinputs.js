@@ -1319,7 +1319,7 @@ const updateDelistedSkuState = (skuStatusChange) => {
     
     try {
       const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/filter-date-range", // Endpoint to filter inventory by date range
+        "https://towiadmin.vercel.app/filter-date-range", // Endpoint to filter inventory by date range
         data
       );
   
@@ -1380,7 +1380,7 @@ const updateDelistedSkuState = (skuStatusChange) => {
   const fetchUsersByBranch = async (branch) => {
     try {
       const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/get-users-by-branch",
+        "https://towiadmin.vercel.app/get-users-by-branch",
         { branch }
       );
       const users = response.data.users;

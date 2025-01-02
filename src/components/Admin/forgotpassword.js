@@ -63,7 +63,7 @@ export default function ForgotPassword() {
       return;
     }
 
-    await axios.post('https://latest-backend-towi-admin.onrender.com/send-otp-forgotpassword', body)
+    await axios.post('https://towiadmin.vercel.app/send-otp-forgotpassword', body)
       .then(async response => {
         const res = await response.data;
         if (res.status === 200) {
@@ -139,7 +139,7 @@ export default function ForgotPassword() {
       password: password
     };
 
-    axios.put('https://latest-backend-towi-admin.onrender.com/forgot-password-reset', body)
+    axios.put('https://towiadmin.vercel.app/forgot-password-reset', body)
       .then(async response => {
         const res = await response.data;
         if (res.status === 200) {
