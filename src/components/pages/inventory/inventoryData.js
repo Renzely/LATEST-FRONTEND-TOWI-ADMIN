@@ -344,7 +344,7 @@ export default function Inventory() {
   async function getDate(selectedDate) {
     const data = { selectDate: selectedDate };
     await axios
-      .post("https://towiadmin.vercel.app/filter-date", data)
+      .post("https://latest-backend-towi-admin.onrender.com/filter-date", data)
       .then(async (response) => {
         const data = await response.data.data;
         console.log(data, "test");
@@ -413,7 +413,7 @@ export default function Inventory() {
 
     try {
       const response = await axios.post(
-        "https://towiadmin.vercel.app/export-inventory-data-towi",
+        "https://latest-backend-towi-admin.onrender.com/export-inventory-data-towi",
         {
           start: bDate,
           end: eDate,

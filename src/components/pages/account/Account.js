@@ -948,7 +948,7 @@ export default function Account() {
     try {
       // Update the user's branches with the selected branches
       const response = await axios.put(
-        "https://towiadmin.vercel.app/update-user-branch",
+        "https://latest-backend-towi-admin.onrender.com/update-user-branch",
         {
           emailAddress: modalEmail,
           branches: selectedBranches,
@@ -1167,7 +1167,7 @@ export default function Account() {
       const branches = loggedInBranch.split(",").map((branch) => branch.trim());
   
       // Send request to fetch accounts filtered by branches
-      const response = await axios.post("https://towiadmin.vercel.app/get-all-user", {
+      const response = await axios.post("https://latest-backend-towi-admin.onrender.com/get-all-user", {
         branches
       });
   
@@ -1209,7 +1209,7 @@ export default function Account() {
     console.log("check body", requestBody);
     await axios
       .put(
-        "https://towiadmin.vercel.app/update-status",
+        "https://latest-backend-towi-admin.onrender.com/update-status",
         requestBody
       )
       .then(async (response) => {

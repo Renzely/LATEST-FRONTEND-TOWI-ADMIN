@@ -142,7 +142,7 @@ export default function Admin() {
   const handleBranchSave = async (email) => {
     try {
       const response = await axios.put(
-        "https://towiadmin.vercel.app/update-user-branch",
+        "https://latest-backend-towi-admin.onrender.com/update-user-branch",
         {
           emailAddress: email, // Use the passed email directly
           branches: selectedBranches,
@@ -1169,7 +1169,7 @@ export default function Admin() {
 
       // Send the emails to the backend
       const response = await axios.post(
-        "https://towiadmin.vercel.app/update-coor-details",
+        "https://latest-backend-towi-admin.onrender.com/update-coor-details",
         {
           emails: selectedEmails,
         }
@@ -1352,7 +1352,7 @@ export default function Admin() {
   async function getUser() {
     try {
       const response = await axios.post(
-        "https://towiadmin.vercel.app/get-all-user"
+        "https://latest-backend-towi-admin.onrender.com/get-all-user"
       );
       const data = response.data.data;
 
@@ -1371,7 +1371,7 @@ export default function Admin() {
   async function getMerchandiserData() {
     try {
       const response = await axios.post(
-        "https://towiadmin.vercel.app/get-all-merchandiser"
+        "https://latest-backend-towi-admin.onrender.com/get-all-merchandiser"
       );
       const data = response.data.data;
 
@@ -1396,7 +1396,7 @@ export default function Admin() {
 
   async function getUser() {
     await axios
-      .post("https://towiadmin.vercel.app/get-admin-user", requestBody)
+      .post("https://latest-backend-towi-admin.onrender.com/get-admin-user", requestBody)
       .then(async (response) => {
         const data = await response.data.data;
 
@@ -1421,7 +1421,7 @@ export default function Admin() {
 
   async function setStatus() {
     await axios
-      .put("https://towiadmin.vercel.app/update-status", requestBody)
+      .put("https://latest-backend-towi-admin.onrender.com/update-status", requestBody)
       .then(async (response) => {
         const data = await response.data.data;
 
@@ -1449,7 +1449,7 @@ export default function Admin() {
     }
 
     await axios
-      .post("https://towiadmin.vercel.app/send-otp-register", {
+      .post("https://latest-backend-towi-admin.onrender.com/send-otp-register", {
         email: adminEmail,
       })
       .then(async (response) => {
@@ -1506,7 +1506,7 @@ export default function Admin() {
       };
 
       axios
-        .post("https://towiadmin.vercel.app/register-user-admin", userDetails)
+        .post("https://latest-backend-towi-admin.onrender.com/register-user-admin", userDetails)
         .then(async (response) => {
           const data = response.data;
 

@@ -929,7 +929,7 @@ export default function OUTLET() {
     if (statusCategory && selectedStatus) {
       try {
         const response = await fetch(
-          `https://towiadmin.vercel.app/get-skus-by-status?branch=${encodeURIComponent(
+          `https://latest-backend-towi-admin.onrender.com/get-skus-by-status?branch=${encodeURIComponent(
             selectedBranch
           )}&statusCategory=${encodeURIComponent(
             statusCategory
@@ -1095,7 +1095,7 @@ export default function OUTLET() {
 
     try {
       const response = await fetch(
-        `https://towiadmin.vercel.app/get-skus?accountNameBranchManning=${encodeURIComponent(
+        `https://latest-backend-towi-admin.onrender.com/get-skus?accountNameBranchManning=${encodeURIComponent(
           branch
         )}`
       );
@@ -1131,7 +1131,7 @@ export default function OUTLET() {
       }));
 
       const response = await fetch(
-        "https://towiadmin.vercel.app/save-branch-sku",
+        "https://latest-backend-towi-admin.onrender.com/save-branch-sku",
         {
           method: "POST",
           body: JSON.stringify({
@@ -1190,7 +1190,7 @@ export default function OUTLET() {
     }
 
     try {
-      const response = await fetch("https://towiadmin.vercel.app/disable-sku", {
+      const response = await fetch("https://latest-backend-towi-admin.onrender.com/disable-sku", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1223,7 +1223,7 @@ export default function OUTLET() {
     }
 
     try {
-      const response = await fetch("https://towiadmin.vercel.app/enable-sku", {
+      const response = await fetch("https://latest-backend-towi-admin.onrender.com/enable-sku", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1258,7 +1258,7 @@ export default function OUTLET() {
     }
 
     try {
-      const response = await fetch("https://towiadmin.vercel.app/delisted-sku", {
+      const response = await fetch("https://latest-backend-towi-admin.onrender.com/delisted-sku", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1293,7 +1293,7 @@ export default function OUTLET() {
 
     try {
       const response = await fetch(
-        "https://towiadmin.vercel.app/update-sku-status",
+        "https://latest-backend-towi-admin.onrender.com/update-sku-status",
         {
           method: "POST",
           headers: {

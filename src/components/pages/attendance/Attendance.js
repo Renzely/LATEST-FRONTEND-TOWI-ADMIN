@@ -154,7 +154,7 @@ export default function Attendance() {
 
   try {
     const response = await axios.post(
-      "https://towiadmin.vercel.app/get-attendance",
+      "https://latest-backend-towi-admin.onrender.com/get-attendance",
       { userEmail: emailAddress, date: formattedDate }
     );
     const data = response.data.data;
@@ -248,7 +248,7 @@ async function getUser() {
     const branches = loggedInBranch.split(",").map((branch) => branch.trim());
 
     // Fetch users filtered by branches
-    const response = await axios.post("https://towiadmin.vercel.app/get-all-user", {
+    const response = await axios.post("https://latest-backend-towi-admin.onrender.com/get-all-user", {
       branches
     });
 

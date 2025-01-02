@@ -49,7 +49,7 @@ const formatDateTime = (dateTime, isTimeIn = false) => {
   async function fetchAttendanceData(emailAddress) {
     try {
       const response = await axios.post(
-        "https://towiadmin.vercel.app/get-attendance",
+        "https://latest-backend-towi-admin.onrender.com/get-attendance",
         { userEmail: emailAddress }
       );
       let data = response.data.data;
