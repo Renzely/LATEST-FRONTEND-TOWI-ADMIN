@@ -49,6 +49,7 @@ export default function Inventory() {
   const [dateBegin, setDateBegin] = React.useState(null);
   const [dateEnd, setDateEnd] = React.useState(null);
   
+  
 
 
   const filterParcelDate = () => {
@@ -339,60 +340,93 @@ export default function Inventory() {
   }
   
   
+  const fetchInventoryByDate = async () => {
+    if (!dateBegin || !dateEnd) {
+      alert("Please select a valid date range.");
+      return;
+    }
   
+    try {
+      const selectedDate = {
+        startDate: dateBegin.format("YYYY-MM-DD"), // Format dates properly
+        endDate: dateEnd.format("YYYY-MM-DD"),
+      };
+  
+      console.log("Sending date range to backend:", selectedDate);
+  
+      await getDate(selectedDate); // Call the updated getDate function
+    } catch (error) {
+      console.error("Error fetching inventory data:", error);
+    }
+  };
   
   async function getDate(selectedDate) {
-    const data = { selectDate: selectedDate };
-    await axios
-      .post("https://latest-backend-towi-admin.onrender.com/filter-date", data)
-      .then(async (response) => {
-        const data = await response.data.data;
-        console.log(data, "test");
+    const data = { 
+      startDate: selectedDate.startDate, 
+      endDate: selectedDate.endDate 
+    }; // Ensure the payload matches the backend expectation
   
-        // Sort the data in descending order by date
-        const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+    try {
+      const response = await axios.post(
+        "https://latest-backend-towi-admin.onrender.com/filter-date-range", // Correct endpoint
+        data
+      );
   
-        const newData = sortedData.map((data, key) => {
-          const value = (status, defaultValue) => {
-            if (status === "Delisted") return "Delisted";
-            if (status === "Not Carried") return "NC";
-            return defaultValue || 0;
-          };
+      const parcels = response.data.data; // Access the data field
+      console.log("Parcels fetched:", parcels);
   
-          return {
-            count: key + 1,
-            date: data.date,
-            inputId: data.inputId,
-            name: data.name,
-            UserEmail: data.userEmail,
-            accountNameBranchManning: data.accountNameBranchManning,
-            period: data.period,
-            month: data.month,
-            week: data.week,
-            category: data.category,
-            skuDescription: data.skuDescription,
-            products: data.products,
-            skuCode: data.skuCode,
-            status: data.status,
-            beginningSA: value(data.status, data.beginningSA),
-            beginningWA: value(data.status, data.beginningWA),
-            beginning: value(data.status, data.beginning),
-            delivery: value(data.status, data.delivery),
-            endingSA: value(data.status, data.endingSA),
-            endingWA: value(data.status, data.endingWA),
-            ending: value(data.status, data.ending),
-            offtake: value(data.status, data.offtake),
-            inventoryDaysLevel: value(data.status, data.inventoryDaysLevel),
-            noOfDaysOOS: value(data.status, data.noOfDaysOOS),
-            remarksOOS: data.remarksOOS,
-            reasonOOS: data.reasonOOS,
-            expiryFields: data.expiryFields,
-          };
-        });
-        console.log(newData, "testing par");
-        setUserData(newData);
+      // Sort the data by date in descending order
+      const sortedData = parcels.sort(
+        (a, b) => new Date(b.date) - new Date(a.date)
+      );
+  
+      const newData = sortedData.map((data, key) => {
+        const value = (status, defaultValue) => {
+          if (status === "Delisted") return "Delisted";
+          if (status === "Not Carried") return "NC";
+          return defaultValue || 0;
+        };
+  
+        return {
+          count: key + 1,
+          date: data.date,
+          inputId: data.inputId,
+          name: data.name,
+          UserEmail: data.userEmail,
+          accountNameBranchManning: data.accountNameBranchManning,
+          period: data.period,
+          month: data.month,
+          week: data.week,
+          category: data.category,
+          skuDescription: data.skuDescription,
+          products: data.products,
+          skuCode: data.skuCode,
+          status: data.status,
+          beginningSA: value(data.status, data.beginningSA),
+          beginningWA: value(data.status, data.beginningWA),
+          beginning: value(data.status, data.beginning),
+          delivery: value(data.status, data.delivery),
+          endingSA: value(data.status, data.endingSA),
+          endingWA: value(data.status, data.endingWA),
+          ending: value(data.status, data.ending),
+          offtake: value(data.status, data.offtake),
+          inventoryDaysLevel: value(data.status, data.inventoryDaysLevel),
+          noOfDaysOOS: value(data.status, data.noOfDaysOOS),
+          remarksOOS: data.remarksOOS,
+          reasonOOS: data.reasonOOS,
+          expiryFields: data.expiryFields,
+        };
       });
+  
+      console.log("Mapped data:", newData);
+      setUserData(newData); // Set data to render in the DataGrid
+    } catch (error) {
+      console.error("Error fetching inventory data:", error);
+    }
   }
+  
+  
+  
   
 
   React.useEffect(() => {
@@ -557,48 +591,61 @@ export default function Inventory() {
       <div className="container">
         <Sidebar />
         <div style={{ height: "100%", width: "85%", marginLeft: "100" }}>
-
-        <Stack
+          <Stack
             direction={{ xs: "column", md: "row", sm: "row" }}
             spacing={{ xs: 1, sm: 2, md: 4 }}
-
             sx={{ marginBottom: "20px", marginTop: "10px" }}
           >
             <div className="MuiStack-root">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
-                  label="Select Date"
+                  label="Start Date"
                   onChange={(newValue) => setDateBegin(newValue)}
                   slotProps={{ textField: { size: "small" } }}
                 />
               </LocalizationProvider>
-
+  
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
-                  label="Select Date"
+                  label="End Date"
                   onChange={(newValue) => setDateEnd(newValue)}
                   slotProps={{ textField: { size: "small" } }}
                 />
               </LocalizationProvider>
-
+  
               <Button
                 onClick={getExportData}
                 variant="contained"
                 sx={{
-                  marginLeft: 1, // Equivalent to 5px spacing
-                  backgroundColor: "rgb(33, 148, 29)", // Custom background color
-                  color: "white", // Text color
+                  marginLeft: 1,
+                  backgroundColor: "rgb(33, 148, 29)",
+                  color: "white",
                   "&:hover": {
-                    backgroundColor: "rgb(33, 148, 29)", // Hover background color
+                    backgroundColor: "rgb(33, 148, 29)",
                   },
                 }}
               >
                 Export
               </Button>
+  
+              {/* Button for Inventory Data */}
+              <Button
+                onClick={fetchInventoryByDate}
+                variant="contained"
+                sx={{
+                  marginLeft: 1,
+                  backgroundColor: "rgb(25, 118, 210)",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "rgb(21, 101, 192)",
+                  },
+                }}
+              >
+                Show Inventory
+              </Button>
             </div>
           </Stack>
           <DataGrid
-          
             rows={userData}
             columns={columns}
             initialState={{
@@ -624,24 +671,8 @@ export default function Inventory() {
             getRowId={(row) => row.count}
           />
         </div>
-
-     
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Text in a modal
-            </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-            </Typography>
-          </Box>
-        </Modal>
       </div>
     </div>
   );
+
 }
