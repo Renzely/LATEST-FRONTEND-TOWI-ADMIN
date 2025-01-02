@@ -282,7 +282,7 @@ export default function Inventory() {
   
       // Fetch the inventory data filtered by branches
       const response = await axios.post(
-        "http://192.168.50.55:8080/retrieve-parcel-data",
+        "https://latest-backend-towi-admin.onrender.com/retrieve-parcel-data",
         { branches } // Pass branches in the request body
       );
   
