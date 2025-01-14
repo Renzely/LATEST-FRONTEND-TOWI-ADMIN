@@ -1379,16 +1379,35 @@ const updateDelistedSkuState = (skuStatusChange) => {
 
   const fetchUsersByBranch = async (branch) => {
     try {
-      const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/get-users-by-branch",
-        { branch }
-      );
+      // Retrieve the logged-in admin's branches from localStorage
+      const loggedInBranch = localStorage.getItem("accountNameBranchManning");
+  
+      console.log("Logged in branch:", loggedInBranch); // Debugging line
+  
+      if (!loggedInBranch) {
+        console.error("No branch information found for the logged-in admin.");
+        return;
+      }
+  
+      // Convert the branch string into an array
+      const branches = loggedInBranch.split(",").map((branch) => branch.trim());
+  
+      // Send request to fetch users filtered by the branches
+      const response = await axios.post("https://latest-backend-towi-admin.onrender.com/get-users-by-branch", {
+        branches, // Pass all the allowed branches
+      });
+  
       const users = response.data.users;
   
-      const filteredUsers = users.reduce((acc, currentUser) => {
+      // Ensure we only keep users whose branch is in the logged-in branches
+      const filteredUsers = users.filter((currentUser) =>
+        branches.includes(currentUser.branch) // Only include users from allowed branches
+      );
+  
+      // If you want to make sure there are no duplicate users, you can do this:
+      const uniqueUsers = filteredUsers.reduce((acc, currentUser) => {
         const userExists = acc.find(
-          (user) =>
-            user.name === currentUser.name && user.branch === currentUser.branch
+          (user) => user.name === currentUser.name && user.branch === currentUser.branch
         );
         if (!userExists) {
           acc.push(currentUser);
@@ -1396,14 +1415,17 @@ const updateDelistedSkuState = (skuStatusChange) => {
         return acc;
       }, []);
   
-      setUsers(filteredUsers);
-      setSelectedBranch(branch);
-      setOpen(true);
+      // Set the filtered users
+      setUsers(uniqueUsers); // Update the state with filtered and unique users
+      setSelectedBranch(branch); // Set the selected branch
+      setOpen(true); // Open the user interface modal or section
+  
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching branches:", error);
     }
   };
-
+  
+  
   React.useEffect(() => {
     fetchInventoryCount(); // Fetch data when the component mounts
     const totalSKUs = {
@@ -1421,10 +1443,24 @@ const updateDelistedSkuState = (skuStatusChange) => {
     }));
   };
 
-  const rows = branches.map((accountNameBranchManning, index) => {
+  const rows = branches
+  .filter((accountNameBranchManning) => {
+    // Retrieve the logged-in admin's branches from localStorage
+    const loggedInBranch = localStorage.getItem("accountNameBranchManning");
+
+    if (!loggedInBranch) {
+      console.error("No branch information found for the logged-in admin.");
+      return false; // Prevents branches from being included if no branch info is found
+    }
+
+    // Convert the branch string into an array and check if the current branch is in the allowed branches
+    const allowedBranches = loggedInBranch.split(",").map((branch) => branch.trim());
+    return allowedBranches.includes(accountNameBranchManning); // Filter branches based on logged-in admin's branches
+  })
+  .map((accountNameBranchManning, index) => {
     const delistedCount = delistedSkus[accountNameBranchManning] || 0; // Persistent delisted count
     const totalSkuCount = skuCount.V1 + skuCount.V2 + skuCount.V3 - delistedCount; // Adjusted total SKUs
-  
+
     return {
       id: index + 1,
       branchName: accountNameBranchManning,
@@ -1433,6 +1469,7 @@ const updateDelistedSkuState = (skuStatusChange) => {
       date: getWeekRange().displayRange, // Correctly referencing the displayRange
     };
   });
+
   
   console.log("Branches:", branches);
 console.log("Inventory Count:", inventoryCount);
