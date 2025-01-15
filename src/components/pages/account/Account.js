@@ -22,7 +22,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useDemoData } from "@mui/x-data-grid-generator";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import { Autocomplete } from "@mui/material";
+import { Checkbox, Autocomplete } from "@mui/material";
 
 const style = {
   position: "absolute",
@@ -1267,107 +1267,134 @@ export default function Account() {
         </div>
 
         <Modal
-          open={openModal}
-          onClose={handleCloseDialog}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Full Details :
-            </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              <span className="detailTitle">Full name:</span>
-              <span className="detailDescription">{modalFullName}</span>
-              <br />
-              <span className="detailTitle">Email:</span>
-              <span className="detailDescription">{modalEmail}</span>
-              <br />
-              <span className="detailTitle">Contact Number:</span>
-              <span className="detailDescription">{modalPhone}</span>
-              <br />
-              <span className="detailTitle">Account Branch Name:</span>
-              <span className="detailDescription">
-                {Array.isArray(modalBranch)
-                  ? modalBranch.join(", ") // Join with a comma and space if it's an array
-                  : modalBranch}
-              </span>
-              <br />
-              <br />
-              {/* Button to open branch selection modal */}
-              <Button
-                variant="contained"
-                onClick={handleOpenBranchModal}
-                disabled={!isAllowed}
-              >
-                Select Branch
-              </Button>
-            </Typography>
-            <Stack>
-              <DialogActions>
-                <Button onClick={handleClose}>Close</Button>
-              </DialogActions>
-            </Stack>
-          </Box>
-        </Modal>
+  open={openModal}
+  onClose={handleCloseDialog}
+  aria-labelledby="modal-modal-title"
+  aria-describedby="modal-modal-description"
+>
+  <Box sx={style}>
+    <Typography id="modal-modal-title" variant="h6" component="h2">
+      Full Details:
+    </Typography>
+    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+      <span className="detailTitle">Full name:</span>
+      <span className="detailDescription">{modalFullName}</span>
+      <br />
+      <span className="detailTitle">Email:</span>
+      <span className="detailDescription">{modalEmail}</span>
+      <br />
+      <span className="detailTitle">Contact Number:</span>
+      <span className="detailDescription">{modalPhone}</span>
+      <br />
+      <span className="detailTitle">Account Branch Name:</span>
+      <span className="detailDescription">
+        {Array.isArray(modalBranch)
+          ? modalBranch.join(", ") // Join with a comma and space if it's an array
+          : modalBranch}
+      </span>
+      <br />
+      <br />
+      {/* Button to open branch selection modal */}
+      <Button
+        variant="contained"
+        onClick={handleOpenBranchModal}
+        disabled={!isAllowed}
+      >
+        Select Branch
+      </Button>
+    </Typography>
+    <Stack>
+      <DialogActions>
+        <Button onClick={handleClose}>Close</Button>
+      </DialogActions>
+    </Stack>
+  </Box>
+</Modal>
 
-        <Dialog
-          open={openBranchModal}
-          onClose={handleCloseBranchModal}
-          aria-labelledby="branch-dialog-title"
-          aria-describedby="branch-dialog-description"
-          fullWidth
-          maxWidth="md"
-        >
-          <DialogTitle id="branch-dialog-title">Select Branch</DialogTitle>
-          <DialogContent>
-            <Autocomplete
-              multiple
-              id="branches-autocomplete"
-              options={branches}
-              defaultValue={selectedBranches}
-              onChange={(event, value) => setSelectedBranches(value)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  label="Select Branch"
-                  placeholder="Select Branch"
-                />
-              )}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseBranchModal}>Cancel</Button>
-            <Button onClick={handleBranchSave} autoFocus>
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
+{/* Branch Selection Dialog */}
+<Dialog
+  open={openBranchModal}
+  onClose={handleCloseBranchModal}
+  aria-labelledby="branch-dialog-title"
+  aria-describedby="branch-dialog-description"
+  fullWidth
+  maxWidth="md"
+>
+  <DialogTitle id="branch-dialog-title">Select Branch</DialogTitle>
+  <DialogContent
+    sx={{
+      maxHeight: '60vh', // Limit DialogContent height to 60% of the viewport
+      overflowY: 'auto', // Add vertical scrolling for content overflow
+    }}
+  >
+    <Autocomplete
+      multiple
+      id="branches-autocomplete"
+      options={branches} // Array of available branches
+      defaultValue={selectedBranches} // Pre-selected branches
+      onChange={(event, value) => setSelectedBranches(value)} // Update state on selection
+      disableCloseOnSelect // Keep dropdown open after each selection
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          variant="outlined"
+          label="Select Branch"
+          placeholder="Select Branch"
+        />
+      )}
+      renderOption={(props, option, { selected }) => (
+        <li {...props}>
+          <Checkbox
+            style={{ marginRight: 8 }}
+            checked={selected} // Display checkbox for selected items
+          />
+          {option}
+        </li>
+      )}
+    />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseBranchModal}>Cancel</Button>
+    <Button
+      onClick={handleBranchSave}
+      autoFocus
+      variant="contained"
+      sx={{
+        backgroundColor: 'rgb(17, 148, 39)',
+        color: 'white',
+        '&:hover': {
+          backgroundColor: 'rgb(13, 105, 28)',
+        },
+      }}
+    >
+      Save
+    </Button>
+  </DialogActions>
+</Dialog>
 
-        <Dialog
-          open={openDialog}
-          onClose={handleCloseDialog}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {"Account Activation"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              {updateStatus
-                ? "Are you sure you want to set this user as active?"
-                : "Are you sure you want to set this user as inactive?"}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Cancel</Button>
-            <Button onClick={setStatus} autoFocus>
-              Confirm
-            </Button>
-          </DialogActions>
-        </Dialog>
+{/* Account Activation Confirmation Dialog */}
+<Dialog
+  open={openDialog}
+  onClose={handleCloseDialog}
+  aria-labelledby="alert-dialog-title"
+  aria-describedby="alert-dialog-description"
+>
+  <DialogTitle id="alert-dialog-title">{"Account Activation"}</DialogTitle>
+  <DialogContent>
+    <DialogContentText id="alert-dialog-description">
+      {updateStatus
+        ? "Are you sure you want to set this user as active?"
+        : "Are you sure you want to set this user as inactive?"}
+    </DialogContentText>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseDialog}>Cancel</Button>
+    <Button onClick={setStatus} autoFocus>
+      Confirm
+    </Button>
+  </DialogActions>
+</Dialog>
+
       </div>
     </div>
   );

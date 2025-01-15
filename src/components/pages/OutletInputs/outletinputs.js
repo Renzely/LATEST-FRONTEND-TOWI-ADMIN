@@ -1137,8 +1137,9 @@ export default function OUTLET() {
     "TROPICAL HUT -BF HOMES",
     "TROPICAL HUT -FTI TAGUIG",
   ]);
-
+  const [delistedCountsCurrentWeek, setDelistedCountsCurrentWeek] = React.useState({});
   const [inventoryCount, setInventoryCount] = React.useState({});
+  const [notCarriedCount, setNotCarriedCount] = React.useState({});
   const [selectedBranch, setSelectedBranch] = React.useState(null); // Branch for the modal
   const [users, setUsers] = React.useState([]); // Users to display in the modal
   const [open, setOpen] = React.useState(false); // Modal open state
@@ -1314,62 +1315,90 @@ const updateDelistedSkuState = (skuStatusChange) => {
   console.log(getWeekRange());
 
   const fetchInventoryCount = async () => {
-    const { startDate, endDate } = getWeekRange(); // Get the previous week's date range
+    const { startDate, endDate } = getWeekRange(); // Current week's date range
     const data = { startDate, endDate };
-    
+  
     try {
       const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/filter-date-range", // Endpoint to filter inventory by date range
+        "https://latest-backend-towi-admin.onrender.com/filter-date-range",
         data
       );
   
       const inventoryData = response.data.data;
       const filteredInventoryData = inventoryData.filter((item) => {
-        // Ensure item date is strictly within the startDate and endDate
         const itemDate = new Date(item.date);
-        return itemDate >= new Date(startDate) && itemDate <= new Date(endDate);
+        return itemDate >= new Date(startDate) && itemDate <= new Date(endDate); // Filter for current week
       });
   
-      const counts = {}; // Total SKU count per branch
-      const newDelistedSkus = {}; // Track delisted SKUs for this fetch
+      const carriedCounts = {};
+      const notCarriedCounts = {};
+      const delistedCountsCumulative = { ...delistedSkus }; // Persistent delisted counts
   
       filteredInventoryData.forEach((item) => {
         const branch = item.accountNameBranchManning;
-        
-        // Track delisted SKUs
+  
+        // "Carried" count
+        if (item.status === "Carried") {
+          carriedCounts[branch] = (carriedCounts[branch] || 0) + 1;
+        }
+  
+        // "Not Carried" count
+        if (item.status === "Not Carried") {
+          notCarriedCounts[branch] = (notCarriedCounts[branch] || 0) + 1;
+        }
+  
+        // Cumulative "Delisted" count
         if (item.status === "Delisted") {
-          newDelistedSkus[branch] = (newDelistedSkus[branch] || 0) + 1;
+          delistedCountsCumulative[branch] = (delistedCountsCumulative[branch] || 0) + 1; // Increment cumulative
         }
-  
-        // Track total counts (including non-delisted SKUs)
-        counts[branch] = (counts[branch] || 0) + 1;
       });
   
-      // Merge new delisted SKUs with existing state
-      setDelistedSkus((prevState) => {
-        const updatedDelistedSkus = { ...prevState };
-        for (const branch in newDelistedSkus) {
-          updatedDelistedSkus[branch] =
-            (updatedDelistedSkus[branch] || 0) + newDelistedSkus[branch];
-        }
-        return updatedDelistedSkus;
-      });
-  
-      // Ensure every branch has an entry, even if no data was returned
+      // Ensure all branches are accounted for
       branches.forEach((branch) => {
-        // If no data exists for this branch, initialize the count to 0
-        if (!counts[branch]) {
-          counts[branch] = 0; // Set to zero if no data was returned for this branch
-        }
+        carriedCounts[branch] = carriedCounts[branch] || 0;
+        notCarriedCounts[branch] = notCarriedCounts[branch] || 0;
+        delistedCountsCumulative[branch] = delistedCountsCumulative[branch] || delistedSkus[branch] || 0;
       });
   
-      setInventoryCount(counts); // Update state with filtered counts
-  
+      // Update state for cumulative and current week counts
+      setInventoryCount(carriedCounts);
+      setNotCarriedCount(notCarriedCounts);
+      setDelistedSkus(delistedCountsCumulative); // Persist cumulative delisted counts
     } catch (error) {
       console.error("Error fetching inventory count:", error);
     }
   };
   
+  
+  const rows = branches
+  .filter((accountNameBranchManning) => {
+    const loggedInBranch = localStorage.getItem("accountNameBranchManning");
+    if (!loggedInBranch) {
+      console.error("No branch information found for the logged-in admin.");
+      return false;
+    }
+    const allowedBranches = loggedInBranch.split(",").map((branch) => branch.trim());
+    return allowedBranches.includes(accountNameBranchManning);
+  })
+  .map((accountNameBranchManning, index) => {
+    const cumulativeDelistedCount = delistedSkus[accountNameBranchManning] || 0; // Cumulative delisted counts
+    const totalSkuCount = skuCount.V1 + skuCount.V2 + skuCount.V3 - cumulativeDelistedCount; // Use cumulative subtraction
+    const notCarriedCountValue = notCarriedCount[accountNameBranchManning] || 0;
+
+    return {
+      id: index + 1,
+      branchName: accountNameBranchManning,
+      count: inventoryCount[accountNameBranchManning] || 0,
+      totalSkus: totalSkuCount, // Reflect cumulative delisted count adjustment
+      totalNC: notCarriedCountValue,
+      date: getWeekRange().displayRange,
+    };
+  });
+
+  
+
+
+
   
   // Fetch inventory count on component mount
   React.useEffect(() => {
@@ -1443,32 +1472,6 @@ const updateDelistedSkuState = (skuStatusChange) => {
     }));
   };
 
-  const rows = branches
-  .filter((accountNameBranchManning) => {
-    // Retrieve the logged-in admin's branches from localStorage
-    const loggedInBranch = localStorage.getItem("accountNameBranchManning");
-
-    if (!loggedInBranch) {
-      console.error("No branch information found for the logged-in admin.");
-      return false; // Prevents branches from being included if no branch info is found
-    }
-
-    // Convert the branch string into an array and check if the current branch is in the allowed branches
-    const allowedBranches = loggedInBranch.split(",").map((branch) => branch.trim());
-    return allowedBranches.includes(accountNameBranchManning); // Filter branches based on logged-in admin's branches
-  })
-  .map((accountNameBranchManning, index) => {
-    const delistedCount = delistedSkus[accountNameBranchManning] || 0; // Persistent delisted count
-    const totalSkuCount = skuCount.V1 + skuCount.V2 + skuCount.V3 - delistedCount; // Adjusted total SKUs
-
-    return {
-      id: index + 1,
-      branchName: accountNameBranchManning,
-      count: inventoryCount[accountNameBranchManning] || 0, // Show 0 if no inventory
-      totalSkus: totalSkuCount, // Adjusted total SKUs
-      date: getWeekRange().displayRange, // Correctly referencing the displayRange
-    };
-  });
 
   
   console.log("Branches:", branches);
@@ -1483,15 +1486,23 @@ console.log("Rows Data:", rows);
     {
       field: "branchName",
       headerName: "ACCOUNT BRANCH",
-      width: 400,
+      width: 200,
       headerClassName: "bold-header",
     },
     {
       field: "count",
-      headerName: "INVENTORY COUNT (Today)",
+      headerName: "CARRIED COUNT (WEEKLY)",
       width: 250,
       headerClassName: "bold-header",
     },
+    //new table Total Not Carried
+    {
+      field: "totalNC",
+      headerName: "NOT CARRIED COUNT (WEEKLY)",
+      width: 320,
+      headerClassName: "bold-header",
+    },
+
     {
       field: "totalSkus",
       headerName: "TOTAL SKUS",

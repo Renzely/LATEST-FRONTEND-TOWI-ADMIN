@@ -1673,120 +1673,136 @@ export default function Admin() {
   aria-labelledby="modal-modal-title"
   aria-describedby="modal-modal-description"
 >
-  <Box sx={style}>
-    {/* Scrollable container */}
-    <Box
-      sx={{
-        maxHeight: '80vh', // Limit height to 80% of the viewport
-        overflowY: 'auto', // Enable vertical scrolling
-        padding: '16px', // Optional padding for content
-      }}
-    >
-      <Stack spacing={3}>
-        <p>Full Details :</p>
+<Box sx={{ ...style, maxWidth: '80vw' }}>
+  {/* Scrollable container */}
+  <Box
+    sx={{
+      maxHeight: '80vh', // Limit height to 80% of the viewport
+      overflowY: 'auto', // Enable vertical scrolling
+      padding: '16px', // Optional padding for content
+      display: 'flex',
+      flexDirection: 'column',
+    }}
+  >
+    <Stack spacing={3}>
+      <p>Full Details :</p>
 
-        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-          <span className="detailTitle">OUTLETS:</span>{" "}
-          <span className="detailDescription">
-            {Array.isArray(adminViewBranch)
-              ? adminViewBranch.join(", ") // Display branches in text
-              : adminViewBranch}
-          </span>
-          <br />
-          <br />
-        </Typography>
+      <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+        <span className="detailTitle">OUTLETS:</span>{" "}
+        <span className="detailDescription">
+          {Array.isArray(adminViewBranch)
+            ? adminViewBranch.join(", ") // Display branches in text
+            : adminViewBranch}
+        </span>
+        <br />
+        <br />
+      </Typography>
 
-        {/* Autocomplete with pre-selected branches */}
-        <Autocomplete
-          multiple
-          id="branches-autocomplete"
-          options={branches} // Available branch options
-          value={selectedBranches} // Pre-selected branches from state
-          onChange={(event, newValue) => setSelectedBranches(newValue)} // Update state on change
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="outlined"
-              label="Select Outlet"
-              placeholder="Select Outlet"
+      {/* Dropdown for selecting branches */}
+      <Autocomplete
+        multiple
+        id="branches-autocomplete"
+        options={branches} // Available branch options
+        value={selectedBranches} // Pre-selected branches from state
+        onChange={(event, newValue) => setSelectedBranches(newValue)} // Update state on change
+        disableCloseOnSelect // Keep dropdown open after selecting an item
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="outlined"
+            label="Select Outlet"
+            placeholder="Select Outlet"
+          />
+        )}
+        renderOption={(props, option, { selected }) => (
+          <li {...props}>
+            <Checkbox
+              style={{ marginRight: 8 }}
+              checked={selected} // Checkbox shows selected state
             />
-          )}
-        />
+            {option}
+          </li>
+        )}
+      />
 
-        {/* Buttons for Select All and Remove All */}
-        <Stack
-          direction="row"
-          spacing={2}
-          justifyContent="center" // Center the buttons horizontally
-          sx={{ marginBottom: 2 }} // Optional margin for spacing below
-        >
-          <Button
-            onClick={() => setSelectedBranches(branches)} // Select all branches
-            variant="outlined"
-            sx={{
-              backgroundColor: "rgb(130, 204, 136)", // Light background for "outlined" button
-              color: "rgb(26, 20, 71)", // Text color
-              borderColor: "rgb(26, 20, 71)", // Border color
-              "&:hover": {
-                backgroundColor: "rgb(20, 165, 75)", // Hover effect
-              },
-            }}
-          >
-            Select All
-          </Button>
-          <Button
-            onClick={() => setSelectedBranches([])} // Clear all selections
-            variant="outlined"
-            sx={{
-              backgroundColor: "rgb(255, 220, 220)", // Light red background for "outlined" button
-              color: "rgb(0, 0, 0)", // Text color
-              borderColor: "rgb(33, 151, 43)", // Border color
-              "&:hover": {
-                backgroundColor: "rgb(255, 190, 190)", // Hover effect
-              },
-            }}
-          >
-            Remove All
-          </Button>
-        </Stack>
-
+      {/* Buttons */}
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="center"
+        sx={{ marginBottom: 2 }}
+      >
         <Button
-          onClick={() => handleBranchSave(adminViewEmail)} // Call save function
-          variant="contained"
+          onClick={() => setSelectedBranches(branches)}
+          variant="outlined"
           sx={{
-            backgroundColor: "rgb(17, 148, 39)", // Dark background color
-            color: "white", // Text color
+            backgroundColor: "rgb(130, 204, 136)",
+            color: "rgb(26, 20, 71)",
+            borderColor: "rgb(26, 20, 71)",
             "&:hover": {
-              backgroundColor: "rgb(13, 105, 28)", // Hover background color
+              backgroundColor: "rgb(20, 165, 75)",
             },
           }}
         >
-          Save Outlet Changes
+          Select All
         </Button>
-
-        <TextField
-          label="Email"
-          id="outlined-read-only-input"
-          defaultValue={adminViewEmail}
-          InputProps={{
-            readOnly: true,
+        <Button
+          onClick={() => setSelectedBranches([])}
+          variant="outlined"
+          sx={{
+            backgroundColor: "rgb(255, 220, 220)",
+            color: "rgb(0, 0, 0)",
+            borderColor: "rgb(33, 151, 43)",
+            "&:hover": {
+              backgroundColor: "rgb(255, 190, 190)",
+            },
           }}
-        />
-        <TextField
-          label="Contact Number"
-          id="outlined-read-only-input"
-          defaultValue={adminViewPhone}
-          InputProps={{
-            readOnly: true,
-          }}
-        />
-
-        <DialogActions>
-          <Button onClick={handleViewCloseModal}>Close</Button>
-        </DialogActions>
+        >
+          Remove All
+        </Button>
       </Stack>
-    </Box>
+
+      {/* Save Button */}
+      <Button
+        onClick={() => handleBranchSave(adminViewEmail)}
+        variant="contained"
+        sx={{
+          backgroundColor: "rgb(17, 148, 39)",
+          color: "white",
+          "&:hover": {
+            backgroundColor: "rgb(13, 105, 28)",
+          },
+        }}
+      >
+        Save Outlet Changes
+      </Button>
+
+      {/* Read-only fields */}
+      <TextField
+        label="Email"
+        id="outlined-read-only-input"
+        defaultValue={adminViewEmail}
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+      <TextField
+        label="Contact Number"
+        id="outlined-read-only-input"
+        defaultValue={adminViewPhone}
+        InputProps={{
+          readOnly: true,
+        }}
+      />
+
+      {/* Close Button */}
+      <DialogActions>
+        <Button onClick={handleViewCloseModal}>Close</Button>
+      </DialogActions>
+    </Stack>
   </Box>
+</Box>
+
 </Modal>
 
 
