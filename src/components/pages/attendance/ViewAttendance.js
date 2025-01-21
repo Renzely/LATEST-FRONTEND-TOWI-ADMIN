@@ -81,101 +81,107 @@ export default function ViewAttendance() {
     );
   };
 
-// Fetch attendance history for a specific user
-async function fetchAttendanceData(emailAddress) {
-  try {
-    // Fetch all users
-    const userResponse = await axios.post(
-      "https://latest-backend-towi-admin.onrender.com/get-all-user",
-      {}
-    );
-    const users = userResponse.data.data;
+  // Fetch attendance data for the specific user
+  async function fetchAttendanceData(emailAddress) {
+    try {
+      // Fetch all user data
+      const userResponse = await axios.post(
+        "https://latest-backend-towi-admin.onrender.com/get-all-user",
+        {}
+      );
+      const users = userResponse.data.data;
 
-    // Find the specific user
-    const user = users.find((u) => u.emailAddress === emailAddress);
+      // Find the user matching the provided email address
+      const user = users.find((u) => u.emailAddress === emailAddress);
 
-    if (!user) {
-      console.error("User not found for email:", emailAddress);
-      return alert("User not found.");
+      if (!user) {
+        console.error("User not found for email:", emailAddress);
+        return alert("User not found.");
+      }
+
+      const { firstName, middleName, lastName } = user;
+
+      // Capitalize names
+      const capitalizedNames = capitalizeWords([
+        firstName,
+        middleName || "",
+        lastName,
+      ]);
+
+      // Fetch attendance data
+      const attendanceResponse = await axios.post(
+        "https://latest-backend-towi-admin.onrender.com/get-attendance",
+        { userEmail: emailAddress }
+      );
+      let data = attendanceResponse.data.data;
+
+      console.log("Raw attendance data:", data);
+
+      // Format data including fullName and timeLogs for each day entry
+      const formattedData = data.flatMap((item) => {
+        return item.timeLogs.map((timeLog, index) => {
+          const formattedDate = formatDateTime(item.date);
+          const formattedTimeIn = formatDateTime(timeLog.timeIn);
+          const formattedTimeOut = formatDateTime(timeLog.timeOut);
+
+          return {
+            ...item,
+            fullName: `${capitalizedNames[0]} ${capitalizedNames[2]}`,
+            date: formattedDate.date || "N/A",
+            timeIn: formattedTimeIn.time || "No Time In",
+            timeOut: formattedTimeOut.time || "No Time Out",
+            timeInLocation: timeLog.timeInLocation || "No location",
+            timeOutLocation: timeLog.timeOutLocation || "No location",
+            timeInCoordinates: timeLog.timeInCoordinates || {
+              latitude: 0,
+              longitude: 0,
+            },
+            timeOutCoordinates: timeLog.timeOutCoordinates || {
+              latitude: 0,
+              longitude: 0,
+            },
+            selfieUrl: timeLog.selfieUrl || "", // Add selfieUrl here
+            accountNameBranchManning:
+              item.accountNameBranchManning || "Unknown Outlet",
+            count: index + 1, // Assign count based on the index of the timeLog
+          };
+        });
+      });
+
+      console.log("Formatted data:", formattedData);
+
+      // Sort data by date in descending order
+      // Sort data by date in descending order (latest first)
+      formattedData.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+
+        // First, sort by date in descending order
+        if (dateA > dateB) return -1;
+        if (dateA < dateB) return 1;
+
+        // If dates are equal, sort within each day from newest to oldest
+        if (a.timeLogs.length === b.timeLogs.length) {
+          return b.timeLogs[b.timeLogs.length - 1].timeIn.localeCompare(
+            a.timeLogs[a.timeLogs.length - 1].timeIn
+          );
+        }
+
+        // If one day has more entries than the other, put it last
+        return a.timeLogs.length - b.timeLogs.length;
+      });
+      console.log("Sorted data:", formattedData);
+
+      // Update the count field to match the sorted order
+      formattedData.forEach((item, index) => {
+        item.count = index + 1;
+      });
+
+      setAttendanceData(formattedData);
+    } catch (error) {
+      console.error("Error fetching attendance data:", error);
     }
-
-    const { firstName, middleName, lastName } = user;
-
-    // Capitalize names for display
-    const capitalizedNames = capitalizeWords([
-      firstName,
-      middleName || "",
-      lastName,
-    ]);
-
-    // Fetch attendance data for the user
-    const attendanceResponse = await axios.post(
-      "https://latest-backend-towi-admin.onrender.com/get-attendance",
-      { userEmail: emailAddress }
-    );
-    let data = attendanceResponse.data.data;
-
-    console.log("Raw attendance data:", data);
-
-    // Format attendance data
-    const formattedData = data.flatMap((entry) =>
-      entry.timeLogs.map((timeLog, index) => {
-        const formattedDate = formatDateTime(entry.date);
-        const formattedTimeIn = formatDateTime(timeLog.timeIn);
-        const formattedTimeOut = formatDateTime(timeLog.timeOut);
-
-        return {
-          count: index + 1,
-          fullName: `${capitalizedNames[0]} ${capitalizedNames[2]}`,
-          date: formattedDate.date || "N/A",
-          timeIn: formattedTimeIn.time || "No Time In",
-          timeOut: formattedTimeOut.time || "No Time Out",
-          timeInLocation: timeLog.timeInLocation || "No location",
-          timeOutLocation: timeLog.timeOutLocation || "No location",
-          timeInCoordinates: timeLog.timeInCoordinates || {
-            latitude: 0,
-            longitude: 0,
-          },
-          timeOutCoordinates: timeLog.timeOutCoordinates || {
-            latitude: 0,
-            longitude: 0,
-          },
-          selfieUrl: timeLog.selfieUrl || "", // Add selfie URL if present
-          accountNameBranchManning:
-            entry.accountNameBranchManning || "Unknown Outlet",
-        };
-      })
-    );
-
-    console.log("Formatted attendance data:", formattedData);
-
-    // Sort data by date and time in descending order
-    formattedData.sort((a, b) => {
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
-
-      // First, sort by date in descending order
-      if (dateA > dateB) return -1;
-      if (dateA < dateB) return 1;
-
-      // If dates are equal, sort by time in descending order
-      return b.timeIn.localeCompare(a.timeIn);
-    });
-
-    console.log("Sorted attendance data:", formattedData);
-
-    // Update count to match sorted order
-    formattedData.forEach((item, index) => {
-      item.count = index + 1;
-    });
-
-    setAttendanceData(formattedData);
-  } catch (error) {
-    console.error("Error fetching attendance data:", error);
-    alert("An error occurred while fetching attendance data.");
   }
-}
-
 
   // Fetch attendance data when userEmail changes
   useEffect(() => {
@@ -230,9 +236,9 @@ async function fetchAttendanceData(emailAddress) {
                 }
               }}
               sx={{
-                backgroundColor: "rgb(15, 125, 18)", // Set the background color
+                backgroundColor: "rgb(33, 148, 29)", // Set the background color
                 "&:hover": {
-                  backgroundColor: "rgb(15, 125, 18)", // Set the hover background color
+                  backgroundColor: "rgb(33, 148, 29)", // Set the hover background color
                 },
                 cursor: selfieUrl ? "pointer" : "not-allowed", // Disable the pointer cursor if no image
               }}
@@ -305,9 +311,9 @@ async function fetchAttendanceData(emailAddress) {
               size="small"
               onClick={onClick}
               sx={{
-                backgroundColor: "rgb(15, 125, 18)", // Set the background color
+                backgroundColor: "rgb(33, 148, 29)", // Set the background color
                 "&:hover": {
-                  backgroundColor: "rgb(15, 125, 18)", // Set the hover background color
+                  backgroundColor: "rgb(33, 148, 29)", // Set the hover background color
                 },
               }}
             >
@@ -385,9 +391,9 @@ async function fetchAttendanceData(emailAddress) {
               size="small"
               onClick={onClick}
               sx={{
-                backgroundColor: "rgb(15, 125, 18)", // Set the background color
+                backgroundColor: "rgb(33, 148, 29)", // Set the background color
                 "&:hover": {
-                  backgroundColor: "rgb(15, 125, 18)", // Set the hover background color
+                  backgroundColor: "rgb(33, 148, 29)", // Set the hover background color
                 },
                 cursor: isCoordinatesAvailable ? "pointer" : "not-allowed", // Change cursor based on coordinates
               }}
@@ -402,7 +408,7 @@ async function fetchAttendanceData(emailAddress) {
     {
       field: "accountNameBranchManning",
       headerName: "OUTLET",
-      width: 400,
+      width: 180,
       headerClassName: "bold-header",
     },
   ];
