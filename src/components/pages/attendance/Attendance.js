@@ -75,7 +75,7 @@ export default function Attendance() {
     {
       field: "outlet",
       headerName: "OUTLET",
-      width: 400,
+      width: 180,
       headerClassName: "bold-header",
     }, // New outlet column
     {
@@ -114,7 +114,7 @@ export default function Attendance() {
               <Button
                 variant="contained"
                 size="small"
-                style={{ backgroundColor: "#0f7d12", color: "#ffffff" }} // Green color with white text
+                style={{ backgroundColor: "rgb(33, 148, 29)", color: "#ffffff" }} // Green color with white text
               >
                 VIEW
               </Button>
@@ -222,34 +222,69 @@ export default function Attendance() {
 
   async function getUser() {
     try {
+      // Fetch the users' data
+      const response = await axios.post(
+        "https://latest-backend-towi-admin.onrender.com/get-all-user",
+        body
+      );
+      const data = response.data.data;
+
+      // Retrieve the logged-in admin's branches from localStorage
       const loggedInBranch = localStorage.getItem("accountNameBranchManning");
-  
+
       if (!loggedInBranch) {
         console.error("No branch information found for the logged-in admin.");
         return;
       }
-  
-      const loggedInBranches = loggedInBranch.split(",").map((branch) => branch.trim());
-  
-      // Fetch users by branches
-      const { data } = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/get-all-user",
-        { branches: loggedInBranches }
-      );
-  
-      const users = data.data; // Users filtered by branches from the backend
-  
-      // Fetch attendance for each user and build the final user data
-      const validUsers = await Promise.all(
-        users.map(async (user, key) => {
-          const currentAttendance = await fetchCurrentAttendance(user.emailAddress);
-  
+
+      // Split the logged-in branches string into an array for comparison
+      const loggedInBranches = loggedInBranch
+        .split(",")
+        .map((branch) => branch.trim());
+
+      // Process users
+      const filteredData = await Promise.all(
+        data.map(async (user, key) => {
+          // if (user.emailAddress === "ynsonharold@gmail.com") {
+          //   return null;
+          // }
+          // Fetch attendance for each user
+          const attendance = await fetchCurrentAttendance(
+            user.emailAddress
+          ).catch(() => null);
+
+          // Determine the displayed branch
+          let displayedBranch = "No Branch";
+
+          if (attendance && attendance.timeIn) {
+            // Check if attendance branch matches admin's branches
+            const isBranchMatching = loggedInBranches.some((branch) =>
+              attendance.accountNameBranchManning.includes(branch)
+            );
+
+            if (isBranchMatching) {
+              displayedBranch = attendance.accountNameBranchManning; // Use attendance branch if it matches
+            }
+          }
+
+          // Exclude users whose branches do not match, even if they have attendance
+          if (
+            displayedBranch === "No Branch" &&
+            !loggedInBranches.some((branch) =>
+              user.accountNameBranchManning.includes(branch)
+            )
+          ) {
+            return null; // Exclude this user by returning null
+          }
+
+          // Capitalize names
           const capitalizedNames = capitalizeWords([
             user.firstName,
             user.middleName || "",
             user.lastName,
           ]);
-  
+
+          // Include user data with attendance or placeholders
           return {
             count: key + 1,
             fullName: `${capitalizedNames[0]} ${capitalizedNames[2]}`,
@@ -257,21 +292,23 @@ export default function Attendance() {
             middleName: capitalizedNames[1] || "Null",
             lastName: capitalizedNames[2],
             emailAddress: user.emailAddress,
-            outlet: currentAttendance.accountNameBranchManning || "No Branch", // Use attendance branch or default "No Branch"
-            date: currentAttendance.date || "No Date",
-            timeIn: currentAttendance.timeIn,
-            timeOut: currentAttendance.timeOut,
+            outlet: displayedBranch, // Show branch based on attendance or "No Branch"
+            date: attendance?.date || "No Date", // Placeholder if no date is available
+            timeIn: attendance?.timeIn || "No Time In", // Placeholder if no timeIn
+            timeOut: attendance?.timeOut || "No Time Out", // Placeholder if no timeOut
           };
         })
       );
-  
-      setUserData(validUsers); // Update the state to display the data
+
+      // Remove null values (excluded users)
+      const validUsers = filteredData.filter((user) => user !== null);
+
+      // Set the filtered data to state
+      setUserData(validUsers);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
   }
-  
-  
 
   React.useEffect(() => {
     getUser();
