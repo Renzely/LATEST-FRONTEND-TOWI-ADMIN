@@ -9,6 +9,7 @@ import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 import Topbar from "../../topbar/Topbar";
 import Sidebar from "../../sidebar/Sidebar";
+import { format } from "date-fns";
 
 const style = {
   position: "absolute",
@@ -22,7 +23,6 @@ const style = {
   p: 4,
 };
 
-// DateTime Formatter Function (from ViewAttendance.js)
 const formatDateTime = (dateTime, isTimeIn = false) => {
   if (!dateTime) return isTimeIn ? "No Time In" : "No Time Out";
 
@@ -36,20 +36,18 @@ const formatDateTime = (dateTime, isTimeIn = false) => {
   const adjustedDateObj = new Date(dateObj.getTime() + offset * 60 * 1000);
 
   // Format the date
-  const year = adjustedDateObj.getFullYear();
-  const month = String(adjustedDateObj.getMonth() + 1).padStart(2, '0');
-  const day = String(adjustedDateObj.getDate()).padStart(2, '0');
+  const formattedDate = format(dateObj, "dd-MM-yyyy");
 
-  const formattedDate = `${month}-${day}-${year}`;
-
-  // Format the time
-  const hours = String(adjustedDateObj.getHours()).padStart(2, '0');
-  const minutes = String(adjustedDateObj.getMinutes()).padStart(2, '0');
-  const ampm = adjustedDateObj.getHours() >= 12 ? 'PM' : 'AM';
+  // Format the time in 12-hour h:mm AM/PM format
+  const hours = adjustedDateObj.getHours() % 12 || 12; // Converts 0 to 12 for 12-hour format
+  const minutes = String(adjustedDateObj.getMinutes()).padStart(2, "0");
+  const ampm = adjustedDateObj.getHours() >= 12 ? "PM" : "AM";
 
   const formattedTime = `${hours}:${minutes} ${ampm}`;
 
-  return isTimeIn ? { date: formattedDate, time: formattedTime } : { date: formattedDate, time: formattedTime };
+  return isTimeIn
+    ? { date: formattedDate, time: formattedTime }
+    : { date: formattedDate, time: formattedTime };
 };
 
 export default function Attendance() {
@@ -64,61 +62,50 @@ export default function Attendance() {
     {
       field: "count",
       headerName: "#",
-      width: 100,
+      width: 75,
       headerClassName: "bold-header",
     },
     {
-      field: "firstName",
-      headerName: "First name",
-      width: 150,
+      field: "fullName",
+      headerName: "FULL NAME",
+      width: 200,
       headerClassName: "bold-header",
     },
+
     {
-      field: "middleName",
-      headerName: "Middle name",
-      width: 150,
+      field: "outlet",
+      headerName: "OUTLET",
+      width: 400,
       headerClassName: "bold-header",
-    },
-    {
-      field: "lastName",
-      headerName: "Last name",
-      width: 150,
-      headerClassName: "bold-header",
-    },
-    {
-      field: "emailAddress",
-      headerName: "Email",
-      width: 250,
-      headerClassName: "bold-header",
-    },
+    }, // New outlet column
     {
       field: "date",
-      headerName: "Date",
-      width: 180,
+      headerName: "DATE",
+      width: 150,
       headerClassName: "bold-header",
     },
     {
       field: "timeIn",
-      headerName: "Time In",
+      headerName: "TIME IN",
       width: 150,
       headerClassName: "bold-header",
     },
     {
       field: "timeOut",
-      headerName: "Time Out",
+      headerName: "TIME OUT",
       width: 150,
       headerClassName: "bold-header",
     },
     {
       field: "action",
-      headerName: "Action",
+      headerName: "ATTENDANCE HISTORY",
       headerClassName: "bold-header",
       width: 180,
       sortable: false,
       disableClickEventBubbling: true,
       renderCell: (params) => {
         return (
-          <Stack>
+          <Stack style={{ marginTop: 0, alignItems: "center" }}>
             <Link
               to="/view-attendance"
               state={{ userEmail: params.row.emailAddress }} // Pass email via state
@@ -127,9 +114,9 @@ export default function Attendance() {
               <Button
                 variant="contained"
                 size="small"
-                style={{ backgroundColor: "#4caf50", color: "#ffffff" }} // Green color with white text
+                style={{ backgroundColor: "#0f7d12", color: "#ffffff" }} // Green color with white text
               >
-                Attendance
+                VIEW
               </Button>
             </Link>
           </Stack>
@@ -138,160 +125,190 @@ export default function Attendance() {
     },
   ];
 
- // Function to fetch current attendance for a user
- async function fetchCurrentAttendance(
-  emailAddress,
-  currentDate = new Date()
-) {
-  // Format date as dd-MM-yyyy
-  const formattedDate = `${String(currentDate.getDate()).padStart(
-    2,
-    "0"
-  )}-${String(currentDate.getMonth() + 1).padStart(
-    2,
-    "0"
-  )}-${currentDate.getFullYear()}`;
+  async function fetchCurrentAttendance(
+    emailAddress,
+    currentDate = new Date()
+  ) {
+    // Format date as dd-MM-yyyy
+    const formattedDate = `${String(currentDate.getDate()).padStart(
+      2,
+      "0"
+    )}-${String(currentDate.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${currentDate.getFullYear()}`;
 
-  try {
-    const response = await axios.post(
-      "https://latest-backend-towi-admin.onrender.com/get-attendance",
-      { userEmail: emailAddress, date: formattedDate }
-    );
-    const data = response.data.data;
+    try {
+      const response = await axios.post(
+        "https://latest-backend-towi-admin.onrender.com/get-attendance",
+        { userEmail: emailAddress, date: formattedDate }
+      );
+      const data = response.data.data;
 
-    if (!Array.isArray(data)) {
-      throw new Error("Invalid data format");
-    }
+      if (!Array.isArray(data)) {
+        throw new Error("Invalid data format");
+      }
 
-    if (data.length === 0) {
-      // No logs found, return default values
+      if (data.length === 0) {
+        // No logs found, return default values
+        return {
+          date: formattedDate,
+          timeIn: "No Time In",
+          timeOut: "No Time Out",
+          accountNameBranchManning: "",
+        };
+      }
+
+      const latestLog = data[data.length - 1];
+      const latestLogDate = latestLog.date.split("T")[0]; // Assuming date is in ISO format
+      const latestFormattedDate = latestLogDate.split("-").reverse().join("-"); // Convert to dd-MM-yyyy
+
+      let accountNameBranchManning = latestLog.accountNameBranchManning || "";
+
+      if (latestFormattedDate !== formattedDate) {
+        // New day has started, reset attendance and set branch to "No Branch"
+        return {
+          date: formattedDate,
+          timeIn: "No Time In",
+          timeOut: "No Time Out",
+          accountNameBranchManning: "No Branch",
+        };
+      }
+
+      if (!latestLog.timeLogs || latestLog.timeLogs.length === 0) {
+        return {
+          date: formattedDate,
+          timeIn: "No Time In",
+          timeOut: "No Time Out",
+          accountNameBranchManning: accountNameBranchManning,
+        };
+      }
+
+      const timeLog = latestLog.timeLogs[latestLog.timeLogs.length - 1];
+
+      const timeIn = timeLog.timeIn
+        ? formatDateTime(timeLog.timeIn).time
+        : "No Time In";
+      const timeOut = timeLog.timeOut
+        ? formatDateTime(timeLog.timeOut).time
+        : "No Time Out";
+
+      return {
+        date: timeLog.timeIn
+          ? timeLog.timeIn.slice(0, 10).split("-").reverse().join("-")
+          : formattedDate,
+        timeIn: timeIn,
+        timeOut: timeOut,
+        accountNameBranchManning: accountNameBranchManning,
+      };
+    } catch (error) {
+      console.error("Error fetching attendance:", error);
       return {
         date: formattedDate,
-        timeIn: "No Time In",
-        timeOut: "No Time Out",
+        timeIn: "Error",
+        timeOut: "Error",
         accountNameBranchManning: "",
       };
     }
-
-    const latestLog = data[data.length - 1];
-    const latestLogDate = latestLog.date.split("T")[0]; // Assuming date is in ISO format
-    const latestFormattedDate = latestLogDate.split("-").reverse().join("-"); // Convert to dd-MM-yyyy
-
-    let accountNameBranchManning = latestLog.accountNameBranchManning || "";
-
-    if (latestFormattedDate !== formattedDate) {
-      // New day has started, reset attendance and set branch to "No Branch"
-      return {
-        date: formattedDate,
-        timeIn: "No Time In",
-        timeOut: "No Time Out",
-        accountNameBranchManning: "No Branch",
-      };
-    }
-
-    if (!latestLog.timeLogs || latestLog.timeLogs.length === 0) {
-      return {
-        date: formattedDate,
-        timeIn: "No Time In",
-        timeOut: "No Time Out",
-        accountNameBranchManning: accountNameBranchManning,
-      };
-    }
-
-    const timeLog = latestLog.timeLogs[latestLog.timeLogs.length - 1];
-
-    const timeIn = timeLog.timeIn
-      ? formatDateTime(timeLog.timeIn).time
-      : "No Time In";
-    const timeOut = timeLog.timeOut
-      ? formatDateTime(timeLog.timeOut).time
-      : "No Time Out";
-
-    return {
-      date: timeLog.timeIn
-        ? timeLog.timeIn.slice(0, 10).split("-").reverse().join("-")
-        : formattedDate,
-      timeIn: timeIn,
-      timeOut: timeOut,
-      accountNameBranchManning: accountNameBranchManning,
-    };
-  } catch (error) {
-    console.error("Error fetching attendance:", error);
-    return {
-      date: formattedDate,
-      timeIn: "Error",
-      timeOut: "Error",
-      accountNameBranchManning: "",
-    };
   }
-}
 
-const capitalizeWords = (words) => {
-  if (!words || !Array.isArray(words)) return [];
+  const capitalizeWords = (words) => {
+    if (!words || !Array.isArray(words)) return [];
 
-  return words.map((word) =>
-    word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : ""
-  );
-};
-
-async function getUser() {
-  try {
-    // Retrieve the logged-in admin's branches from localStorage
-    const loggedInBranch = localStorage.getItem("accountNameBranchManning");
-
-    if (!loggedInBranch) {
-      console.error("No branch information found for the logged-in admin.");
-      return;
-    }
-
-    // Split the branches into an array
-    const branches = loggedInBranch.split(",").map((branch) => branch.trim());
-
-    // Fetch users filtered by branches
-    const response = await axios.post("https://latest-backend-towi-admin.onrender.com/get-all-user", {
-      branches
-    });
-
-    const data = response.data.data;
-
-    // Process users and map the attendance
-    const filteredData = await Promise.all(
-      data.map(async (user, key) => {
-        const attendance = await fetchCurrentAttendance(
-          user.emailAddress
-        ).catch(() => null);
-
-        const displayedBranch = attendance?.accountNameBranchManning || "No Branch";
-
-        // Capitalize names
-        const capitalizedNames = capitalizeWords([
-          user.firstName,
-          user.middleName || "",
-          user.lastName,
-        ]);
-
-        return {
-          count: key + 1,
-          fullName: `${capitalizedNames[0]} ${capitalizedNames[2]}`,
-          firstName: capitalizedNames[0],
-          middleName: capitalizedNames[1] || "Null",
-          lastName: capitalizedNames[2],
-          emailAddress: user.emailAddress,
-          outlet: displayedBranch,
-          date: attendance?.date || "No Date",
-          timeIn: attendance?.timeIn || "No Time In",
-          timeOut: attendance?.timeOut || "No Time Out",
-        };
-      })
+    return words.map((word) =>
+      word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : ""
     );
+  };
 
-    // Set the filtered data to state
-    setUserData(filteredData);
-  } catch (error) {
-    console.error("Error fetching user data:", error);
+  async function getUser() {
+    try {
+      // Fetch the users' data
+      const response = await axios.post(
+        "https://latest-backend-towi-admin.onrender.com/get-all-user",
+        body
+      );
+      const data = response.data.data;
+
+      // Retrieve the logged-in admin's branches from localStorage
+      const loggedInBranch = localStorage.getItem("accountNameBranchManning");
+
+      if (!loggedInBranch) {
+        console.error("No branch information found for the logged-in admin.");
+        return;
+      }
+
+      // Split the logged-in branches string into an array for comparison
+      const loggedInBranches = loggedInBranch
+        .split(",")
+        .map((branch) => branch.trim());
+
+      // Process users
+      const filteredData = await Promise.all(
+        data.map(async (user, key) => {
+          // if (user.emailAddress === "ynsonharold@gmail.com") {
+          //   return null;
+          // }
+          // Fetch attendance for each user
+          const attendance = await fetchCurrentAttendance(
+            user.emailAddress
+          ).catch(() => null);
+
+          // Determine the displayed branch
+          let displayedBranch = "No Branch";
+
+          if (attendance && attendance.timeIn) {
+            // Check if attendance branch matches admin's branches
+            const isBranchMatching = loggedInBranches.some((branch) =>
+              attendance.accountNameBranchManning.includes(branch)
+            );
+
+            if (isBranchMatching) {
+              displayedBranch = attendance.accountNameBranchManning; // Use attendance branch if it matches
+            }
+          }
+
+          // Exclude users whose branches do not match, even if they have attendance
+          if (
+            displayedBranch === "No Branch" &&
+            !loggedInBranches.some((branch) =>
+              user.accountNameBranchManning.includes(branch)
+            )
+          ) {
+            return null; // Exclude this user by returning null
+          }
+
+          // Capitalize names
+          const capitalizedNames = capitalizeWords([
+            user.firstName,
+            user.middleName || "",
+            user.lastName,
+          ]);
+
+          // Include user data with attendance or placeholders
+          return {
+            count: key + 1,
+            fullName: `${capitalizedNames[0]} ${capitalizedNames[2]}`,
+            firstName: capitalizedNames[0],
+            middleName: capitalizedNames[1] || "Null",
+            lastName: capitalizedNames[2],
+            emailAddress: user.emailAddress,
+            outlet: displayedBranch, // Show branch based on attendance or "No Branch"
+            date: attendance?.date || "No Date", // Placeholder if no date is available
+            timeIn: attendance?.timeIn || "No Time In", // Placeholder if no timeIn
+            timeOut: attendance?.timeOut || "No Time Out", // Placeholder if no timeOut
+          };
+        })
+      );
+
+      // Remove null values (excluded users)
+      const validUsers = filteredData.filter((user) => user !== null);
+
+      // Set the filtered data to state
+      setUserData(validUsers);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
   }
-}
-
 
   React.useEffect(() => {
     getUser();
@@ -302,7 +319,7 @@ async function getUser() {
       <Topbar />
       <div className="container">
         <Sidebar />
-        <div style={{ height: "100%", width: "85%", marginLeft: "100" }}>
+        <div style={{ height: "100%", width: "100%", marginLeft: "100" }}>
           <DataGrid
             rows={userData}
             columns={columns}
@@ -316,7 +333,7 @@ async function getUser() {
               toolbar: {
                 showQuickFilter: true,
                 printOptions: { disableToolbarButton: true },
-                csvOptions: { disableToolbarButton: false },
+                csvOptions: { disableToolbarButton: true },
               },
             }}
             pageSizeOptions={[5, 10, 20, 50, 100]}
