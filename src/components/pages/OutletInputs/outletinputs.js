@@ -1408,51 +1408,54 @@ const updateDelistedSkuState = (skuStatusChange) => {
 
   const fetchUsersByBranch = async (branch) => {
     try {
-      // Retrieve the logged-in admin's branches from localStorage
+      // Set the selected branch to display it in the modal header
+      setSelectedBranch(branch);
+  
       const loggedInBranch = localStorage.getItem("accountNameBranchManning");
-  
-      console.log("Logged in branch:", loggedInBranch); // Debugging line
-  
       if (!loggedInBranch) {
         console.error("No branch information found for the logged-in admin.");
         return;
       }
   
-      // Convert the branch string into an array
-      const branches = loggedInBranch.split(",").map((branch) => branch.trim());
+      const branches = loggedInBranch.split(",").map(b => b.trim());
   
-      // Send request to fetch users filtered by the branches
+      // Sending the branch info in the POST request to backend
       const response = await axios.post("https://latest-backend-towi-admin.onrender.com/get-users-by-branch", {
-        branches, // Pass all the allowed branches
+        branches,
       });
   
       const users = response.data.users;
+      console.log("Received users from the backend:", users);
   
-      // Ensure we only keep users whose branch is in the logged-in branches
-      const filteredUsers = users.filter((currentUser) =>
-        branches.includes(currentUser.branch) // Only include users from allowed branches
-      );
+      const filteredUsers = users.filter(user => {
+        // Determine which branches the user has access to
+        const userBranches = Array.isArray(user.accountNameBranchManning)
+          ? user.accountNameBranchManning
+          : user.accountNameBranchManning.split(",").map(b => b.trim());
+        
+        console.log("user branches:", userBranches, "Selected Branch:", branch);
+        
+        return userBranches.includes(branch);  // Ensure matching branch
+      });
   
-      // If you want to make sure there are no duplicate users, you can do this:
-      const uniqueUsers = filteredUsers.reduce((acc, currentUser) => {
-        const userExists = acc.find(
-          (user) => user.name === currentUser.name && user.branch === currentUser.branch
-        );
-        if (!userExists) {
-          acc.push(currentUser);
-        }
-        return acc;
-      }, []);
+      console.log("Filtered users based on branch:", filteredUsers);
   
-      // Set the filtered users
-      setUsers(uniqueUsers); // Update the state with filtered and unique users
-      setSelectedBranch(branch); // Set the selected branch
-      setOpen(true); // Open the user interface modal or section
+      const uniqueUsers = [...new Map(users.map(user => [`${user._id}-${user.name}`, user])).values()];
+
+      
   
+      console.log("Unique users after filtering:", uniqueUsers);
+  
+      // Set the filtered and unique users to state
+      setUsers(uniqueUsers);
+  
+      // Open the modal to show the users for the selected branch
+      setOpen(true);
     } catch (error) {
-      console.error("Error fetching branches:", error);
+      console.error("Error fetching users:", error);
     }
-  };
+};
+ 
   
   
   React.useEffect(() => {
@@ -1529,7 +1532,7 @@ console.log("Rows Data:", rows);
           View
         </Button>
       ),
-    },
+    }    
   ];
 
   return (
@@ -1566,29 +1569,41 @@ console.log("Rows Data:", rows);
             getRowId={(row) => row.id}
           />
 
-          {/* Modal to display users */}
-          <Modal open={open} onClose={() => setOpen(false)}>
-            <Box
-              sx={{
-                padding: 4,
-                backgroundColor: "white",
-                margin: "auto",
-                width: "50%",
-              }}
-            >
-              <Typography variant="h6">
-                Merchandiser for {selectedBranch}
-              </Typography>
-              <ul>
-                {users.length > 0 ? (
-                  users.map((user) => <li key={user._id}>{user.name}</li>)
-                ) : (
-                  <Typography>No users available for this branch</Typography>
-                )}
-              </ul>
-              <Button onClick={() => setOpen(false)}>Close</Button>
-            </Box>
-          </Modal>
+<Modal open={open} onClose={() => setOpen(false)}>
+  <Box
+    sx={{
+      padding: 4,
+      backgroundColor: "white",
+      margin: "auto",
+      width: "50%",
+    }}
+  >
+    <Typography variant="h6">
+      Merchandiser for {selectedBranch}
+    </Typography>
+    <ul>
+      {users.length > 0 ? (
+        users
+          .filter(user => {
+            const userBranches = Array.isArray(user.accountNameBranchManning)
+              ? user.accountNameBranchManning
+              : user.accountNameBranchManning.split(",").map(b => b.trim());
+              
+            return userBranches.includes(selectedBranch);  // Filter by selected branch
+          })
+          .map((user) => (
+            <li key={`${user._id}-${user.firstName}-${user.lastName}`}>
+              {`${user.firstName} ${user.lastName}`}
+            </li>
+          ))
+      ) : (
+        <Typography>No users available for this branch.</Typography>
+      )}
+    </ul>
+    <Button onClick={() => setOpen(false)}>Close</Button>
+  </Box>
+</Modal>
+
         </div>
       </div>
     </div>
