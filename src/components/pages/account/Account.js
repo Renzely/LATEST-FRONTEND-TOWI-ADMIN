@@ -1153,56 +1153,41 @@ export default function Account() {
 
   async function getUser() {
     try {
-      // Retrieve the logged-in admin's branches from localStorage
       const loggedInBranch = localStorage.getItem("accountNameBranchManning");
-  
-      console.log("Logged in branch:", loggedInBranch); // Debugging line
-  
+      console.log("Logged in branch:", loggedInBranch);
       if (!loggedInBranch) {
-        console.error("No branch information found for the logged-in admin.");
+        console.error("No branch information found.");
         return;
       }
-  
-      // Convert the branch string into an array
       const branches = loggedInBranch.split(",").map((branch) => branch.trim());
+      console.log("Branches sent to backend:", branches);
   
-      // Send request to fetch accounts filtered by branches
       const response = await axios.post("https://latest-backend-towi-admin.onrender.com/get-all-user", {
-        branches
+        branches,
       });
+      console.log("Response from backend:", response.data);
   
       const data = response.data.data;
+      const newData = data.map((user, key) => ({
+        count: key + 1,
+        remarks: user.remarks,
+        firstName: capitalizeWords([user.firstName])[0],
+        middleName: capitalizeWords([user.middleName || ""])[0] || "Null",
+        lastName: capitalizeWords([user.lastName])[0],
+        username: user.username,
+        Branch: user.accountNameBranchManning,
+        emailAddress: user.emailAddress,
+        contactNum: user.contactNum,
+        isActive: user.isActivate,
+      }));
   
-      console.log("Filtered user data from backend:", data); // Debugging line
-  
-      // Map the filtered user data for rendering
-      const newData = data.map((user, key) => {
-        const capitalizedNames = capitalizeWords([
-          user.firstName,
-          user.middleName || "",
-          user.lastName,
-        ]);
-  
-        return {
-          count: key + 1,
-          remarks: user.remarks,
-          firstName: capitalizedNames[0],
-          middleName: capitalizedNames[1] || "Null",
-          lastName: capitalizedNames[2],
-          username: user.username,
-          Branch: user.accountNameBranchManning,
-          emailAddress: user.emailAddress,
-          contactNum: user.contactNum,
-          isActive: user.isActivate,
-        };
-      });
-  
-      console.log("Mapped user data for rendering:", newData); // Debugging line
-      setUserData(newData); // Update state with mapped user data
+      console.log("Mapped data:", newData);
+      setUserData(newData);
     } catch (error) {
-      console.error("Error fetching user data:", error);
+      console.error("Error:", error);
     }
   }
+  
   
 
   async function setStatus() {
