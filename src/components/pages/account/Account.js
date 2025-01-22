@@ -929,7 +929,8 @@ export default function Account() {
     "WELLCOME-FARMERS",
     "WELLCOME-MANHATTAN",
     "WELLCOME-PARDO",
-    "Branch"
+    "HEAD OFFICE",
+    "Branch",
 
 
   ]); //Branches
