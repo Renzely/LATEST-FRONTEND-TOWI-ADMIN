@@ -333,7 +333,7 @@ export default function ViewAttendance() {
     {
       field: "timeOutSelfieUrl",
       headerName: "TIME OUT PHOTO",
-      width: 120,
+      width: 150,
       headerClassName: "bold-header",
       renderCell: (params) => {
         const timeOutSelfieUrl = params.row.timeOutSelfieUrl;
@@ -443,7 +443,7 @@ export default function ViewAttendance() {
     {
       field: "accountNameBranchManning",
       headerName: "OUTLET",
-      width: 180,
+      width: 400,
       headerClassName: "bold-header",
     },
   ];
@@ -522,6 +522,7 @@ export default function ViewAttendance() {
         "Time In Photo",
         "Time In Location",
         "Time Out",
+        "Time Out Photo",
         "Time Out Location",
         "Account Name/Branch Manning",
       ];
@@ -539,6 +540,7 @@ export default function ViewAttendance() {
           timeOut: log.timeOut
             ? formatDateTime(log.timeOut).time
             : "No Time Out",
+          timeOutSelfieUrl: log.timeOutSelfieUrl || "No location",
           timeOutLocation: log.timeOutLocation || "No location",
           accountNameBranchManning:
             item.accountNameBranchManning || "Unknown Outlet",
