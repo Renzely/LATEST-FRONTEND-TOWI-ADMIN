@@ -141,6 +141,7 @@ export default function ViewAttendance() {
               longitude: 0,
             },
             selfieUrl: timeLog.selfieUrl || "", // Add selfieUrl here
+            timeOutSelfieUrl: timeLog.timeOutSelfieUrl || '', // Time-out selfie
             accountNameBranchManning:
               item.accountNameBranchManning || "Unknown Outlet",
             count: index + 1, // Assign count based on the index of the timeLog
@@ -328,6 +329,40 @@ export default function ViewAttendance() {
       headerName: "TIME OUT",
       width: 120,
       headerClassName: "bold-header",
+    },
+    {
+      field: "timeOutSelfieUrl",
+      headerName: "TIME OUT PHOTO",
+      width: 120,
+      headerClassName: "bold-header",
+      renderCell: (params) => {
+        const timeOutSelfieUrl = params.row.timeOutSelfieUrl;
+  
+        return (
+          <Stack style={{ marginTop: 10, alignItems: "center" }}>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={() => {
+                if (timeOutSelfieUrl) {
+                  handleOpenPhotoModal(timeOutSelfieUrl);
+                } else {
+                  alert("Selfie not available");
+                }
+              }}
+              sx={{
+                backgroundColor: "rgb(33, 148, 29)",
+                "&:hover": {
+                  backgroundColor: "rgb(33, 148, 29)",
+                },
+                cursor: timeOutSelfieUrl ? "pointer" : "not-allowed",
+              }}
+            >
+              {timeOutSelfieUrl ? <VisibilityIcon /> : <VisibilityOffIcon />}
+            </Button>
+          </Stack>
+        );
+      },
     },
     {
       field: "timeOutLocation",
