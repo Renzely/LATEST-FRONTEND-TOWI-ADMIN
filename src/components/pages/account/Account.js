@@ -931,476 +931,511 @@ export default function Account() {
     "WELLCOME-PARDO",
     "HEAD OFFICE",
     "Branch",
-
-
   ]); //Branches
 
- // State for the second modal
- const [openBranchModal, setOpenBranchModal] = React.useState(false);
- const handleOpenBranchModal = () => setOpenBranchModal(true);
- const handleCloseBranchModal = () => setOpenBranchModal(false);
+  // State for the second modal
+  const [openBranchModal, setOpenBranchModal] = React.useState(false);
+  const handleOpenBranchModal = () => setOpenBranchModal(true);
+  const handleCloseBranchModal = () => setOpenBranchModal(false);
 
- // State for selected branches
- const [selectedBranches, setSelectedBranches] = React.useState([]);
+  // State for selected branches
+  const [selectedBranches, setSelectedBranches] = React.useState([]);
 
- // Update the branch of the user with the selected branches
- // Update the branch of the user with the selected branches
- const handleBranchSave = async () => {
-   try {
-     // Update the user's branches with the selected branches
-     const response = await axios.put(
-       "https://latest-backend-towi-admin.onrender.com/update-user-branch",
-       {
-         emailAddress: modalEmail,
-         branches: selectedBranches,
-       }
-     );
+  // Update the branch of the user with the selected branches
+  // Update the branch of the user with the selected branches
+  const handleBranchSave = async () => {
+    try {
+      // Update the user's branches with the selected branches
+      const response = await axios.put(
+        "https://latest-backend-towi-admin.onrender.com/update-user-branch",
+        {
+          emailAddress: modalEmail,
+          branches: selectedBranches,
+        }
+      );
 
-     console.log("User branches updated:", response.data);
+      console.log("User branches updated:", response.data);
 
-     // Update the branch field in the userData state
-     const updatedUserData = userData.map((user) => {
-       if (user.emailAddress === modalEmail) {
-         return {
-           ...user,
-           Branch: selectedBranches.join(", "), // Update the Branch field
-         };
-       }
-       return user;
-     });
+      // Update the branch field in the userData state
+      const updatedUserData = userData.map((user) => {
+        if (user.emailAddress === modalEmail) {
+          return {
+            ...user,
+            Branch: selectedBranches.join(", "), // Update the Branch field
+          };
+        }
+        return user;
+      });
 
-     setUserData(updatedUserData); // Set the updated userData state
+      setUserData(updatedUserData); // Set the updated userData state
 
-     // After successful update, you might want to refresh the user data
-     getUser();
-     setTimeout(() => window.location.reload(), 1000);
-     handleCloseBranchModal(); // Close the branch selection modal after saving
-   } catch (error) {
-     console.error("Error updating user branches:", error);
-   }
- };
+      // After successful update, you might want to refresh the user data
+      getUser();
+      setTimeout(() => window.location.reload(), 1000);
+      handleCloseBranchModal(); // Close the branch selection modal after saving
+    } catch (error) {
+      console.error("Error updating user branches:", error);
+    }
+  };
 
- const capitalizeWords = (words) => {
-   if (!words || !Array.isArray(words)) return [];
+  const capitalizeWords = (words) => {
+    if (!words || !Array.isArray(words)) return [];
 
-   return words.map((word) =>
-     word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : ""
-   );
- };
+    return words.map((word) =>
+      word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : ""
+    );
+  };
 
- const columns = [
-   { field: "count", headerName: "#", width: 75 },
-   {
-     field: "firstName",
-     headerName: "FIRST NAME",
-     width: 150,
-     headerClassName: "bold-header",
-   },
-   {
-     field: "middleName",
-     headerName: "MIDDLE NAME",
-     width: 150,
-     headerClassName: "bold-header",
-   },
-   {
-     field: "lastName",
-     headerName: "LAST NAME",
-     width: 150,
-     headerClassName: "bold-header",
-   },
-   {
-     field: "username",
-     headerName: "USERNAME",
-     width: 150,
-     headerClassName: "bold-header",
-   },
-   {
-     field: "emailAddress",
-     headerName: "EMAIL ADDRESS",
-     width: 250,
-     headerClassName: "bold-header",
-   },
-   // {
-   //   field: "remarks",
-   //   headerName: "REMARKS",
-   //   width: 150,
-   //   headerClassName: "bold-header",
-   // },
-   {
-     field: "contactNum",
-     headerName: "CONTACT NUMBER",
-     width: 200,
-     headerClassName: "bold-header",
-   },
-   {
-     field: "Branch",
-     headerName: "OUTLETS",
-     width: 300,
-     headerClassName: "bold-header",
-   },
-   {
-     field: "isActive",
-     headerName: "STATUS",
-     headerClassName: "bold-header",
-     width: 150,
-     sortable: false,
-     disableClickEventBubbling: true,
+  const columns = [
+    { field: "count", headerName: "#", width: 75 },
+    {
+      field: "firstName",
+      headerName: "FIRST NAME",
+      width: 150,
+      headerClassName: "bold-header",
+    },
+    {
+      field: "middleName",
+      headerName: "MIDDLE NAME",
+      width: 150,
+      headerClassName: "bold-header",
+    },
+    {
+      field: "lastName",
+      headerName: "LAST NAME",
+      width: 150,
+      headerClassName: "bold-header",
+    },
+    {
+      field: "username",
+      headerName: "USERNAME",
+      width: 150,
+      headerClassName: "bold-header",
+    },
+    {
+      field: "emailAddress",
+      headerName: "EMAIL ADDRESS",
+      width: 250,
+      headerClassName: "bold-header",
+    },
+    // {
+    //   field: "remarks",
+    //   headerName: "REMARKS",
+    //   width: 150,
+    //   headerClassName: "bold-header",
+    // },
+    {
+      field: "contactNum",
+      headerName: "CONTACT NUMBER",
+      width: 200,
+      headerClassName: "bold-header",
+    },
+    {
+      field: "Branch",
+      headerName: "OUTLETS",
+      width: 300,
+      headerClassName: "bold-header",
+    },
+    {
+      field: "isActive",
+      headerName: "STATUS",
+      headerClassName: "bold-header",
+      width: 150,
+      sortable: false,
+      disableClickEventBubbling: true,
 
-     renderCell: (params) => {
-       const status = params.row.isActive;
-       const rowEmail = params.row.emailAddress;
-       const roleAccount = localStorage.getItem("roleAccount"); // Get role from localStorage
+      renderCell: (params) => {
+        const status = params.row.isActive;
+        const rowEmail = params.row.emailAddress;
+        const roleAccount = localStorage.getItem("roleAccount"); // Get role from localStorage
 
-       const onClick = (e) => {
-         if (allowedRoles.includes(roleAccount)) {
-           setUpdateStatus(params.row.isActive ? false : true); // Set status based on current state
-           setUserEmail(params.row.emailAddress);
-           handleOpenDialog(); // Open the dialog
-         }
-       };
+        const onClick = (e) => {
+          if (allowedRoles.includes(roleAccount)) {
+            setUpdateStatus(params.row.isActive ? false : true); // Set status based on current state
+            setUserEmail(params.row.emailAddress);
+            handleOpenDialog(); // Open the dialog
+          }
+        };
 
-       return (
-         <>
-           {status ? (
-             <Stack>
-               <ColorButton
-                 variant="contained"
-                 size="small"
-                 style={{
-                   width: "50%",
-                   marginTop: "13px",
-                   backgroundColor: "rgb(33, 148, 29)",
-                   color: "white",
-                 }}
-                 onClick={onClick}
-                 disabled={!isAllowed}
-               >
-                 Active
-               </ColorButton>
-             </Stack>
-           ) : (
-             <Stack>
-               <Button
-                 variant="contained"
-                 color="error"
-                 size="small"
-                 style={{ width: "50%", marginTop: "13px" }}
-                 onClick={onClick}
-                 disabled={!isAllowed}
-               >
-                 Inactive
-               </Button>
-             </Stack>
-           )}
-         </>
-       );
-     },
-   },
-   {
-     field: "action",
-     headerClassName: "bold-header",
-     headerName: "ACTION",
-     width: 90,
-     sortable: false,
-     disableClickEventBubbling: true,
+        return (
+          <>
+            {status ? (
+              <Stack>
+                <ColorButton
+                  variant="contained"
+                  size="small"
+                  style={{
+                    width: "50%",
+                    marginTop: "13px",
+                    backgroundColor: "rgb(33, 148, 29)",
+                    color: "white",
+                  }}
+                  onClick={onClick}
+                  disabled={!isAllowed}
+                >
+                  Active
+                </ColorButton>
+              </Stack>
+            ) : (
+              <Stack>
+                <Button
+                  variant="contained"
+                  color="error"
+                  size="small"
+                  style={{ width: "50%", marginTop: "13px" }}
+                  onClick={onClick}
+                  disabled={!isAllowed}
+                >
+                  Inactive
+                </Button>
+              </Stack>
+            )}
+          </>
+        );
+      },
+    },
+    {
+      field: "action",
+      headerClassName: "bold-header",
+      headerName: "ACTION",
+      width: 90,
+      sortable: false,
+      disableClickEventBubbling: true,
 
-     renderCell: (params) => {
-       const onClick = (e) => {
-         let mFullname = params.row.firstName + " " + params.row.lastName;
-         let condition = params.row.middleName;
-         let mBranch = params.row.Branch;
-         let mEmail = params.row.emailAddress;
-         let mPhone = params.row.contactNum;
-         if (condition === "Null") {
-           mFullname = params.row.firstName + " " + params.row.lastName;
-         } else {
-           mFullname =
-             params.row.firstName +
-             " " +
-             params.row.middleName +
-             " " +
-             params.row.lastName;
-         }
+      renderCell: (params) => {
+        const onClick = (e) => {
+          let mFullname = params.row.firstName + " " + params.row.lastName;
+          let condition = params.row.middleName;
+          let mBranch = params.row.Branch;
+          let mEmail = params.row.emailAddress;
+          let mPhone = params.row.contactNum;
+          if (condition === "Null") {
+            mFullname = params.row.firstName + " " + params.row.lastName;
+          } else {
+            mFullname =
+              params.row.firstName +
+              " " +
+              params.row.middleName +
+              " " +
+              params.row.lastName;
+          }
 
-         setModalFullName(mFullname);
-         setModalBranch(mBranch);
-         setModalEmail(mEmail);
-         setModalPhone(mPhone);
+          setModalFullName(mFullname);
+          setModalBranch(mBranch);
+          setModalEmail(mEmail);
+          setModalPhone(mPhone);
 
-         return handleOpen();
-       };
+          return handleOpen();
+        };
 
-       return (
-         <Stack>
-           <Button
-             variant="contained"
-             size="small"
-             color="primary"
-             onClick={onClick}
-             style={{
-               width: "50%",
-               marginTop: "13px",
-               backgroundColor: "rgb(33, 148, 29)",
-               color: "#FFFFF",
-             }}
-           >
-             <PersonIcon />
-           </Button>
-         </Stack>
-       );
-     },
-   },
- ];
+        return (
+          <Stack>
+            <Button
+              variant="contained"
+              size="small"
+              color="primary"
+              onClick={onClick}
+              style={{
+                width: "50%",
+                marginTop: "13px",
+                backgroundColor: "rgb(33, 148, 29)",
+                color: "#FFFFF",
+              }}
+            >
+              <PersonIcon />
+            </Button>
+          </Stack>
+        );
+      },
+    },
+  ];
 
- async function getUser() {
-   try {
-     // Retrieve the logged-in admin's accountNameBranchManning from localStorage
-     const loggedInBranch = localStorage.getItem("accountNameBranchManning");
+  async function getUser() {
+    try {
+      // Retrieve the logged-in admin's accountNameBranchManning from localStorage
+      const loggedInBranch = localStorage.getItem("accountNameBranchManning");
 
-     console.log("Logged in branch:", loggedInBranch); // Debugging line
+      console.log("Logged in branch:", loggedInBranch); // Debugging line
 
-     if (!loggedInBranch) {
-       console.error("No branch information found for the logged-in admin.");
-       return;
-     }
+      if (!loggedInBranch) {
+        console.error("No branch information found for the logged-in admin.");
+        return;
+      }
 
-     // Split the loggedInBranch string into an array for comparison
-     const loggedInBranches = loggedInBranch
-       .split(",")
-       .map((branch) => branch.trim()); // Trimming whitespace
+      // Split the loggedInBranch string into an array for comparison
+      const loggedInBranches = loggedInBranch
+        .split(",")
+        .map((branch) => branch.trim()); // Trimming whitespace
 
-     // Send request to get all user data
-     const response = await axios.post(
-       "https://latest-backend-towi-admin.onrender.com/get-all-user",
-       requestBody
-     );
+      // Send request to get all user data
+      const response = await axios.post(
+        "https://latest-backend-towi-admin.onrender.com/get-all-user",
+        requestBody
+      );
 
-     const data = response.data.data;
+      const data = response.data.data;
 
-     console.log("User data:", data); // Debugging line
+      console.log("User data:", data); // Debugging line
 
-     // Filter the data based on the logged-in admin's accountNameBranchManning
-     const filteredData = data.filter((item) => {
-       console.log("Checking branch for user:", item.accountNameBranchManning); // Debugging line
-       // Check if any branch in loggedInBranches matches any branch in item.accountNameBranchManning
-       return loggedInBranches.some(branch => item.accountNameBranchManning.includes(branch));
-       
-       //&& item.emailAddress !== "ynsonharold@gmail.com"; 
-     });
+      // Filter the data based on the logged-in admin's accountNameBranchManning
+      const filteredData = data.filter((item) => {
+        console.log("Checking branch for user:", item.accountNameBranchManning); // Debugging line
+        // Check if any branch in loggedInBranches matches any branch in item.accountNameBranchManning
+        return loggedInBranches.some((branch) =>
+          item.accountNameBranchManning.includes(branch)
+        );
 
-     console.log(filteredData, "filtered user data");
+        //&& item.emailAddress !== "ynsonharold@gmail.com";
+      });
 
-     const newData = filteredData.map((data, key) => {
-       const capitalizedNames = capitalizeWords([
-         data.firstName,
-         data.middleName || "",
-         data.lastName,
-       ]);
+      console.log(filteredData, "filtered user data");
 
-       return {
-         count: key + 1,
-         remarks: data.remarks,
-         firstName: capitalizedNames[0],
-         middleName: capitalizedNames[1] || "Null",
-         lastName: capitalizedNames[2],
-         username: data.username,
-         Branch: data.accountNameBranchManning,
-         emailAddress: data.emailAddress,
-         contactNum: data.contactNum,
-         isActive: data.isActivate,
-       };
-     });
+      const newData = filteredData.map((data, key) => {
+        const capitalizedNames = capitalizeWords([
+          data.firstName,
+          data.middleName || "",
+          data.lastName,
+        ]);
 
-     console.log(newData, "filtered and mapped user data");
-     setUserData(newData); // Set the filtered data for rendering
-   } catch (error) {
-     console.error("Error fetching user data:", error);
-   }
- }
+        return {
+          count: key + 1,
+          remarks: data.remarks,
+          firstName: capitalizedNames[0],
+          middleName: capitalizedNames[1] || "Null",
+          lastName: capitalizedNames[2],
+          username: data.username,
+          Branch: data.accountNameBranchManning,
+          emailAddress: data.emailAddress,
+          contactNum: data.contactNum,
+          isActive: data.isActivate,
+        };
+      });
 
- async function setStatus() {
-   console.log("check body", requestBody);
-   await axios
-     .put(
-       "https://latest-backend-towi-admin.onrender.com/update-status",
-       requestBody
-     )
-     .then(async (response) => {
-       const data = await response.data.data;
+      console.log(newData, "filtered and mapped user data");
+      setUserData(newData); // Set the filtered data for rendering
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  }
 
-       console.log(data, "status info");
-       window.location.reload();
-     });
- }
+  async function setStatus() {
+    console.log("check body", requestBody);
+    await axios
+      .put(
+        "https://latest-backend-towi-admin.onrender.com/update-status",
+        requestBody
+      )
+      .then(async (response) => {
+        const data = await response.data.data;
 
- React.useEffect(() => {
-   getUser();
-   if (Array.isArray(modalBranch)) {
-     setSelectedBranches(modalBranch); // Pre-select branches based on modalBranch
-   }
- }, [modalBranch]);
+        console.log(data, "status info");
+        window.location.reload();
+      });
+  }
 
- return (
-   <div className="account">
-     <Topbar />
-     <div className="container">
-       <Sidebar />
-       <div style={{ height: "100%", width: "100%", marginLeft: "100" }}>
-         <DataGrid
-           rows={userData}
-           columns={columns}
-           initialState={{
-             pagination: {
-               paginationModel: { page: 0, pageSize: 10 },
-             },
-             columns: {
-               columnVisibilityModel: {
-                 // Hide columns status and traderName, the other columns will remain visible
-                 address: false,
-                 phone: false,
-               },
-             },
-           }}
-           slots={{ toolbar: GridToolbar }}
-           slotProps={{
-             toolbar: {
-               showQuickFilter: true,
-               printOptions: { disableToolbarButton: true },
-               csvOptions: { disableToolbarButton: true },
-             },
-           }}
-           loading={!userData.length}
-           disableDensitySelector
-           disableColumnFilter
-           disableColumnSelector
-           pageSizeOptions={[5, 10, 20, 50, 100]}
-           getRowId={(row) => row.count}
-           disableRowSelectionOnClick
-         />
-       </div>
+  React.useEffect(() => {
+    getUser();
+    if (Array.isArray(modalBranch)) {
+      setSelectedBranches(modalBranch); // Pre-select branches based on modalBranch
+    }
+  }, [modalBranch]);
 
-       <Modal
-         open={openModal}
-         onClose={handleCloseDialog}
-         aria-labelledby="modal-modal-title"
-         aria-describedby="modal-modal-description"
-       >
-         <Box sx={style}>
-           <Typography id="modal-modal-title" variant="h6" component="h2">
-             Full Details :
-           </Typography>
-           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-             <span className="detailTitle">Full name: </span>
-             <span className="detailDescription">{modalFullName}</span>
-             <br />
-             <span className="detailTitle">Email: </span>
-             <span className="detailDescription">{modalEmail}</span>
-             <br />
-             <span className="detailTitle">Contact Number: </span>
-             <span className="detailDescription">{modalPhone}</span>
-             <br />
-             <span className="detailTitle">Outlets: </span>
-             <span className="detailDescription">
-               {Array.isArray(modalBranch)
-                 ? modalBranch.join(", ") // Join with a comma and space if it's an array
-                 : modalBranch}
-             </span>
-             <br />
-             <br />
-             {/* Button to open branch selection modal */}
-             <Button
-               variant="contained"
-               onClick={handleOpenBranchModal}
-               disabled={!isAllowed}
-               sx={{
-                 backgroundColor: "rgb(33, 148, 29)", // Custom background color
-                 color: "white", // Text color
-                 "&:hover": {
-                   backgroundColor: "rgb(33, 148, 29)", // Hover background color
-                 },
-                 "&.Mui-disabled": {
-                   backgroundColor: "rgba(0, 0, 0, 0.26)", // Disabled state background color
-                   color: "rgba(255, 255, 255, 0.5)", // Disabled text color
-                 },
-               }}
-             >
-               Select Outlet
-             </Button>
-           </Typography>
-           <Stack>
-             <DialogActions>
-               <Button onClick={handleClose}>Close</Button>
-             </DialogActions>
-           </Stack>
-         </Box>
-       </Modal>
+  return (
+    <div className="account">
+      <Topbar />
+      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
+        <Sidebar />
+        <Box
+          sx={{
+            flexGrow: 1,
+            padding: { xs: "10px", sm: "20px" },
+            maxWidth: "100%",
+            overflow: "auto",
+          }}
+        >
+          {/* Responsive DataGrid */}
+          <Box
+            sx={{
+              height: "100%",
+              width: "100%",
+              maxHeight: "80vh",
+              marginTop: 2,
+              overflow: "hidden",
+              "& .MuiDataGrid-root": {
+                backgroundColor: "#fff",
+              },
+            }}
+          >
+            <DataGrid
+              rows={userData}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 10 },
+                },
+                columns: {
+                  columnVisibilityModel: {
+                    address: false,
+                    phone: false,
+                  },
+                },
+              }}
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                  printOptions: { disableToolbarButton: true },
+                  csvOptions: { disableToolbarButton: true },
+                },
+              }}
+              loading={!userData.length}
+              disableDensitySelector
+              disableColumnFilter
+              disableColumnSelector
+              pageSizeOptions={[5, 10, 20, 50, 100]}
+              getRowId={(row) => row.count}
+              disableRowSelectionOnClick
+            />
+          </Box>
 
-       <Dialog
-         open={openBranchModal}
-         onClose={handleCloseBranchModal}
-         aria-labelledby="branch-dialog-title"
-         aria-describedby="branch-dialog-description"
-         fullWidth
-         maxWidth="md"
-       >
-         <DialogTitle id="branch-dialog-title">Select Branch</DialogTitle>
-         <DialogContent>
-           <Autocomplete
-             multiple
-             id="branches-autocomplete"
-             options={branches}
-             defaultValue={selectedBranches}
-             onChange={(event, value) => setSelectedBranches(value)}
-             renderInput={(params) => (
-               <TextField
-                 {...params}
-                 variant="outlined"
-                 label="Select Branch"
-                 placeholder="Select Branch"
-               />
-             )}
-           />
-         </DialogContent>
-         <DialogActions>
-           <Button onClick={handleCloseBranchModal}>Cancel</Button>
-           <Button onClick={handleBranchSave} autoFocus>
-             Save
-           </Button>
-         </DialogActions>
-       </Dialog>
+          {/* Responsive Modal */}
+          <Modal
+            open={openModal}
+            onClose={handleCloseDialog}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box
+              sx={{
+                padding: 4,
+                backgroundColor: "white",
+                margin: { xs: "10% auto", md: "5% auto" },
+                width: { xs: "90%", sm: "70%", md: "50%" },
+                boxShadow: 24,
+                borderRadius: 2,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Full Details:
+              </Typography>
+              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                <span className="detailTitle">Full name: </span>
+                <span className="detailDescription">{modalFullName}</span>
+                <br />
+                <span className="detailTitle">Email: </span>
+                <span className="detailDescription">{modalEmail}</span>
+                <br />
+                <span className="detailTitle">Contact Number: </span>
+                <span className="detailDescription">{modalPhone}</span>
+                <br />
+                <span className="detailTitle">Outlets: </span>
+                <span className="detailDescription">
+                  {Array.isArray(modalBranch)
+                    ? modalBranch.join(", ")
+                    : modalBranch}
+                </span>
+                <br />
+                <br />
+                {/* Button to open branch selection modal */}
+                <Button
+                  variant="contained"
+                  onClick={handleOpenBranchModal}
+                  disabled={!isAllowed}
+                  sx={{
+                    backgroundColor: "rgb(33, 148, 29)",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "rgb(33, 148, 29)",
+                    },
+                    "&.Mui-disabled": {
+                      backgroundColor: "rgba(0, 0, 0, 0.26)",
+                      color: "rgba(255, 255, 255, 0.5)",
+                    },
+                  }}
+                >
+                  Select Outlet
+                </Button>
+              </Typography>
+              <Stack>
+                <DialogActions>
+                  <Button onClick={handleClose}>Close</Button>
+                </DialogActions>
+              </Stack>
+            </Box>
+          </Modal>
 
-       <Dialog
-         open={openDialog}
-         onClose={handleCloseDialog}
-         aria-labelledby="alert-dialog-title"
-         aria-describedby="alert-dialog-description"
-       >
-         <DialogTitle id="alert-dialog-title">
-           {"Account Activation"}
-         </DialogTitle>
-         <DialogContent>
-           <DialogContentText id="alert-dialog-description">
-             {updateStatus
-               ? "Are you sure you want to set this user as active?"
-               : "Are you sure you want to set this user as inactive?"}
-           </DialogContentText>
-         </DialogContent>
-         <DialogActions>
-           <Button onClick={handleCloseDialog}>Cancel</Button>
-           <Button onClick={setStatus} autoFocus>
-             Confirm
-           </Button>
-         </DialogActions>
-       </Dialog>
-     </div>
-   </div>
- );
+          {/* Branch Selection Dialog */}
+          <Dialog
+            open={openBranchModal}
+            onClose={handleCloseBranchModal}
+            aria-labelledby="branch-dialog-title"
+            aria-describedby="branch-dialog-description"
+            fullWidth
+            maxWidth="md"
+          >
+            <DialogTitle id="branch-dialog-title">Select Branch</DialogTitle>
+            <DialogContent>
+              <Autocomplete
+                multiple
+                id="branches-autocomplete"
+                options={branches}
+                defaultValue={selectedBranches}
+                onChange={(event, value) => setSelectedBranches(value)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    label="Select Branch"
+                    placeholder="Select Branch"
+                  />
+                )}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseBranchModal}>Cancel</Button>
+              <Button onClick={handleBranchSave} autoFocus>
+                Save
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {/* Account Activation Dialog */}
+          <Dialog
+            open={openDialog}
+            onClose={handleCloseDialog}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              Account Activation
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                {updateStatus
+                  ? "Are you sure you want to set this user as active?"
+                  : "Are you sure you want to set this user as inactive?"}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDialog}>Cancel</Button>
+              <Button onClick={setStatus} autoFocus>
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Box>
+      </Box>
+    </div>
+  );
 }
 
 const ColorButton = styled(Button)(({ theme }) => ({
- color: "#000",
- backgroundColor: "#F6FAB9",
- "&:hover": {
-   backgroundColor: "#CAE6B2",
- },
+  color: "#000",
+  backgroundColor: "#F6FAB9",
+  "&:hover": {
+    backgroundColor: "#CAE6B2",
+  },
 }));

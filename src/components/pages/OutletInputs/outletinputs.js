@@ -1538,74 +1538,125 @@ console.log("Rows Data:", rows);
   return (
     <div className="attendance">
       <Topbar />
-      <div className="container">
+      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
         <Sidebar />
-        <div style={{ height: "100%", width: "85%", marginLeft: "100" }}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            padding: { xs: "10px", sm: "20px" },
+            maxWidth: "100%",
+            overflow: "auto",
+          }}
+        >
+          {/* Controls Section */}
           <Stack
-            direction={{ xs: "column", md: "row", sm: "row" }}
-            spacing={{ xs: 1, sm: 2, md: 4 }}
-          ></Stack>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 100 },
+            direction={{ xs: "column", md: "row" }}
+            spacing={2}
+            sx={{ marginBottom: "20px" }}
+          >
+            {/* Add buttons or filters here if required */}
+          </Stack>
+
+          {/* Responsive DataGrid */}
+          <Box
+            sx={{
+              height: "100%",
+              width: "100%",
+              maxHeight: "80vh",
+              marginTop: 2,
+              overflow: "hidden",
+              "& .MuiDataGrid-root": {
+                backgroundColor: "#fff",
               },
             }}
-            slots={{
-              toolbar: GridToolbar,
-            }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-                printOptions: { disableToolbarButton: true },
-              },
-            }}
-            disableColumnFilter
-            disableColumnSelector
-            disableRowSelectionOnClick
-            pageSizeOptions={[5, 10, 20, 30, 50, 100]}
-            getRowId={(row) => row.id}
-          />
+          >
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 100 },
+                },
+              }}
+              slots={{
+                toolbar: GridToolbar,
+              }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                  printOptions: { disableToolbarButton: true },
+                },
+              }}
+              disableColumnFilter
+              disableColumnSelector
+              disableRowSelectionOnClick
+              pageSizeOptions={[5, 10, 20, 30, 50, 100]}
+              getRowId={(row) => row.id}
+            />
+          </Box>
 
-<Modal open={open} onClose={() => setOpen(false)}>
-  <Box
-    sx={{
-      padding: 4,
-      backgroundColor: "white",
-      margin: "auto",
-      width: "50%",
-    }}
-  >
-    <Typography variant="h6">
-      Merchandiser for {selectedBranch}
-    </Typography>
-    <ul>
-      {users.length > 0 ? (
-        users
-          .filter(user => {
-            const userBranches = Array.isArray(user.accountNameBranchManning)
-              ? user.accountNameBranchManning
-              : user.accountNameBranchManning.split(",").map(b => b.trim());
-              
-            return userBranches.includes(selectedBranch);  // Filter by selected branch
-          })
-          .map((user) => (
-            <li key={`${user._id}-${user.firstName}-${user.lastName}`}>
-              {`${user.firstName} ${user.lastName}`}
-            </li>
-          ))
-      ) : (
-        <Typography>No users available for this branch.</Typography>
-      )}
-    </ul>
-    <Button onClick={() => setOpen(false)}>Close</Button>
-  </Box>
-</Modal>
+          {/* Responsive Modal */}
+          <Modal open={open} onClose={() => setOpen(false)}>
+            <Box
+              sx={{
+                padding: 4,
+                backgroundColor: "white",
+                margin: { xs: "10% auto", md: "5% auto" },
+                width: { xs: "90%", sm: "70%", md: "50%" },
+                boxShadow: 24,
+                borderRadius: 2,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h6" sx={{ marginBottom: 2, textAlign: "center" }}>
+                Merchandiser for {selectedBranch}
+              </Typography>
+              <ul style={{ padding: 0, listStyle: "none", width: "100%" }}>
+                {users.length > 0 ? (
+                  users
+                    .filter((user) => {
+                      const userBranches = Array.isArray(user.accountNameBranchManning)
+                        ? user.accountNameBranchManning
+                        : user.accountNameBranchManning.split(",").map((b) => b.trim());
 
-        </div>
-      </div>
+                      return userBranches.includes(selectedBranch); // Filter by selected branch
+                    })
+                    .map((user) => (
+                      <li
+                        key={`${user._id}-${user.firstName}-${user.lastName}`}
+                        style={{
+                          padding: "10px",
+                          borderBottom: "1px solid #ddd",
+                          textAlign: "center",
+                        }}
+                      >
+                        {`${user.firstName} ${user.lastName}`}
+                      </li>
+                    ))
+                ) : (
+                  <Typography textAlign="center" color="textSecondary">
+                    No users available for this branch.
+                  </Typography>
+                )}
+              </ul>
+              <Button
+                onClick={() => setOpen(false)}
+                variant="contained"
+                sx={{
+                  backgroundColor: "rgb(33, 148, 29)",
+                  color: "white",
+                  marginTop: 3,
+                  "&:hover": { backgroundColor: "rgb(33, 148, 29)" },
+                }}
+              >
+                Close
+              </Button>
+            </Box>
+          </Modal>
+        </Box>
+      </Box>
     </div>
   );
 }
