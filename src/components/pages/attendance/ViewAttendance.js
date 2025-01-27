@@ -618,49 +618,87 @@ export default function ViewAttendance() {
   return (
     <div className="attendance">
       <Topbar />
-      <div className="container">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+        }}
+      >
         <Sidebar />
-
-        <Typography variant="h4" gutterBottom style={{ display: "none" }}>
-          Attendance for {userEmail}
-        </Typography>
-        <Box sx={{ height: "100%", width: "100%", marginLeft: "100" }}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label="Select Date"
-              onChange={(newValue) => setDateBegin(newValue)}
-              slotProps={{ textField: { size: "small" } }}
-            />
-          </LocalizationProvider>
-
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label="Select Date"
-              onChange={(newValue) => setDateEnd(newValue)}
-              slotProps={{ textField: { size: "small" } }}
-            />
-          </LocalizationProvider>
-
-          <Button
-            onClick={getExportData}
-            variant="contained"
-            style={{ marginLeft: 5 }}
+        <Box
+          sx={{
+            flexGrow: 1,
+            padding: { xs: 2, sm: 4 },
+            marginTop: { xs: 2, sm: 4 },
+          }}
+        >
+          {/* <Typography
+            variant="h4"
+            gutterBottom
+            sx={{
+              display: { xs: "none", md: "block" },
+              textAlign: "center",
+            }}
           >
-            Export
-          </Button>
+            Attendance for {userEmail}
+          </Typography> */}
 
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 2,
+              marginBottom: 3,
+            }}
+          >
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Start Date"
+                onChange={(newValue) => setDateBegin(newValue)}
+                slotProps={{ textField: { size: "small" } }}
+              />
+              <DatePicker
+                label="End Date"
+                onChange={(newValue) => setDateEnd(newValue)}
+                slotProps={{ textField: { size: "small" } }}
+              />
+            </LocalizationProvider>
+
+            <Button
+              onClick={getExportData}
+              variant="contained"
+              sx={{
+                backgroundColor: "rgb(33, 148, 29)",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "rgb(33, 100, 29)",
+                },
+              }}
+            >
+              Export
+            </Button>
+          </Box>
+
+          {/* Photo Modal */}
           <Modal
             open={openPhotoModal}
             onClose={handleClosePhotoModal}
             aria-labelledby="photo-modal-title"
             aria-describedby="photo-modal-description"
           >
-            <Box sx={style}>
+            <Box
+              sx={{
+                ...style,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               {selectedPhotoUrl ? (
                 <img
                   src={selectedPhotoUrl}
                   alt="Time In Photo"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  style={{ maxWidth: "100%", maxHeight: "100%" }}
                 />
               ) : (
                 <Typography variant="h6" align="center">
@@ -670,6 +708,7 @@ export default function ViewAttendance() {
             </Box>
           </Modal>
 
+          {/* Map Modal */}
           <Modal
             open={open}
             onClose={handleClose}
@@ -682,7 +721,7 @@ export default function ViewAttendance() {
                   center={[latitude, longitude]}
                   zoom={17}
                   scrollWheelZoom={false}
-                  style={{ height: "100%", minHeight: "100%" }}
+                  style={{ height: "400px", width: "100%" }}
                 >
                   <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -706,7 +745,9 @@ export default function ViewAttendance() {
               </div>
             </Box>
           </Modal>
-          <div style={{ height: "100%", width: "100%" }}>
+
+          {/* Attendance Data Table */}
+          <Box sx={{ height: "500px", width: "100%" }}>
             <DataGrid
               rows={attendanceData}
               columns={columns}
@@ -725,16 +766,16 @@ export default function ViewAttendance() {
                   csvOptions: { disableToolbarButton: true },
                 },
               }}
+              pageSizeOptions={[5, 10, 20, 30, 50, 100]}
+              getRowId={(row) => row.count}
               disableDensitySelector
               disableColumnFilter
               disableColumnSelector
               disableRowSelectionOnClick
-              pageSizeOptions={[5, 10, 20, 30, 50, 100]}
-              getRowId={(row) => row.count}
             />
-          </div>
+          </Box>
         </Box>
-      </div>
+      </Box>
     </div>
   );
 }

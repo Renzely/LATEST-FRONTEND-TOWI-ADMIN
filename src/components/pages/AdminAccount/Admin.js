@@ -1553,160 +1553,180 @@ export default function Admin() {
   return (
     <div className="account">
       <Topbar />
-      <div className="container">
+      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
         <Sidebar />
-        <div style={{ height: "100%", width: "85%", marginLeft: "100" }}>
-          <div style={{ margin: 10 }}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            padding: { xs: "10px", sm: "20px" },
+            maxWidth: "100%",
+            overflow: "auto",
+          }}
+        >
+          {/* Add User Button */}
+          <Box sx={{ marginBottom: 2 }}>
             <Button
               onClick={handleOpenDialog}
               variant="contained"
-              style={{ backgroundColor: "#008000", color: "#FFFFF" }}
+              sx={{
+                backgroundColor: "#008000",
+                color: "#FFFFFF",
+                "&:hover": {
+                  backgroundColor: "#005500",
+                },
+              }}
               endIcon={<PersonAddAlt1Icon />}
             >
               Add User
             </Button>
-          </div>
-          <DataGrid
-            rows={userData}
-            sx={{ overflowX: "scroll" }}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 10 },
+          </Box>
+  
+          {/* Responsive DataGrid */}
+          <Box
+            sx={{
+              height: "100%",
+              width: "100%",
+              maxHeight: "80vh",
+              marginTop: 2,
+              overflow: "hidden",
+              "& .MuiDataGrid-root": {
+                backgroundColor: "#fff",
               },
-              columns: {
-                columnVisibilityModel: {
-                  // Hide columns status and traderName, the other columns will remain visible
-                  contactNum: false,
-                  //date_join: false,
+            }}
+          >
+            <DataGrid
+              rows={userData}
+              sx={{ overflowX: "scroll" }}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 10 },
                 },
-              },
-            }}
-            // slots={{
-            //   toolbar: CustomToolbar,
-            //   // loadingOverlay: LinearProgress,
-            // }}
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-                printOptions: { disableToolbarButton: true },
-                csvOptions: { disableToolbarButton: true },
-              },
-            }}
-            loading={!userData.length}
-            disableDensitySelector
-            disableColumnFilter
-            disableColumnSelector
-            pageSizeOptions={[5, 10, 20, 50]}
-            getRowId={(row) => row.count}
-            disableRowSelectionOnClick
-          />
-        </div>
-
-        <Dialog
-          open={openDialog}
-          onClose={handleCloseDialog}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogContent>
-            {/* <Box  components="form" noValidate sx={Otpstyle}> */}
-            <FormControl sx={{ m: 2 }}>
-              <p>Enter OTP code :</p>
-              <TextField
-                value={inputOtpCode}
-                error={inputOtpCodeError}
-                helperText={inputOtpCodeError}
-                type="number"
-                inputProps={{ maxLength: 4 }}
-                onChange={handleOtpCodeChange}
-                sx={{
-                  "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
-                    {
+                columns: {
+                  columnVisibilityModel: {
+                    contactNum: false,
+                  },
+                },
+              }}
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                  printOptions: { disableToolbarButton: true },
+                  csvOptions: { disableToolbarButton: true },
+                },
+              }}
+              loading={!userData.length}
+              disableDensitySelector
+              disableColumnFilter
+              disableColumnSelector
+              pageSizeOptions={[5, 10, 20, 50]}
+              getRowId={(row) => row.count}
+              disableRowSelectionOnClick
+            />
+          </Box>
+  
+          {/* OTP Dialog */}
+          <Dialog
+            open={openDialog}
+            onClose={handleCloseDialog}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogContent>
+              <FormControl sx={{ m: 2 }}>
+                <Typography variant="body1">Enter OTP code:</Typography>
+                <TextField
+                  value={inputOtpCode}
+                  error={inputOtpCodeError}
+                  helperText={inputOtpCodeError}
+                  type="number"
+                  inputProps={{ maxLength: 4 }}
+                  onChange={handleOtpCodeChange}
+                  sx={{
+                    "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
                       display: "none",
                     },
-                  "& input[type=number]": {
-                    MozAppearance: "textfield",
-                  },
-                }}
-              />
-            </FormControl>
-            {/* </Box> */}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseOtpDialog}>Cancel</Button>
-            <Button onClick={confirmOtp} autoFocus>
-              Create User
-            </Button>
-          </DialogActions>
-        </Dialog>
+                    "& input[type=number]": {
+                      MozAppearance: "textfield",
+                    },
+                  }}
+                />
+              </FormControl>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseOtpDialog}>Cancel</Button>
+              <Button onClick={confirmOtp} autoFocus>
+                Create User
+              </Button>
+            </DialogActions>
+          </Dialog>
+  
+          {/* Status Change Dialog */}
+          <Dialog
+            open={openStatusDialog}
+            onClose={handleStatusCloseDialog}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Account Activation"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                {updateStatus
+                  ? "Are you sure you want to set this user as active?"
+                  : "Are you sure you want to set this user as inactive?"}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleStatusCloseDialog}>Cancel</Button>
+              <Button onClick={setStatus} autoFocus>
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
 
-        <Dialog
-          open={openStatusDialog}
-          onClose={handleStatusCloseDialog}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {"Account Activation"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              {updateStatus
-                ? "Are you sure you want to set this user as active?"
-                : "Are you sure you want to set this user as inactive?"}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleStatusCloseDialog}>Cancel</Button>
-            <Button onClick={setStatus} autoFocus>
-              Confirm
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        
-
-        <Modal
+          <Modal
   open={openViewModal}
   onClose={handleViewCloseModal}
   aria-labelledby="modal-modal-title"
   aria-describedby="modal-modal-description"
 >
-<Box sx={{ ...style, maxWidth: '80vw' }}>
-  {/* Scrollable container */}
   <Box
     sx={{
-      maxHeight: '80vh', // Limit height to 80% of the viewport
-      overflowY: 'auto', // Enable vertical scrolling
-      padding: '16px', // Optional padding for content
-      display: 'flex',
-      flexDirection: 'column',
+      padding: 4,
+      backgroundColor: "white",
+      margin: { xs: "10% auto", md: "5% auto" },
+      width: { xs: "90%", sm: "70%", md: "50%" },
+      maxHeight: "80vh",
+      overflowY: "auto",
+      boxShadow: 24,
+      borderRadius: 2,
     }}
   >
-    <Stack spacing={3}>
-      <p>Full Details :</p>
-
-      <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+    <Typography id="modal-modal-title" variant="h6" component="h2">
+      Full Details
+    </Typography>
+    <Stack spacing={3} sx={{ mt: 2 }}>
+      {/* Display Outlets */}
+      <Typography id="modal-modal-description">
         <span className="detailTitle">OUTLETS:</span>{" "}
         <span className="detailDescription">
           {Array.isArray(adminViewBranch)
-            ? adminViewBranch.join(", ") // Display branches in text
+            ? adminViewBranch.join(", ")
             : adminViewBranch}
         </span>
-        <br />
-        <br />
       </Typography>
 
       {/* Dropdown for selecting branches */}
       <Autocomplete
         multiple
         id="branches-autocomplete"
-        options={branches} // Available branch options
-        value={selectedBranches} // Pre-selected branches from state
-        onChange={(event, newValue) => setSelectedBranches(newValue)} // Update state on change
-        disableCloseOnSelect // Keep dropdown open after selecting an item
+        options={branches}
+        value={selectedBranches}
+        onChange={(event, newValue) => setSelectedBranches(newValue)}
+        disableCloseOnSelect
         renderInput={(params) => (
           <TextField
             {...params}
@@ -1719,20 +1739,15 @@ export default function Admin() {
           <li {...props}>
             <Checkbox
               style={{ marginRight: 8 }}
-              checked={selected} // Checkbox shows selected state
+              checked={selected}
             />
             {option}
           </li>
         )}
       />
 
-      {/* Buttons */}
-      <Stack
-        direction="row"
-        spacing={2}
-        justifyContent="center"
-        sx={{ marginBottom: 2 }}
-      >
+      {/* Buttons for selecting/removing all outlets */}
+      <Stack direction="row" spacing={2} justifyContent="center">
         <Button
           onClick={() => setSelectedBranches(branches)}
           variant="outlined"
@@ -1740,9 +1755,7 @@ export default function Admin() {
             backgroundColor: "rgb(130, 204, 136)",
             color: "rgb(26, 20, 71)",
             borderColor: "rgb(26, 20, 71)",
-            "&:hover": {
-              backgroundColor: "rgb(20, 165, 75)",
-            },
+            "&:hover": { backgroundColor: "rgb(20, 165, 75)" },
           }}
         >
           Select All
@@ -1754,9 +1767,7 @@ export default function Admin() {
             backgroundColor: "rgb(255, 220, 220)",
             color: "rgb(0, 0, 0)",
             borderColor: "rgb(33, 151, 43)",
-            "&:hover": {
-              backgroundColor: "rgb(255, 190, 190)",
-            },
+            "&:hover": { backgroundColor: "rgb(255, 190, 190)" },
           }}
         >
           Remove All
@@ -1770,9 +1781,7 @@ export default function Admin() {
         sx={{
           backgroundColor: "rgb(17, 148, 39)",
           color: "white",
-          "&:hover": {
-            backgroundColor: "rgb(13, 105, 28)",
-          },
+          "&:hover": { backgroundColor: "rgb(13, 105, 28)" },
         }}
       >
         Save Outlet Changes
@@ -1802,79 +1811,56 @@ export default function Admin() {
       </DialogActions>
     </Stack>
   </Box>
-</Box>
-
 </Modal>
 
-
-
-<Modal
-  open={openModal}
-  onClose={handleCloseDialog}
-  aria-labelledby="modal-modal-title"
-  aria-describedby="modal-modal-description"
-  tabindex="-1"
-  data-bs-focus="false"
->
-  <Box
-    component="form"
-    noValidate
-    sx={{
-      ...style,
-      maxHeight: "80vh", // Limit the height to 80% of the viewport
-      overflowY: "auto", // Enable scrolling when content exceeds the height
-    }}
-  >
-    <Typography id="modal-modal-title" variant="h6" component="h2">
-      Admin Details :
-    </Typography>
-            {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}> */}
-
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <InputLabel id="role-select-label">Role</InputLabel>
-              <Select
-                labelId="role-select-label"
-                id="role-select"
-                value={adminSelectedRole}
-                onChange={handleRoleChange}
-                label="Role"
-              >
-                <MenuItem value="COORDINATOR">COORDINATOR</MenuItem>
-                <MenuItem value="ACCOUNT SUPERVISOR">
-                  ACCOUNT SUPERVISOR
-                </MenuItem>
-                <MenuItem value="OPERATION OFFICER">OPERATION OFFICER</MenuItem>
-                <MenuItem value="OPERATION HEAD">OPERATION HEAD</MenuItem>
-                <MenuItem value="SENIOR OPERATION MANAGER">SENIOR OPERATION MANAGER</MenuItem>
-              </Select>
-            </FormControl>
-
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <InputLabel id="branch-select-label"></InputLabel>
-              <Autocomplete
-                multiple
-                id="branch-select"
-                options={branches}
-                value={adminSelectedBranch}
-                onChange={handleChange}
-                renderOption={(props, option, { selected }) => (
-                  <li {...props}>
-                    <Checkbox checked={selected} style={{ marginRight: 8 }} />
-                    {option}
-                  </li>
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    label="Branches"
-                    placeholder="Select Branch"
-                  />
-                )}
-              />
-            </FormControl>
-
-            <FormControl fullWidth sx={{ m: 1 }}>
+  
+          {/* Responsive Modal for Details */}
+          <Modal
+            open={openModal}
+            onClose={handleCloseDialog}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box
+              component="form"
+              noValidate
+              sx={{
+                padding: 4,
+                backgroundColor: "white",
+                margin: { xs: "10% auto", md: "5% auto" },
+                width: { xs: "90%", sm: "70%", md: "50%" },
+                maxHeight: "80vh",
+                overflowY: "auto",
+                boxShadow: 24,
+                borderRadius: 2,
+              }}
+            >
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Admin Details:
+              </Typography>
+              {/* Form Fields */}
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <InputLabel id="role-select-label">Role</InputLabel>
+                <Select
+                  labelId="role-select-label"
+                  id="role-select"
+                  value={adminSelectedRole}
+                  onChange={handleRoleChange}
+                >
+                  <MenuItem value="COORDINATOR">COORDINATOR</MenuItem>
+                  <MenuItem value="ACCOUNT SUPERVISOR">
+                    ACCOUNT SUPERVISOR
+                  </MenuItem>
+                  <MenuItem value="OPERATION OFFICER">OPERATION OFFICER</MenuItem>
+                  <MenuItem value="OPERATION HEAD">OPERATION HEAD</MenuItem>
+                  <MenuItem value="SENIOR OPERATION MANAGER">
+                    SENIOR OPERATION MANAGER
+                  </MenuItem>
+                </Select>
+              </FormControl>
+  
+              {/* More Form Fields */}
+              <FormControl fullWidth sx={{ m: 1 }}>
               <TextField
                 label="First Name *"
                 value={adminFirstName}
@@ -1969,23 +1955,20 @@ export default function Admin() {
                 autoComplete="off"
               />
             </FormControl>
-
-            <DialogActions>
-              <Button onClick={handleClose}>Close</Button>
-              <Button onClick={sendOtp} autoFocus>
-                Confirm
-              </Button>
-            </DialogActions>
-          </Box>
-        </Modal>
-
-
-
-      </div>
+              {/* Action Buttons */}
+              <DialogActions>
+                <Button onClick={handleClose}>Close</Button>
+                <Button onClick={sendOtp} autoFocus>
+                  Confirm
+                </Button>
+              </DialogActions>
+            </Box>
+          </Modal>
+        </Box>
+      </Box>
     </div>
   );
-}
-
+}  
 const ColorButton = styled(Button)(({ theme }) => ({
   color: "#000",
   backgroundColor: "#F6FAB9",

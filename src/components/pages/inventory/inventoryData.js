@@ -588,91 +588,108 @@ export default function Inventory() {
   return (
     <div className="attendance">
       <Topbar />
-      <div className="container">
+      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
         <Sidebar />
-        <div style={{ height: "100%", width: "85%", marginLeft: "100" }}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            padding: { xs: "10px", sm: "20px" },
+            maxWidth: "100%",
+            overflow: "auto",
+          }}
+        >
+          {/* Responsive Header with Controls */}
           <Stack
-            direction={{ xs: "column", md: "row", sm: "row" }}
-            spacing={{ xs: 1, sm: 2, md: 4 }}
-            sx={{ marginBottom: "20px", marginTop: "10px" }}
+            direction={{ xs: "column", md: "row" }}
+            spacing={2}
+            sx={{ marginBottom: "20px" }}
           >
-            <div className="MuiStack-root">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label="Start Date"
-                  onChange={(newValue) => setDateBegin(newValue)}
-                  slotProps={{ textField: { size: "small" } }}
-                />
-              </LocalizationProvider>
-  
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label="End Date"
-                  onChange={(newValue) => setDateEnd(newValue)}
-                  slotProps={{ textField: { size: "small" } }}
-                />
-              </LocalizationProvider>
-  
-              <Button
-                onClick={getExportData}
-                variant="contained"
-                sx={{
-                  marginLeft: 1,
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Start Date"
+                onChange={(newValue) => setDateBegin(newValue)}
+                slotProps={{ textField: { size: "small", fullWidth: true } }}
+              />
+            </LocalizationProvider>
+
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="End Date"
+                onChange={(newValue) => setDateEnd(newValue)}
+                slotProps={{ textField: { size: "small", fullWidth: true } }}
+              />
+            </LocalizationProvider>
+
+            <Button
+              onClick={getExportData}
+              variant="contained"
+              sx={{
+                backgroundColor: "rgb(33, 148, 29)",
+                color: "white",
+                "&:hover": {
                   backgroundColor: "rgb(33, 148, 29)",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "rgb(33, 148, 29)",
-                  },
-                }}
-              >
-                Export
-              </Button>
-  
-              {/* Button for Inventory Data */}
-              <Button
-                onClick={fetchInventoryByDate}
-                variant="contained"
-                sx={{
-                  marginLeft: 1,
-                  backgroundColor: "rgb(25, 118, 210)",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "rgb(21, 101, 192)",
-                  },
-                }}
-              >
-                Show Inventory
-              </Button>
-            </div>
+                },
+              }}
+            >
+              Export
+            </Button>
+
+            <Button
+              onClick={fetchInventoryByDate}
+              variant="contained"
+              sx={{
+                backgroundColor: "rgb(25, 118, 210)",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "rgb(21, 101, 192)",
+                },
+              }}
+            >
+              Show Inventory
+            </Button>
           </Stack>
-          <DataGrid
-            rows={userData}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 10 },
+
+          {/* Responsive DataGrid */}
+          <Box
+            sx={{
+              height: "100%",
+              width: "100%",
+              maxHeight: "80vh",
+              marginTop: 2,
+              overflow: "hidden",
+              "& .MuiDataGrid-root": {
+                backgroundColor: "#fff",
               },
             }}
-            slots={{
-              toolbar: GridToolbar,
-            }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-                printOptions: { disableToolbarButton: true },
-                csvOptions: { disableToolbarButton: false },
-              },
-            }}
-            disableDensitySelector
-            disableColumnFilter
-            disableColumnSelector
-            disableRowSelectionOnClick
-            pageSizeOptions={[5, 10, 20, 30, 50, 100]}
-            getRowId={(row) => row.count}
-          />
-        </div>
-      </div>
+          >
+            <DataGrid
+              rows={userData}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 10 },
+                },
+              }}
+              slots={{
+                toolbar: GridToolbar,
+              }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                  printOptions: { disableToolbarButton: true },
+                  csvOptions: { disableToolbarButton: false },
+                },
+              }}
+              disableDensitySelector
+              disableColumnFilter
+              disableColumnSelector
+              disableRowSelectionOnClick
+              pageSizeOptions={[5, 10, 20, 30, 50, 100]}
+              getRowId={(row) => row.count}
+            />
+          </Box>
+        </Box>
+      </Box>
     </div>
   );
-
 }

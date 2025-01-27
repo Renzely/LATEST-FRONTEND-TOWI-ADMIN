@@ -367,93 +367,139 @@ export default function RTV() {
 
   return (
     <div className="attendance">
-        <Topbar/>
-         <div className="container">
-         <Sidebar/>
-         
-      <div style={{ height: "100%", width: "85%", marginLeft: "100" }}>
-
-      <Stack
-            direction={{ xs: "column", md: "row", sm: "row" }}
-            spacing={{ xs: 1, sm: 2, md: 4 }}
-            sx={{ marginBottom: "20px", marginTop: "10px" }} // Added marginBottom here
+      <Topbar />
+      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
+        <Sidebar />
+        <Box
+          sx={{
+            flexGrow: 1,
+            padding: { xs: "10px", sm: "20px" },
+            maxWidth: "100%",
+            overflow: "auto",
+          }}
+        >
+          {/* Controls Section */}
+          <Stack
+            direction={{ xs: "column", md: "row" }}
+            spacing={2}
+            sx={{ marginBottom: "20px", marginTop: "10px" }}
           >
-            <div class="MuiStack-root">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label="Select Date"
-                  onChange={(newValue) => setDateBegin(newValue)}
-                  slotProps={{ textField: { size: "small" } }}
-                />
-              </LocalizationProvider>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Select Date"
+                onChange={(newValue) => setDateBegin(newValue)}
+                slotProps={{ textField: { size: "small" } }}
+              />
+            </LocalizationProvider>
 
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label="Select Date"
-                  onChange={(newValue) => setDateEnd(newValue)}
-                  slotProps={{ textField: { size: "small" } }}
-                />
-              </LocalizationProvider>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Select Date"
+                onChange={(newValue) => setDateEnd(newValue)}
+                slotProps={{ textField: { size: "small" } }}
+              />
+            </LocalizationProvider>
 
+            <Button
+              onClick={getExportData}
+              variant="contained"
+              sx={{
+                backgroundColor: "rgb(33, 148, 29)",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "rgb(33, 148, 29)",
+                },
+              }}
+            >
+              Export
+            </Button>
+          </Stack>
+
+          {/* Responsive DataGrid */}
+          <Box
+            sx={{
+              height: "100%",
+              width: "100%",
+              maxHeight: "80vh",
+              marginTop: 2,
+              overflow: "hidden",
+              "& .MuiDataGrid-root": {
+                backgroundColor: "#fff",
+              },
+            }}
+          >
+            <DataGrid
+              rows={userData}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 10 },
+                },
+              }}
+              slots={{
+                toolbar: GridToolbar,
+              }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                  printOptions: { disableToolbarButton: true },
+                  csvOptions: { disableToolbarButton: true },
+                },
+              }}
+              disableDensitySelector
+              disableColumnFilter
+              disableColumnSelector
+              disableRowSelectionOnClick
+              pageSizeOptions={[5, 10, 20, 30, 50, 100]}
+              getRowId={(row) => row.count}
+            />
+          </Box>
+
+          {/* Responsive Modal */}
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box
+              sx={{
+                padding: 4,
+                backgroundColor: "white",
+                margin: { xs: "10% auto", md: "5% auto" },
+                width: { xs: "90%", sm: "70%", md: "50%" },
+                boxShadow: 24,
+                borderRadius: 2,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Text in a modal
+              </Typography>
+              <Typography
+                id="modal-modal-description"
+                sx={{ mt: 2, textAlign: "center" }}
+              >
+                Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+              </Typography>
               <Button
-                onClick={getExportData}
+                onClick={handleClose}
                 variant="contained"
                 sx={{
-                 marginLeft: 1, // Equivalent to 5px spacing
-                  backgroundColor: "rgb(33, 148, 29)", // Custom background color
-                  color: "white", // Text color
-                  "&:hover": {
-                    backgroundColor: "rgb(33, 148, 29)", // Hover background color
-                  },
+                  marginTop: 3,
+                  backgroundColor: "rgb(33, 148, 29)",
+                  color: "white",
+                  "&:hover": { backgroundColor: "rgb(33, 148, 29)" },
                 }}
               >
-                Export
+                Close
               </Button>
-            </div>
-          </Stack>
-        <DataGrid
-          rows={userData}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 10 },
-            },
-          }}
-          slots={{
-            toolbar: GridToolbar,
-          }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-              printOptions: { disableToolbarButton: true },
-              csvOptions: { disableToolbarButton: true },
-            },
-          }}
-          disableDensitySelector
-          disableColumnFilter
-          disableColumnSelector
-          disableRowSelectionOnClick
-          pageSizeOptions={[5, 10, 20, 30, 50, 100]}
-          getRowId={(row) => row.count}
-        />
-      </div>
-
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
+            </Box>
+          </Modal>
         </Box>
-      </Modal>
-    </div>
+      </Box>
     </div>
   );
 }

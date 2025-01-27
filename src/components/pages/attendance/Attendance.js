@@ -317,33 +317,56 @@ export default function Attendance() {
   return (
     <div className="attendance">
       <Topbar />
-      <div className="container">
+      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
         <Sidebar />
-        <div style={{ height: "100%", width: "100%", marginLeft: "100" }}>
-          <DataGrid
-            rows={userData}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 20 },
+        <Box
+          sx={{
+            flexGrow: 1,
+            padding: { xs: "10px", sm: "20px" },
+            maxWidth: "100%",
+            overflow: "auto",
+          }}
+        >
+          <Box
+            sx={{
+              height: "100%",
+              width: "100%",
+              maxHeight: "80vh",
+              marginTop: 2,
+              overflow: "hidden",
+              "& .MuiDataGrid-root": {
+                backgroundColor: "#fff",
               },
             }}
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-                printOptions: { disableToolbarButton: true },
-                csvOptions: { disableToolbarButton: true },
-              },
-            }}
-            pageSizeOptions={[5, 10, 20, 50, 100]}
-            getRowId={(row) => row.count}
-            disableDensitySelector
-            disableColumnFilter
-            disableColumnSelector
-          />
-        </div>
-      </div>
+          >
+            <DataGrid
+              rows={userData}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 20 },
+                },
+              }}
+              slots={{
+                toolbar: GridToolbar,
+              }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                  printOptions: { disableToolbarButton: true },
+                  csvOptions: { disableToolbarButton: true },
+                },
+              }}
+              pageSizeOptions={[5, 10, 20, 50, 100]}
+              getRowId={(row) => row.count}
+              disableDensitySelector
+              disableColumnFilter
+              disableColumnSelector
+              disableRowSelectionOnClick
+            />
+          </Box>
+        </Box>
+      </Box>
     </div>
   );
 }
