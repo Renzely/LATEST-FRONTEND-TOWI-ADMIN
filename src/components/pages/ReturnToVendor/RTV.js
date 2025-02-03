@@ -376,6 +376,7 @@ export default function RTV() {
             padding: { xs: "10px", sm: "20px" },
             maxWidth: "100%",
             overflow: "auto",
+                 backgroundColor: "#52B788"
           }}
         >
           {/* Controls Section */}
@@ -388,7 +389,7 @@ export default function RTV() {
               <DatePicker
                 label="Select Date"
                 onChange={(newValue) => setDateBegin(newValue)}
-                slotProps={{ textField: { size: "small" } }}
+                slotProps={{ textField: { size: "small" , sx: { backgroundColor: 'white' } } }}
               />
             </LocalizationProvider>
 
@@ -396,7 +397,7 @@ export default function RTV() {
               <DatePicker
                 label="Select Date"
                 onChange={(newValue) => setDateEnd(newValue)}
-                slotProps={{ textField: { size: "small" } }}
+                slotProps={{ textField: { size: "small", sx: { backgroundColor: 'white' } } }}
               />
             </LocalizationProvider>
 

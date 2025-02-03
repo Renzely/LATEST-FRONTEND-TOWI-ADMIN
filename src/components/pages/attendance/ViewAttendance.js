@@ -141,7 +141,7 @@ export default function ViewAttendance() {
               longitude: 0,
             },
             selfieUrl: timeLog.selfieUrl || "", // Add selfieUrl here
-            timeOutSelfieUrl: timeLog.timeOutSelfieUrl || '', // Time-out selfie
+            timeOutSelfieUrl: timeLog.timeOutSelfieUrl || "", // Time-out selfie
             accountNameBranchManning:
               item.accountNameBranchManning || "Unknown Outlet",
             count: index + 1, // Assign count based on the index of the timeLog
@@ -337,7 +337,7 @@ export default function ViewAttendance() {
       headerClassName: "bold-header",
       renderCell: (params) => {
         const timeOutSelfieUrl = params.row.timeOutSelfieUrl;
-  
+
         return (
           <Stack style={{ marginTop: 10, alignItems: "center" }}>
             <Button
@@ -618,31 +618,17 @@ export default function ViewAttendance() {
   return (
     <div className="attendance">
       <Topbar />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-        }}
-      >
+      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
         <Sidebar />
         <Box
           sx={{
             flexGrow: 1,
-            padding: { xs: 2, sm: 4 },
-            marginTop: { xs: 2, sm: 4 },
+            padding: { xs: "10px", sm: "20px" },
+            maxWidth: "100%",
+            overflow: "auto",
+            backgroundColor: "#52B788", // Background color from attendance.js
           }}
         >
-          {/* <Typography
-            variant="h4"
-            gutterBottom
-            sx={{
-              display: { xs: "none", md: "block" },
-              textAlign: "center",
-            }}
-          >
-            Attendance for {userEmail}
-          </Typography> */}
-
           <Box
             sx={{
               display: "flex",
@@ -655,15 +641,25 @@ export default function ViewAttendance() {
               <DatePicker
                 label="Start Date"
                 onChange={(newValue) => setDateBegin(newValue)}
-                slotProps={{ textField: { size: "small" } }}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    sx: { backgroundColor: "white" }, // Set background color to white
+                  },
+                }}
               />
               <DatePicker
                 label="End Date"
                 onChange={(newValue) => setDateEnd(newValue)}
-                slotProps={{ textField: { size: "small" } }}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    sx: { backgroundColor: "white" }, // Set background color to white
+                  },
+                }}
               />
             </LocalizationProvider>
-
+  
             <Button
               onClick={getExportData}
               variant="contained"
@@ -678,7 +674,7 @@ export default function ViewAttendance() {
               Export
             </Button>
           </Box>
-
+  
           {/* Photo Modal */}
           <Modal
             open={openPhotoModal}
@@ -707,7 +703,7 @@ export default function ViewAttendance() {
               )}
             </Box>
           </Modal>
-
+  
           {/* Map Modal */}
           <Modal
             open={open}
@@ -745,9 +741,20 @@ export default function ViewAttendance() {
               </div>
             </Box>
           </Modal>
-
+  
           {/* Attendance Data Table */}
-          <Box sx={{ height: "500px", width: "100%" }}>
+          <Box
+            sx={{
+              height: "100%",
+              width: "100%",
+              maxHeight: "80vh",
+              marginTop: 2,
+              overflow: "hidden",
+              "& .MuiDataGrid-root": {
+                backgroundColor: "#fff",
+              },
+            }}
+          >
             <DataGrid
               rows={attendanceData}
               columns={columns}

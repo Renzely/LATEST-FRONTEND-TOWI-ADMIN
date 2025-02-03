@@ -24,10 +24,10 @@ import { Visibility } from "@mui/icons-material";
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#4caf50', // Green color
+      main: '#2a9d8f', // Green color
     },
     background: {
-      default: '#ffffff', // White background
+      default: '#edf6f9', // White background
     },
   },
 });
@@ -202,10 +202,10 @@ export default function ForgotPassword() {
                 autoFocus
                 style={{ width: 300 }}
                 InputProps={{
-                  style: { color: 'green' }
+                  style: { color: 'black' }
                 }}
                 InputLabelProps={{
-                  style: { color: 'green' }
+                  style: { color: 'black' }
                 }}
               />
               {!otpComponent &&
@@ -245,10 +245,10 @@ export default function ForgotPassword() {
                   }}
                   autoFocus
                   InputProps={{
-                    style: { color: 'green' }
+                    style: { color: 'black' }
                   }}
                   InputLabelProps={{
-                    style: { color: 'green' }
+                    style: { color: 'black' }
                   }}
                 />
                 <Button
@@ -300,10 +300,10 @@ export default function ForgotPassword() {
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   ),
-                  style: { color: 'green' }
+                  style: { color: 'black' }
                 }}
                 InputLabelProps={{
-                  style: { color: 'green' }
+                  style: { color: 'black' }
                 }}
               />
             </FormControl>
@@ -320,10 +320,10 @@ export default function ForgotPassword() {
                 type="password"
                 autoComplete='off'
                 InputProps={{
-                  style: { color: 'green' }
+                  style: { color: 'black' }
                 }}
                 InputLabelProps={{
-                  style: { color: 'green' }
+                  style: { color: 'black' }
                 }}
               />
             </FormControl>

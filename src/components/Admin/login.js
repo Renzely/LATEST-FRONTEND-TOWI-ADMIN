@@ -17,10 +17,10 @@ import logo from './Studio-Project.png';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#4caf50', // Green color
+      main: '#2a9d8f', // Green color
     },
     background: {
-      default: '#ffffff', // White background
+      default: '#edf6f9', // White background
     },
   },
 });
@@ -109,7 +109,7 @@ export default function Login() {
         >
           <img src={logo} alt="Logo" style={{ width: '150px', marginBottom: '16px' }} />
           <Typography component="h1" variant="h5">
-            Sign in
+            LOGIN
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -122,10 +122,10 @@ export default function Login() {
               autoComplete="email"
               autoFocus
               InputProps={{
-                style: { color: 'green' }
+                style: { color: 'black' }
               }}
               InputLabelProps={{
-                style: { color: 'green' }
+                style: { color: 'black' }
               }}
             />
             <TextField
@@ -138,10 +138,10 @@ export default function Login() {
               id="password"
               autoComplete="current-password"
               InputProps={{
-                style: { color: 'green' }
+                style: { color: 'black' }
               }}
               InputLabelProps={{
-                style: { color: 'green' }
+                style: { color: 'black' }
               }}
             />
             <Button
@@ -150,12 +150,12 @@ export default function Login() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              Login
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="/forgotpassword" variant="body2" style={{ color: '#4caf50' }}>
-                  Forgot password?
+                <Link href="/forgotpassword" variant="body2" style={{ color: 'black', fontWeight: "bold" }}>
+                  FORGOT PASSWORD
                 </Link>
               </Grid>
             </Grid>
