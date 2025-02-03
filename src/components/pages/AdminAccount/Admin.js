@@ -1561,6 +1561,7 @@ export default function Admin() {
             padding: { xs: "10px", sm: "20px" },
             maxWidth: "100%",
             overflow: "auto",
+              backgroundColor: "#52B788"
           }}
         >
           {/* Add User Button */}

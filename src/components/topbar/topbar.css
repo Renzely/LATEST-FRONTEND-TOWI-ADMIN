@@ -1,12 +1,20 @@
 .topbar {
   width: 100%;
   height: 50px;
-  background-color: green;
+  background-color: #014f43;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  transition: margin-left 0.3s ease; /* Smooth transition */
+}
+
+.topbar.shifted {
+  margin-left: 150px; /* Shift topbar content to the right when sidebar is open */
 }
 
 .topbarWrapper {
   height: 100%;
-  padding: 0px 20px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;

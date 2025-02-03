@@ -596,6 +596,7 @@ export default function Inventory() {
             padding: { xs: "10px", sm: "20px" },
             maxWidth: "100%",
             overflow: "auto",
+              backgroundColor: "#52B788"
           }}
         >
           {/* Responsive Header with Controls */}
@@ -608,7 +609,7 @@ export default function Inventory() {
               <DatePicker
                 label="Start Date"
                 onChange={(newValue) => setDateBegin(newValue)}
-                slotProps={{ textField: { size: "small", fullWidth: true } }}
+                slotProps={{ textField: { size: "small", fullWidth: false, sx: { backgroundColor: 'white' } } }}
               />
             </LocalizationProvider>
 
@@ -616,7 +617,7 @@ export default function Inventory() {
               <DatePicker
                 label="End Date"
                 onChange={(newValue) => setDateEnd(newValue)}
-                slotProps={{ textField: { size: "small", fullWidth: true } }}
+                slotProps={{ textField: { size: "small", fullWidth: false, sx: { backgroundColor: 'white' } } }}
               />
             </LocalizationProvider>
 

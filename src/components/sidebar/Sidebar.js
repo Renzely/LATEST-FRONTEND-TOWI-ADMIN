@@ -1,20 +1,26 @@
-import { Link, NavLink } from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import {
+  Inventory,
+  AssignmentInd,
+  ManageAccounts,
+  Logout,
+  SupervisorAccount,
+  AssignmentReturn,
+  Store,
+} from "@mui/icons-material";
+import { Avatar, Typography, IconButton } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import "./sidebar.css";
-import { Inventory, AssignmentInd, ManageAccounts } from "@mui/icons-material";
-import LogoutIcon from "@mui/icons-material/Logout";
-import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
-import AssignmentReturnIcon from "@mui/icons-material/AssignmentReturn";
-import StoreIcon from '@mui/icons-material/Store';
-import { useLocation } from "react-router-dom";
-import * as React from "react";
 
 export default function Sidebar() {
   const location = useLocation();
-  const [activeItem, setActiveItem] = React.useState(location.pathname);
+  const [activeItem, setActiveItem] = useState(location.pathname);
+  const [isOpen, setOpen] = useState(false);
 
   const handleItemClick = (itemName) => {
     setActiveItem(itemName);
-    console.log(activeItem);
+    setOpen(false); // Close sidebar on click
   };
 
   const handleLogout = () => {
@@ -22,127 +28,104 @@ export default function Sidebar() {
     window.location.href = "/";
   };
 
-  const roleAccount = localStorage.getItem("roleAccount"); // Get roleAccount from localStorage
-  const firstName = localStorage.getItem("firstName");     // Get firstName from localStorage
-  const lastName = localStorage.getItem("lastName");       // Get lastName from localStorage
+  const roleAccount = localStorage.getItem("roleAccount");
+  const firstName = localStorage.getItem("firstName");
 
   return (
-    <div className="sidebar">
-    <div className="sidebarWrapper">
-      {/* Display User Info */}
-      <div className="sidebarUserInfo">
-        <h4 className="sidebarUserName">
-          <span className="bold">NAME:</span> {firstName} {lastName}
-        </h4>
-        <p className="sidebarUserRole">
-          <span className="bold">ROLE:</span> {roleAccount}
-        </p>
+    <div className={`sidebar ${isOpen ? "open" : ""}`}>
+      {/* Toggle Button */}
+      <div className="sidebar-header">
+        <IconButton onClick={() => setOpen(!isOpen)} className="menu-button">
+          <MenuIcon sx={{ color: "white" }} />
+        </IconButton>
       </div>
-  
 
-        {/* Sidebar Menu */}
-        <div className="sidebarMenu">
-          {/* <h3 className="sidebarTitle">Dashboard</h3> */}
-          <ul className="sidebarList">
-            <NavLink
-              to="/view-accounts"
-              style={{ textDecoration: "none" }}
-              onClick={() => handleItemClick("/view-accounts")}
-            >
-              <li
-                className={`sidebarListItem ${
-                  activeItem === "/view-accounts" ? "active" : ""
-                }`}
-              >
-                <ManageAccounts className="sidebarIcon" />
-                Accounts
-              </li>
-            </NavLink>
-            {(roleAccount === "ACCOUNT SUPERVISOR" || 
-            roleAccount === "OPERATION OFFICER" || 
-            roleAccount === "OPERATION HEAD" ||
-            roleAccount === "SENIOR OPERATION MANAGER") && (
-            <NavLink
-              to="/view-admin-accounts"
-              style={{ textDecoration: "none" }}
-              onClick={() => handleItemClick("/view-admin-accounts")}
-            >
-              <li
-                className={`sidebarListItem ${
-                  activeItem === "/view-admin-accounts" ? "active" : ""
-                }`}
-              >
-                <SupervisorAccountIcon className="sidebarIcon" />
-                Admin Account
-              </li>
-            </NavLink>
-            )}
+      {/* User Info */}
+      <div className="sidebar-user">
+        <Avatar className="sidebar-avatar"
+        sx={{ color: "black", backgroundColor: "#90e0ef"}}
+        />
+        {isOpen && (
+          <div className="user-info">
+            <Typography variant="body1" className="sidebar-name">
+              {firstName}
+            </Typography>
+            <Typography variant="body2" className="sidebar-role">
+              {roleAccount}
+            </Typography>
+          </div>
+        )}
+      </div>
 
-            <NavLink
-              to="/attendance"
-              style={{ textDecoration: "none" }}
-              onClick={() => handleItemClick("/attendance")}
-            >
-              <li
-                className={`sidebarListItem ${
-                  activeItem === "/attendance" ? "active" : ""
-                }`}
-              >
-                <AssignmentInd className="sidebarIcon" />
-                Attendance
-              </li>
-            </NavLink>
+      {/* Divider Line */}
+      <hr className="sidebar-divider" />
 
-            <NavLink
-              to="/inventory"
-              style={{ textDecoration: "none" }}
-              onClick={() => handleItemClick("/inventory")}
-            >
-              <li
-                className={`sidebarListItem ${
-                  activeItem === "/inventory" ? "active" : ""
-                }`}
-              >
-                <Inventory className="sidebarIcon" />
-                Inventory
-              </li>
-            </NavLink>
+      {/* Sidebar Menu */}
+      <ul className="sidebar-menu">
+        <NavLink
+          to="/view-accounts"
+          onClick={() => handleItemClick("/view-accounts")}
+        >
+          <li className={activeItem === "/view-accounts" ? "active" : ""}>
+            <ManageAccounts className="sidebar-icon" /> {isOpen && "Accounts"}
+          </li>
+        </NavLink>
 
-            <NavLink
-              to="/view-outletinputs"
-              style={{ textDecoration: "none" }}
-              onClick={() => handleItemClick("/view-outlet")}>
-              <li
-                className={`sidebarListItem ${
-                  activeItem === "/view-outletinputs" ? "active" : ""
-                }`}
-              >
-                <StoreIcon className="sidebarIcon" />
-                Outlet Inputs
-              </li>
-            </NavLink>
-
-            <NavLink
-              to="/view-RTV"
-              style={{ textDecoration: "none" }}
-              onClick={() => handleItemClick("/view-RTV")}
+        {[
+          "ACCOUNT SUPERVISOR",
+          "OPERATION OFFICER",
+          "OPERATION HEAD",
+          "SENIOR OPERATION MANAGER",
+        ].includes(roleAccount) && (
+          <NavLink
+            to="/view-admin-accounts"
+            onClick={() => handleItemClick("/view-admin-accounts")}
+          >
+            <li
+              className={activeItem === "/view-admin-accounts" ? "active" : ""}
             >
-              <li
-                className={`sidebarListItem ${
-                  activeItem === "/view-RTV" ? "active" : ""
-                }`}
-              >
-                <AssignmentReturnIcon className="sidebarIcon" />
-                RTV
-              </li>
-            </NavLink>
-            <li className="sidebarListItem" onClick={() => handleLogout()}>
-              <LogoutIcon className="sidebarIcon" />
-              Logout
+              <SupervisorAccount className="sidebar-icon" />{" "}
+              {isOpen && "Admin Accounts"}
             </li>
-          </ul>
-        </div>
-      </div>
+          </NavLink>
+        )}
+
+        <NavLink
+          to="/attendance"
+          onClick={() => handleItemClick("/attendance")}
+        >
+          <li className={activeItem === "/attendance" ? "active" : ""}>
+            <AssignmentInd className="sidebar-icon" /> {isOpen && "Attendance"}
+          </li>
+        </NavLink>
+
+        <NavLink to="/inventory" onClick={() => handleItemClick("/inventory")}>
+          <li className={activeItem === "/inventory" ? "active" : ""}>
+            <Inventory className="sidebar-icon" /> {isOpen && "Inventory"}
+          </li>
+        </NavLink>
+
+        <NavLink
+          to="/view-outletinputs"
+          onClick={() => handleItemClick("/view-outletinputs")}
+        >
+          <li className={activeItem === "/view-outletinputs" ? "active" : ""}>
+            <Store className="sidebar-icon" /> {isOpen && "Outlet Inputs"}
+          </li>
+        </NavLink>
+
+        <NavLink to="/view-RTV" onClick={() => handleItemClick("/view-RTV")}>
+          <li className={activeItem === "/view-RTV" ? "active" : ""}>
+            <AssignmentReturn className="sidebar-icon" />{" "}
+            {isOpen && "Return to Vendor"}
+          </li>
+        </NavLink>
+
+        {/* Logout */}
+        <li className="logout" onClick={handleLogout}>
+          <Logout className="sidebar-icon" /> {isOpen && "Logout"}
+        </li>
+      </ul>
     </div>
   );
 }
