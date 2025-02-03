@@ -930,6 +930,7 @@ export default function Account() {
     "WELLCOME-MANHATTAN",
     "WELLCOME-PARDO",
     "HEAD OFFICE",
+    "CLIENT'S OFFICE",
     "Branch",
   ]); //Branches
 
