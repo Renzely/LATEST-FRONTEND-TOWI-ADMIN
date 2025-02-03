@@ -1025,6 +1025,7 @@ export default function Admin() {
     "WELLCOME-MANHATTAN",
     "WELLCOME-PARDO",
     "HEAD OFFICE",
+    "CLIENT'S OFFICE",
     "Branch"
 
   ];
