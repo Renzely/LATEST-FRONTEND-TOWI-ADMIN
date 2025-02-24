@@ -659,7 +659,7 @@ export default function ViewAttendance() {
                 }}
               />
             </LocalizationProvider>
-  
+
             <Button
               onClick={getExportData}
               variant="contained"
@@ -674,7 +674,7 @@ export default function ViewAttendance() {
               Export
             </Button>
           </Box>
-  
+
           {/* Photo Modal */}
           <Modal
             open={openPhotoModal}
@@ -703,7 +703,7 @@ export default function ViewAttendance() {
               )}
             </Box>
           </Modal>
-  
+
           {/* Map Modal */}
           <Modal
             open={open}
@@ -741,7 +741,7 @@ export default function ViewAttendance() {
               </div>
             </Box>
           </Modal>
-  
+
           {/* Attendance Data Table */}
           <Box
             sx={{

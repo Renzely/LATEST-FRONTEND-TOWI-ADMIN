@@ -14,9 +14,9 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const style = {
   position: "absolute",
@@ -48,25 +48,29 @@ export default function Inventory() {
   const XLSX = require("sheetjs-style");
   const [dateBegin, setDateBegin] = React.useState(null);
   const [dateEnd, setDateEnd] = React.useState(null);
-  
-  
-
 
   const filterParcelDate = () => {
-
     //let selectedDate = new Date(dateFilter.$d).toLocaleString('en-us',{month:'numeric', timeZone: 'Asia/Manila'});
-    let month = new Date(dateFilter.$d).toLocaleString('en-us',{month:'numeric', timeZone: 'Asia/Manila'});
-    let day = new Date(dateFilter.$d).toLocaleString('en-us',{day:'numeric', timeZone: 'Asia/Manila'});
-    let year = new Date(dateFilter.$d).toLocaleString('en-us',{year:'numeric', timeZone: 'Asia/Manila'});
+    let month = new Date(dateFilter.$d).toLocaleString("en-us", {
+      month: "numeric",
+      timeZone: "Asia/Manila",
+    });
+    let day = new Date(dateFilter.$d).toLocaleString("en-us", {
+      day: "numeric",
+      timeZone: "Asia/Manila",
+    });
+    let year = new Date(dateFilter.$d).toLocaleString("en-us", {
+      year: "numeric",
+      timeZone: "Asia/Manila",
+    });
 
-    if (month.length === 1) month = '0' + month
-    if (day.length === 1) day = '0' + day
+    if (month.length === 1) month = "0" + month;
+    if (day.length === 1) day = "0" + day;
 
-    const selectedDate = year + "-" + month + "-" + day
-    console.log(selectedDate);  
-    getDate(selectedDate)
+    const selectedDate = year + "-" + month + "-" + day;
+    console.log(selectedDate);
+    getDate(selectedDate);
   };
-
 
   const columns = [
     {
@@ -264,35 +268,35 @@ export default function Inventory() {
     },
   ];
 
-  
-
   async function getUser() {
     try {
       // Retrieve the logged-in admin's accountNameBranchManning from localStorage
       const loggedInBranch = localStorage.getItem("accountNameBranchManning");
-  
+
       console.log("Logged in branch:", loggedInBranch);
-  
+
       if (!loggedInBranch) {
         console.error("No branch information found for the logged-in admin.");
         return;
       }
-  
+
       // Prepare the branch list for the request
       const branches = loggedInBranch.split(",");
-  
+
       // Fetch the inventory data filtered by branches
       const response = await axios.post(
         "https://latest-backend-towi-admin.onrender.com/retrieve-parcel-data",
         { branches } // Pass branches in the request body
       );
-  
+
       const data = response.data.data;
       console.log(data, "backend response");
-  
+
       // Sort the data by date in descending order
-      const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
-  
+      const sortedData = data.sort(
+        (a, b) => new Date(b.date) - new Date(a.date)
+      );
+
       // Map the data for rendering
       const newData = sortedData.map((data, key) => {
         const value = (status, defaultValue) => {
@@ -300,7 +304,7 @@ export default function Inventory() {
           if (status === "Not Carried") return "NC";
           return defaultValue || 0;
         };
-  
+
         return {
           count: key + 1,
           date: data.date,
@@ -331,62 +335,61 @@ export default function Inventory() {
           expiryFields: data.expiryFields,
         };
       });
-  
+
       console.log(newData, "mapped data");
       setUserData(newData); // Set the filtered data for rendering
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   }
-  
-  
+
   const fetchInventoryByDate = async () => {
     if (!dateBegin || !dateEnd) {
       alert("Please select a valid date range.");
       return;
     }
-  
+
     try {
       const selectedDate = {
         startDate: dateBegin.format("YYYY-MM-DD"), // Format dates properly
         endDate: dateEnd.format("YYYY-MM-DD"),
       };
-  
+
       console.log("Sending date range to backend:", selectedDate);
-  
+
       await getDate(selectedDate); // Call the updated getDate function
     } catch (error) {
       console.error("Error fetching inventory data:", error);
     }
   };
-  
+
   async function getDate(selectedDate) {
-    const data = { 
-      startDate: selectedDate.startDate, 
-      endDate: selectedDate.endDate 
+    const data = {
+      startDate: selectedDate.startDate,
+      endDate: selectedDate.endDate,
     }; // Ensure the payload matches the backend expectation
-  
+
     try {
       const response = await axios.post(
         "https://latest-backend-towi-admin.onrender.com/filter-date-range", // Correct endpoint
         data
       );
-  
+
       const parcels = response.data.data; // Access the data field
       console.log("Parcels fetched:", parcels);
-  
+
       // Sort the data by date in descending order
       const sortedData = parcels.sort(
         (a, b) => new Date(b.date) - new Date(a.date)
       );
-  
+
       const newData = sortedData.map((data, key) => {
         const value = (status, defaultValue) => {
           if (status === "Delisted") return "Delisted";
           if (status === "Not Carried") return "NC";
           return defaultValue || 0;
         };
-  
+
         return {
           count: key + 1,
           date: data.date,
@@ -417,17 +420,13 @@ export default function Inventory() {
           expiryFields: data.expiryFields,
         };
       });
-  
+
       console.log("Mapped data:", newData);
       setUserData(newData); // Set data to render in the DataGrid
     } catch (error) {
       console.error("Error fetching inventory data:", error);
     }
   }
-  
-  
-  
-  
 
   React.useEffect(() => {
     getUser();
@@ -584,7 +583,6 @@ export default function Inventory() {
     }
   };
 
-
   return (
     <div className="attendance">
       <Topbar />
@@ -596,7 +594,7 @@ export default function Inventory() {
             padding: { xs: "10px", sm: "20px" },
             maxWidth: "100%",
             overflow: "auto",
-              backgroundColor: "#52B788"
+            backgroundColor: "#52B788",
           }}
         >
           {/* Responsive Header with Controls */}
@@ -609,7 +607,13 @@ export default function Inventory() {
               <DatePicker
                 label="Start Date"
                 onChange={(newValue) => setDateBegin(newValue)}
-                slotProps={{ textField: { size: "small", fullWidth: false, sx: { backgroundColor: 'white' } } }}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    fullWidth: false,
+                    sx: { backgroundColor: "white" },
+                  },
+                }}
               />
             </LocalizationProvider>
 
@@ -617,7 +621,13 @@ export default function Inventory() {
               <DatePicker
                 label="End Date"
                 onChange={(newValue) => setDateEnd(newValue)}
-                slotProps={{ textField: { size: "small", fullWidth: false, sx: { backgroundColor: 'white' } } }}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    fullWidth: false,
+                    sx: { backgroundColor: "white" },
+                  },
+                }}
               />
             </LocalizationProvider>
 
