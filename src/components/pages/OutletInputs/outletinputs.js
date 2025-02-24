@@ -1137,7 +1137,8 @@ export default function OUTLET() {
     "TROPICAL HUT -BF HOMES",
     "TROPICAL HUT -FTI TAGUIG",
   ]);
-  const [delistedCountsCurrentWeek, setDelistedCountsCurrentWeek] = React.useState({});
+  const [delistedCountsCurrentWeek, setDelistedCountsCurrentWeek] =
+    React.useState({});
   const [inventoryCount, setInventoryCount] = React.useState({});
   const [notCarriedCount, setNotCarriedCount] = React.useState({});
   const [selectedBranch, setSelectedBranch] = React.useState(null); // Branch for the modal
@@ -1250,30 +1251,30 @@ export default function OUTLET() {
   const getWeekRange = () => {
     const today = new Date(); // Automatically uses local timezone
     const dayOfWeek = today.getDay();
-  
+
     // Calculate the most recent Friday
     const lastFriday = new Date(today);
     lastFriday.setDate(today.getDate() - ((dayOfWeek + 1) % 7)); // Adjust to last Friday
-  
+
     // Determine the "active" week based on today
     const activeFriday = new Date(lastFriday);
     if (dayOfWeek >= 5) {
       activeFriday.setDate(lastFriday.getDate() + 7);
     }
-  
+
     // Calculate display range for the previous week (activeFriday - 7 days)
     const displayStartDate = new Date(activeFriday);
     displayStartDate.setDate(activeFriday.getDate() - 7); // Previous week's Friday
-  
+
     const displayEndDate = new Date(displayStartDate);
     displayEndDate.setDate(displayStartDate.getDate() + 6); // Previous week's Thursday
-  
+
     // Format dates for display range (e.g., Dec 14-20)
     const formatDate = (date) => {
       const options = { month: "short", day: "2-digit" };
       return date.toLocaleDateString("en-PH", options).replace(" ", "");
     };
-  
+
     // Data range for fetching records (activeFriday to activeFriday + 6 days)
     const startDate = new Date(activeFriday);
     startDate.setHours(0, 0, 0, 0); // Start of the active Friday (midnight)
@@ -1284,82 +1285,84 @@ export default function OUTLET() {
 
     // Return formatted display range and start/end date for backend in ISO format
     return {
-      displayRange: `${formatDate(displayStartDate)}-${formatDate(displayEndDate)}`, // Previous week's range
+      displayRange: `${formatDate(displayStartDate)}-${formatDate(
+        displayEndDate
+      )}`, // Previous week's range
       startDate: startDate.toISOString().split("T")[0], // Start date in ISO format (e.g., 2024-12-20)
       endDate: endDate.toISOString().split("T")[0], // End date in ISO format (e.g., 2024-12-26)
     };
   };
 
-
   // Update the delisted SKUs state when an SKU's status changes
-const updateDelistedSkuState = (skuStatusChange) => {
-  const { branch, skuStatus } = skuStatusChange;
+  const updateDelistedSkuState = (skuStatusChange) => {
+    const { branch, skuStatus } = skuStatusChange;
 
-  // If SKU is delisted, add it to the delisted count for that branch
-  if (skuStatus === 'Delisted') {
-    setDelistedSkus((prevState) => ({
-      ...prevState,
-      [branch]: (prevState[branch] || 0) + 1,
-    }));
-  } else if (skuStatus !== 'Delisted') {
-    // If SKU is no longer delisted, subtract from the count
-    setDelistedSkus((prevState) => ({
-      ...prevState,
-      [branch]: Math.max((prevState[branch] || 0) - 1, 0), // Prevent going below zero
-    }));
-  }
-};
+    // If SKU is delisted, add it to the delisted count for that branch
+    if (skuStatus === "Delisted") {
+      setDelistedSkus((prevState) => ({
+        ...prevState,
+        [branch]: (prevState[branch] || 0) + 1,
+      }));
+    } else if (skuStatus !== "Delisted") {
+      // If SKU is no longer delisted, subtract from the count
+      setDelistedSkus((prevState) => ({
+        ...prevState,
+        [branch]: Math.max((prevState[branch] || 0) - 1, 0), // Prevent going below zero
+      }));
+    }
+  };
 
-  
   // Test
   console.log(getWeekRange());
 
   const fetchInventoryCount = async () => {
     const { startDate, endDate } = getWeekRange(); // Current week's date range
     const data = { startDate, endDate };
-  
+
     try {
       const response = await axios.post(
         "https://latest-backend-towi-admin.onrender.com/filter-date-range",
         data
       );
-  
+
       const inventoryData = response.data.data;
       const filteredInventoryData = inventoryData.filter((item) => {
         const itemDate = new Date(item.date);
         return itemDate >= new Date(startDate) && itemDate <= new Date(endDate); // Filter for current week
       });
-  
+
       const carriedCounts = {};
       const notCarriedCounts = {};
       const delistedCountsCumulative = { ...delistedSkus }; // Persistent delisted counts
-  
+
       filteredInventoryData.forEach((item) => {
         const branch = item.accountNameBranchManning;
-  
+
         // "Carried" count
         if (item.status === "Carried") {
           carriedCounts[branch] = (carriedCounts[branch] || 0) + 1;
         }
-  
+
         // "Not Carried" count
         if (item.status === "Not Carried") {
           notCarriedCounts[branch] = (notCarriedCounts[branch] || 0) + 1;
         }
-  
+
         // Cumulative "Delisted" count
         if (item.status === "Delisted") {
-          delistedCountsCumulative[branch] = (delistedCountsCumulative[branch] || 0) + 1; // Increment cumulative
+          delistedCountsCumulative[branch] =
+            (delistedCountsCumulative[branch] || 0) + 1; // Increment cumulative
         }
       });
-  
+
       // Ensure all branches are accounted for
       branches.forEach((branch) => {
         carriedCounts[branch] = carriedCounts[branch] || 0;
         notCarriedCounts[branch] = notCarriedCounts[branch] || 0;
-        delistedCountsCumulative[branch] = delistedCountsCumulative[branch] || delistedSkus[branch] || 0;
+        delistedCountsCumulative[branch] =
+          delistedCountsCumulative[branch] || delistedSkus[branch] || 0;
       });
-  
+
       // Update state for cumulative and current week counts
       setInventoryCount(carriedCounts);
       setNotCarriedCount(notCarriedCounts);
@@ -1368,96 +1371,97 @@ const updateDelistedSkuState = (skuStatusChange) => {
       console.error("Error fetching inventory count:", error);
     }
   };
-  
-  
+
   const rows = branches
-  .filter((accountNameBranchManning) => {
-    const loggedInBranch = localStorage.getItem("accountNameBranchManning");
-    if (!loggedInBranch) {
-      console.error("No branch information found for the logged-in admin.");
-      return false;
-    }
-    const allowedBranches = loggedInBranch.split(",").map((branch) => branch.trim());
-    return allowedBranches.includes(accountNameBranchManning);
-  })
-  .map((accountNameBranchManning, index) => {
-    const cumulativeDelistedCount = delistedSkus[accountNameBranchManning] || 0; // Cumulative delisted counts
-    const totalSkuCount = skuCount.V1 + skuCount.V2 + skuCount.V3 - cumulativeDelistedCount; // Use cumulative subtraction
-    const notCarriedCountValue = notCarriedCount[accountNameBranchManning] || 0;
+    .filter((accountNameBranchManning) => {
+      const loggedInBranch = localStorage.getItem("accountNameBranchManning");
+      if (!loggedInBranch) {
+        console.error("No branch information found for the logged-in admin.");
+        return false;
+      }
+      const allowedBranches = loggedInBranch
+        .split(",")
+        .map((branch) => branch.trim());
+      return allowedBranches.includes(accountNameBranchManning);
+    })
+    .map((accountNameBranchManning, index) => {
+      const cumulativeDelistedCount =
+        delistedSkus[accountNameBranchManning] || 0; // Cumulative delisted counts
+      const totalSkuCount =
+        skuCount.V1 + skuCount.V2 + skuCount.V3 - cumulativeDelistedCount; // Use cumulative subtraction
+      const notCarriedCountValue =
+        notCarriedCount[accountNameBranchManning] || 0;
 
-    return {
-      id: index + 1,
-      branchName: accountNameBranchManning,
-      count: inventoryCount[accountNameBranchManning] || 0,
-      totalSkus: totalSkuCount, // Reflect cumulative delisted count adjustment
-      totalNC: notCarriedCountValue,
-      date: getWeekRange().displayRange,
-    };
-  });
+      return {
+        id: index + 1,
+        branchName: accountNameBranchManning,
+        count: inventoryCount[accountNameBranchManning] || 0,
+        totalSkus: totalSkuCount, // Reflect cumulative delisted count adjustment
+        totalNC: notCarriedCountValue,
+        date: getWeekRange().displayRange,
+      };
+    });
 
-  
-
-
-
-  
   // Fetch inventory count on component mount
   React.useEffect(() => {
     fetchInventoryCount();
   }, []);
-  
 
   const fetchUsersByBranch = async (branch) => {
     try {
       // Set the selected branch to display it in the modal header
       setSelectedBranch(branch);
-  
+
       const loggedInBranch = localStorage.getItem("accountNameBranchManning");
       if (!loggedInBranch) {
         console.error("No branch information found for the logged-in admin.");
         return;
       }
-  
-      const branches = loggedInBranch.split(",").map(b => b.trim());
-  
+
+      const branches = loggedInBranch.split(",").map((b) => b.trim());
+
       // Sending the branch info in the POST request to backend
-      const response = await axios.post("https://latest-backend-towi-admin.onrender.com/get-users-by-branch", {
-        branches,
-      });
-  
+      const response = await axios.post(
+        "https://latest-backend-towi-admin.onrender.com/get-users-by-branch",
+        {
+          branches,
+        }
+      );
+
       const users = response.data.users;
       console.log("Received users from the backend:", users);
-  
-      const filteredUsers = users.filter(user => {
+
+      const filteredUsers = users.filter((user) => {
         // Determine which branches the user has access to
         const userBranches = Array.isArray(user.accountNameBranchManning)
           ? user.accountNameBranchManning
-          : user.accountNameBranchManning.split(",").map(b => b.trim());
-        
-        console.log("user branches:", userBranches, "Selected Branch:", branch);
-        
-        return userBranches.includes(branch);  // Ensure matching branch
-      });
-  
-      console.log("Filtered users based on branch:", filteredUsers);
-  
-      const uniqueUsers = [...new Map(users.map(user => [`${user._id}-${user.name}`, user])).values()];
+          : user.accountNameBranchManning.split(",").map((b) => b.trim());
 
-      
-  
+        console.log("user branches:", userBranches, "Selected Branch:", branch);
+
+        return userBranches.includes(branch); // Ensure matching branch
+      });
+
+      console.log("Filtered users based on branch:", filteredUsers);
+
+      const uniqueUsers = [
+        ...new Map(
+          users.map((user) => [`${user._id}-${user.name}`, user])
+        ).values(),
+      ];
+
       console.log("Unique users after filtering:", uniqueUsers);
-  
+
       // Set the filtered and unique users to state
       setUsers(uniqueUsers);
-  
+
       // Open the modal to show the users for the selected branch
       setOpen(true);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
-};
- 
-  
-  
+  };
+
   React.useEffect(() => {
     fetchInventoryCount(); // Fetch data when the component mounts
     const totalSKUs = {
@@ -1475,14 +1479,10 @@ const updateDelistedSkuState = (skuStatusChange) => {
     }));
   };
 
-
-  
   console.log("Branches:", branches);
-console.log("Inventory Count:", inventoryCount);
-console.log("Delisted SKUs:", delistedSkus);
-console.log("Rows Data:", rows);
-
-  
+  console.log("Inventory Count:", inventoryCount);
+  console.log("Delisted SKUs:", delistedSkus);
+  console.log("Rows Data:", rows);
 
   const columns = [
     { field: "id", headerName: "#", width: 75, headerClassName: "bold-header" },
@@ -1532,7 +1532,7 @@ console.log("Rows Data:", rows);
           View
         </Button>
       ),
-    }    
+    },
   ];
 
   return (
@@ -1546,7 +1546,7 @@ console.log("Rows Data:", rows);
             padding: { xs: "10px", sm: "20px" },
             maxWidth: "100%",
             overflow: "auto",
-                 backgroundColor: "#52B788"
+            backgroundColor: "#52B788",
           }}
         >
           {/* Controls Section */}
@@ -1611,16 +1611,23 @@ console.log("Rows Data:", rows);
                 alignItems: "center",
               }}
             >
-              <Typography variant="h6" sx={{ marginBottom: 2, textAlign: "center" }}>
+              <Typography
+                variant="h6"
+                sx={{ marginBottom: 2, textAlign: "center" }}
+              >
                 Merchandiser for {selectedBranch}
               </Typography>
               <ul style={{ padding: 0, listStyle: "none", width: "100%" }}>
                 {users.length > 0 ? (
                   users
                     .filter((user) => {
-                      const userBranches = Array.isArray(user.accountNameBranchManning)
+                      const userBranches = Array.isArray(
+                        user.accountNameBranchManning
+                      )
                         ? user.accountNameBranchManning
-                        : user.accountNameBranchManning.split(",").map((b) => b.trim());
+                        : user.accountNameBranchManning
+                            .split(",")
+                            .map((b) => b.trim());
 
                       return userBranches.includes(selectedBranch); // Filter by selected branch
                     })

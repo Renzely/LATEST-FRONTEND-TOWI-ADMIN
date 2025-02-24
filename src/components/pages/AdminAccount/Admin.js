@@ -135,7 +135,9 @@ export default function Admin() {
   const [adminViewJDate, setAdminViewJDate] = React.useState("");
 
   const [openBranchModal, setOpenBranchModal] = React.useState(false);
-  const [selectedBranches, setSelectedBranches] = useState(adminViewBranch || []);
+  const [selectedBranches, setSelectedBranches] = useState(
+    adminViewBranch || []
+  );
 
   const [modalEmail, setModalEmail] = React.useState("");
 
@@ -148,9 +150,9 @@ export default function Admin() {
           branches: selectedBranches,
         }
       );
-  
+
       console.log("User branches updated:", response.data);
-  
+
       // Update the branch field in the userData state immediately
       const updatedUserData = userData.map((user) => {
         if (user.emailAddress === email) {
@@ -161,20 +163,22 @@ export default function Admin() {
         }
         return user;
       });
-  
+
       setUserData(updatedUserData);
-      
+
       handleCloseBranchModal();
-      
+
       // Refresh the page after closing the modal
       setTimeout(() => window.location.reload(), 1000);
     } catch (error) {
-      console.error("Error updating user branches:", error.response?.data || error.message);
+      console.error(
+        "Error updating user branches:",
+        error.response?.data || error.message
+      );
       handleCloseBranchModal();
     }
   };
-  
-  
+
   const refreshPage = () => {
     window.location.reload();
   };
@@ -182,7 +186,6 @@ export default function Admin() {
   const merchandiser = [];
 
   const branches = [
-  
     "PUREGOLD PRICE CLUB - LA TRINIDAD BENGUET",
     "PUREGOLD PRICE CLUB - BAGUIO",
     "PUREGOLD PRICE CLUB - LAOAG",
@@ -1026,8 +1029,7 @@ export default function Admin() {
     "WELLCOME-PARDO",
     "HEAD OFFICE",
     "CLIENT'S OFFICE",
-    "Branch"
-
+    "Branch",
   ];
 
   const handleRoleChange = (event) => {
@@ -1123,7 +1125,6 @@ export default function Admin() {
   const handleCloseBranchModal = () => {
     setOpenBranchModal(false);
   };
-  
 
   const handleOtpCodeChange = (e) => {
     if (e.target.value.length > 4) return;
@@ -1398,7 +1399,10 @@ export default function Admin() {
 
   async function getUser() {
     await axios
-      .post("https://latest-backend-towi-admin.onrender.com/get-admin-user", requestBody)
+      .post(
+        "https://latest-backend-towi-admin.onrender.com/get-admin-user",
+        requestBody
+      )
       .then(async (response) => {
         const data = await response.data.data;
 
@@ -1423,7 +1427,10 @@ export default function Admin() {
 
   async function setStatus() {
     await axios
-      .put("https://latest-backend-towi-admin.onrender.com/update-status", requestBody)
+      .put(
+        "https://latest-backend-towi-admin.onrender.com/update-status",
+        requestBody
+      )
       .then(async (response) => {
         const data = await response.data.data;
 
@@ -1451,9 +1458,12 @@ export default function Admin() {
     }
 
     await axios
-      .post("https://latest-backend-towi-admin.onrender.com/send-otp-register", {
-        email: adminEmail,
-      })
+      .post(
+        "https://latest-backend-towi-admin.onrender.com/send-otp-register",
+        {
+          email: adminEmail,
+        }
+      )
       .then(async (response) => {
         const data = await response.data;
         console.log(response.data);
@@ -1508,7 +1518,10 @@ export default function Admin() {
       };
 
       axios
-        .post("https://latest-backend-towi-admin.onrender.com/register-user-admin", userDetails)
+        .post(
+          "https://latest-backend-towi-admin.onrender.com/register-user-admin",
+          userDetails
+        )
         .then(async (response) => {
           const data = response.data;
 
@@ -1562,7 +1575,7 @@ export default function Admin() {
             padding: { xs: "10px", sm: "20px" },
             maxWidth: "100%",
             overflow: "auto",
-              backgroundColor: "#52B788"
+            backgroundColor: "#52B788",
           }}
         >
           {/* Add User Button */}
@@ -1582,7 +1595,7 @@ export default function Admin() {
               Add User
             </Button>
           </Box>
-  
+
           {/* Responsive DataGrid */}
           <Box
             sx={{
@@ -1627,7 +1640,7 @@ export default function Admin() {
               disableRowSelectionOnClick
             />
           </Box>
-  
+
           {/* OTP Dialog */}
           <Dialog
             open={openDialog}
@@ -1646,9 +1659,10 @@ export default function Admin() {
                   inputProps={{ maxLength: 4 }}
                   onChange={handleOtpCodeChange}
                   sx={{
-                    "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
-                      display: "none",
-                    },
+                    "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
+                      {
+                        display: "none",
+                      },
                     "& input[type=number]": {
                       MozAppearance: "textfield",
                     },
@@ -1663,7 +1677,7 @@ export default function Admin() {
               </Button>
             </DialogActions>
           </Dialog>
-  
+
           {/* Status Change Dialog */}
           <Dialog
             open={openStatusDialog}
@@ -1690,132 +1704,128 @@ export default function Admin() {
           </Dialog>
 
           <Modal
-  open={openViewModal}
-  onClose={handleViewCloseModal}
-  aria-labelledby="modal-modal-title"
-  aria-describedby="modal-modal-description"
->
-  <Box
-    sx={{
-      padding: 4,
-      backgroundColor: "white",
-      margin: { xs: "10% auto", md: "5% auto" },
-      width: { xs: "90%", sm: "70%", md: "50%" },
-      maxHeight: "80vh",
-      overflowY: "auto",
-      boxShadow: 24,
-      borderRadius: 2,
-    }}
-  >
-    <Typography id="modal-modal-title" variant="h6" component="h2">
-      Full Details
-    </Typography>
-    <Stack spacing={3} sx={{ mt: 2 }}>
-      {/* Display Outlets */}
-      <Typography id="modal-modal-description">
-        <span className="detailTitle">OUTLETS:</span>{" "}
-        <span className="detailDescription">
-          {Array.isArray(adminViewBranch)
-            ? adminViewBranch.join(", ")
-            : adminViewBranch}
-        </span>
-      </Typography>
+            open={openViewModal}
+            onClose={handleViewCloseModal}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box
+              sx={{
+                padding: 4,
+                backgroundColor: "white",
+                margin: { xs: "10% auto", md: "5% auto" },
+                width: { xs: "90%", sm: "70%", md: "50%" },
+                maxHeight: "80vh",
+                overflowY: "auto",
+                boxShadow: 24,
+                borderRadius: 2,
+              }}
+            >
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Full Details
+              </Typography>
+              <Stack spacing={3} sx={{ mt: 2 }}>
+                {/* Display Outlets */}
+                <Typography id="modal-modal-description">
+                  <span className="detailTitle">OUTLETS:</span>{" "}
+                  <span className="detailDescription">
+                    {Array.isArray(adminViewBranch)
+                      ? adminViewBranch.join(", ")
+                      : adminViewBranch}
+                  </span>
+                </Typography>
 
-      {/* Dropdown for selecting branches */}
-      <Autocomplete
-        multiple
-        id="branches-autocomplete"
-        options={branches}
-        value={selectedBranches}
-        onChange={(event, newValue) => setSelectedBranches(newValue)}
-        disableCloseOnSelect
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            variant="outlined"
-            label="Select Outlet"
-            placeholder="Select Outlet"
-          />
-        )}
-        renderOption={(props, option, { selected }) => (
-          <li {...props}>
-            <Checkbox
-              style={{ marginRight: 8 }}
-              checked={selected}
-            />
-            {option}
-          </li>
-        )}
-      />
+                {/* Dropdown for selecting branches */}
+                <Autocomplete
+                  multiple
+                  id="branches-autocomplete"
+                  options={branches}
+                  value={selectedBranches}
+                  onChange={(event, newValue) => setSelectedBranches(newValue)}
+                  disableCloseOnSelect
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label="Select Outlet"
+                      placeholder="Select Outlet"
+                    />
+                  )}
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props}>
+                      <Checkbox style={{ marginRight: 8 }} checked={selected} />
+                      {option}
+                    </li>
+                  )}
+                />
 
-      {/* Buttons for selecting/removing all outlets */}
-      <Stack direction="row" spacing={2} justifyContent="center">
-        <Button
-          onClick={() => setSelectedBranches(branches)}
-          variant="outlined"
-          sx={{
-            backgroundColor: "rgb(130, 204, 136)",
-            color: "rgb(26, 20, 71)",
-            borderColor: "rgb(26, 20, 71)",
-            "&:hover": { backgroundColor: "rgb(20, 165, 75)" },
-          }}
-        >
-          Select All
-        </Button>
-        <Button
-          onClick={() => setSelectedBranches([])}
-          variant="outlined"
-          sx={{
-            backgroundColor: "rgb(255, 220, 220)",
-            color: "rgb(0, 0, 0)",
-            borderColor: "rgb(33, 151, 43)",
-            "&:hover": { backgroundColor: "rgb(255, 190, 190)" },
-          }}
-        >
-          Remove All
-        </Button>
-      </Stack>
+                {/* Buttons for selecting/removing all outlets */}
+                <Stack direction="row" spacing={2} justifyContent="center">
+                  <Button
+                    onClick={() => setSelectedBranches(branches)}
+                    variant="outlined"
+                    sx={{
+                      backgroundColor: "rgb(130, 204, 136)",
+                      color: "rgb(26, 20, 71)",
+                      borderColor: "rgb(26, 20, 71)",
+                      "&:hover": { backgroundColor: "rgb(20, 165, 75)" },
+                    }}
+                  >
+                    Select All
+                  </Button>
+                  <Button
+                    onClick={() => setSelectedBranches([])}
+                    variant="outlined"
+                    sx={{
+                      backgroundColor: "rgb(255, 220, 220)",
+                      color: "rgb(0, 0, 0)",
+                      borderColor: "rgb(33, 151, 43)",
+                      "&:hover": { backgroundColor: "rgb(255, 190, 190)" },
+                    }}
+                  >
+                    Remove All
+                  </Button>
+                </Stack>
 
-      {/* Save Button */}
-      <Button
-        onClick={() => handleBranchSave(adminViewEmail)}
-        variant="contained"
-        sx={{
-          backgroundColor: "rgb(17, 148, 39)",
-          color: "white",
-          "&:hover": { backgroundColor: "rgb(13, 105, 28)" },
-        }}
-      >
-        Save Outlet Changes
-      </Button>
+                {/* Save Button */}
+                <Button
+                  onClick={() => handleBranchSave(adminViewEmail)}
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "rgb(17, 148, 39)",
+                    color: "white",
+                    "&:hover": { backgroundColor: "rgb(13, 105, 28)" },
+                  }}
+                >
+                  Save Outlet Changes
+                </Button>
 
-      {/* Read-only fields */}
-      <TextField
-        label="Email"
-        id="outlined-read-only-input"
-        defaultValue={adminViewEmail}
-        InputProps={{
-          readOnly: true,
-        }}
-      />
-      <TextField
-        label="Contact Number"
-        id="outlined-read-only-input"
-        defaultValue={adminViewPhone}
-        InputProps={{
-          readOnly: true,
-        }}
-      />
+                {/* Read-only fields */}
+                <TextField
+                  label="Email"
+                  id="outlined-read-only-input"
+                  defaultValue={adminViewEmail}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+                <TextField
+                  label="Contact Number"
+                  id="outlined-read-only-input"
+                  defaultValue={adminViewPhone}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
 
-      {/* Close Button */}
-      <DialogActions>
-        <Button onClick={handleViewCloseModal}>Close</Button>
-      </DialogActions>
-    </Stack>
-  </Box>
-</Modal>
+                {/* Close Button */}
+                <DialogActions>
+                  <Button onClick={handleViewCloseModal}>Close</Button>
+                </DialogActions>
+              </Stack>
+            </Box>
+          </Modal>
 
-  
           {/* Responsive Modal for Details */}
           <Modal
             open={openModal}
@@ -1853,110 +1863,112 @@ export default function Admin() {
                   <MenuItem value="ACCOUNT SUPERVISOR">
                     ACCOUNT SUPERVISOR
                   </MenuItem>
-                  <MenuItem value="OPERATION OFFICER">OPERATION OFFICER</MenuItem>
+                  <MenuItem value="OPERATION OFFICER">
+                    OPERATION OFFICER
+                  </MenuItem>
                   <MenuItem value="OPERATION HEAD">OPERATION HEAD</MenuItem>
                   <MenuItem value="SENIOR OPERATION MANAGER">
                     SENIOR OPERATION MANAGER
                   </MenuItem>
                 </Select>
               </FormControl>
-  
+
               {/* More Form Fields */}
               <FormControl fullWidth sx={{ m: 1 }}>
-              <TextField
-                label="First Name *"
-                value={adminFirstName}
-                onChange={handleFirstNameChange}
-                error={adminFirstNameError}
-                helperText={adminFirstNameError}
-                autoComplete="off"
-                InputProps={{ autoComplete: "off" }}
-              />
-            </FormControl>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <TextField
-                label="Middle Name"
-                value={adminMiddleName}
-                onChange={handleMiddleNameChange}
-                error={adminMiddleNameError}
-                helperText={adminMiddleNameError}
-                autoComplete="off"
-              />
-            </FormControl>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <TextField
-                label="Last Name *"
-                value={adminLastName}
-                onChange={handleLastNameChange}
-                error={adminLastNameError}
-                helperText={adminLastNameError}
-                autoComplete="off"
-              />
-            </FormControl>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <TextField
-                label="Email *"
-                value={adminEmail}
-                onChange={handleEmailChange}
-                error={adminEmailError}
-                helperText={adminEmailError}
-                autoComplete="off"
-              />
-            </FormControl>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <TextField
-                label="Contact Number *"
-                value={adminPhone}
-                onChange={handlePhoneChange}
-                error={adminPhoneError}
-                type="number"
-                sx={{
-                  "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
-                    {
-                      display: "none",
+                <TextField
+                  label="First Name *"
+                  value={adminFirstName}
+                  onChange={handleFirstNameChange}
+                  error={adminFirstNameError}
+                  helperText={adminFirstNameError}
+                  autoComplete="off"
+                  InputProps={{ autoComplete: "off" }}
+                />
+              </FormControl>
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <TextField
+                  label="Middle Name"
+                  value={adminMiddleName}
+                  onChange={handleMiddleNameChange}
+                  error={adminMiddleNameError}
+                  helperText={adminMiddleNameError}
+                  autoComplete="off"
+                />
+              </FormControl>
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <TextField
+                  label="Last Name *"
+                  value={adminLastName}
+                  onChange={handleLastNameChange}
+                  error={adminLastNameError}
+                  helperText={adminLastNameError}
+                  autoComplete="off"
+                />
+              </FormControl>
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <TextField
+                  label="Email *"
+                  value={adminEmail}
+                  onChange={handleEmailChange}
+                  error={adminEmailError}
+                  helperText={adminEmailError}
+                  autoComplete="off"
+                />
+              </FormControl>
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <TextField
+                  label="Contact Number *"
+                  value={adminPhone}
+                  onChange={handlePhoneChange}
+                  error={adminPhoneError}
+                  type="number"
+                  sx={{
+                    "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
+                      {
+                        display: "none",
+                      },
+                    "& input[type=number]": {
+                      MozAppearance: "textfield",
                     },
-                  "& input[type=number]": {
-                    MozAppearance: "textfield",
-                  },
-                }}
-                helperText={adminPhoneError}
-                autoComplete="off"
-              />
-            </FormControl>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <TextField
-                label="Password *"
-                value={adminPassword}
-                onChange={handlePasswordChange}
-                error={adminPasswordError}
-                helperText={adminPasswordError}
-                type={showPassword ? "text" : "password"}
-                autoComplete="off"
-                InputProps={{
-                  endAdornment: (
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  ),
-                }}
-              />
-            </FormControl>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <TextField
-                label="Confirm Password"
-                value={adminConfirmPassword}
-                onChange={handleConfirmPasswordChange}
-                error={adminConfirmPasswordError}
-                helperText={adminConfirmPasswordError}
-                type="password"
-                autoComplete="off"
-              />
-            </FormControl>
+                  }}
+                  helperText={adminPhoneError}
+                  autoComplete="off"
+                />
+              </FormControl>
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <TextField
+                  label="Password *"
+                  value={adminPassword}
+                  onChange={handlePasswordChange}
+                  error={adminPasswordError}
+                  helperText={adminPasswordError}
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="off"
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    ),
+                  }}
+                />
+              </FormControl>
+              <FormControl fullWidth sx={{ m: 1 }}>
+                <TextField
+                  label="Confirm Password"
+                  value={adminConfirmPassword}
+                  onChange={handleConfirmPasswordChange}
+                  error={adminConfirmPasswordError}
+                  helperText={adminConfirmPasswordError}
+                  type="password"
+                  autoComplete="off"
+                />
+              </FormControl>
               {/* Action Buttons */}
               <DialogActions>
                 <Button onClick={handleClose}>Close</Button>
@@ -1970,7 +1982,7 @@ export default function Admin() {
       </Box>
     </div>
   );
-}  
+}
 const ColorButton = styled(Button)(({ theme }) => ({
   color: "#000",
   backgroundColor: "#F6FAB9",

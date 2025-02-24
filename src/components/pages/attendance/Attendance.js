@@ -114,7 +114,10 @@ export default function Attendance() {
               <Button
                 variant="contained"
                 size="small"
-                style={{ backgroundColor: "rgb(33, 148, 29)", color: "#ffffff" }} // Green color with white text
+                style={{
+                  backgroundColor: "rgb(33, 148, 29)",
+                  color: "#ffffff",
+                }} // Green color with white text
               >
                 VIEW
               </Button>
@@ -325,7 +328,7 @@ export default function Attendance() {
             padding: { xs: "10px", sm: "20px" },
             maxWidth: "100%",
             overflow: "auto",
-              backgroundColor: "#52B788"
+            backgroundColor: "#52B788",
           }}
         >
           <Box

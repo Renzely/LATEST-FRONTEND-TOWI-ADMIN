@@ -14,9 +14,9 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const style = {
   position: "absolute",
@@ -38,8 +38,6 @@ function CustomToolbar() {
   );
 }
 
-
-
 export default function RTV() {
   const [userData, setUserData] = React.useState([]);
   const [dateFilter, setDateFilter] = React.useState(null);
@@ -57,56 +55,56 @@ export default function RTV() {
       field: "date",
       headerName: "Date",
       width: 150,
-      headerClassName: 'bold-header'
+      headerClassName: "bold-header",
     },
 
     {
       field: "merchandiserName",
       headerName: "Merchandiser Name",
       width: 220,
-      headerClassName: 'bold-header'
+      headerClassName: "bold-header",
     },
     {
       field: "UserEmail",
       headerName: "Email",
       width: 220,
-      headerClassName: 'bold-header'
+      headerClassName: "bold-header",
     },
     {
       field: "outlet",
       headerName: "Outlet",
       width: 220,
-      headerClassName: 'bold-header'
+      headerClassName: "bold-header",
     },
     {
       field: "item",
       headerName: "Item",
       width: 220,
-      headerClassName: 'bold-header'
+      headerClassName: "bold-header",
     },
     {
       field: "quantity",
       headerName: "Quantity",
       width: 150,
-      headerClassName: 'bold-header'
+      headerClassName: "bold-header",
     },
     {
       field: "driverName",
       headerName: "Driver Name",
       width: 200,
-      headerClassName: 'bold-header'
+      headerClassName: "bold-header",
     },
     {
       field: "plateNumber",
       headerName: "Plate Number",
       width: 150,
-      headerClassName: 'bold-header'
+      headerClassName: "bold-header",
     },
     {
       field: "pullOutReason",
       headerName: "Pull Out Reason",
       width: 200,
-      headerClassName: 'bold-header'
+      headerClassName: "bold-header",
       //type: buttonBaseClasses,
     },
 
@@ -140,44 +138,55 @@ export default function RTV() {
     // },
   ];
 
-  
   const filterParcelDate = () => {
-
     //let selectedDate = new Date(dateFilter.$d).toLocaleString('en-us',{month:'numeric', timeZone: 'Asia/Manila'});
-    let month = new Date(dateFilter.$d).toLocaleString('en-us',{month:'numeric', timeZone: 'Asia/Manila'});
-    let day = new Date(dateFilter.$d).toLocaleString('en-us',{day:'numeric', timeZone: 'Asia/Manila'});
-    let year = new Date(dateFilter.$d).toLocaleString('en-us',{year:'numeric', timeZone: 'Asia/Manila'});
+    let month = new Date(dateFilter.$d).toLocaleString("en-us", {
+      month: "numeric",
+      timeZone: "Asia/Manila",
+    });
+    let day = new Date(dateFilter.$d).toLocaleString("en-us", {
+      day: "numeric",
+      timeZone: "Asia/Manila",
+    });
+    let year = new Date(dateFilter.$d).toLocaleString("en-us", {
+      year: "numeric",
+      timeZone: "Asia/Manila",
+    });
 
-    if (month.length === 1) month = '0' + month
-    if (day.length === 1) day = '0' + day
+    if (month.length === 1) month = "0" + month;
+    if (day.length === 1) day = "0" + day;
 
-    const selectedDate = year + "-" + month + "-" + day
+    const selectedDate = year + "-" + month + "-" + day;
     console.log(selectedDate);
-    getDateRTV(selectedDate)
+    getDateRTV(selectedDate);
   };
-
 
   async function getUser() {
     try {
       // Retrieve the logged-in admin's branches from localStorage
       const loggedInBranch = localStorage.getItem("accountNameBranchManning");
-  
+
       if (!loggedInBranch) {
         console.error("No branch information found for the logged-in admin.");
         return;
       }
-  
+
       const branches = loggedInBranch.split(",").map((branch) => branch.trim());
-  
+
       // Send request to fetch RTV data filtered by branches
-      const response = await axios.post("https://latest-backend-towi-admin.onrender.com/retrieve-RTV-data", {
-        branches,
-      });
-  
+      const response = await axios.post(
+        "https://latest-backend-towi-admin.onrender.com/retrieve-RTV-data",
+        {
+          branches,
+        }
+      );
+
       const data = response.data.data;
-  
+
       // Sort and map the data
-      const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const sortedData = data.sort(
+        (a, b) => new Date(b.date) - new Date(a.date)
+      );
       const newData = sortedData.map((data, key) => ({
         count: key + 1,
         date: data.date,
@@ -190,37 +199,41 @@ export default function RTV() {
         plateNumber: data.plateNumber,
         pullOutReason: data.pullOutReason,
       }));
-  
+
       console.log("Filtered RTV data:", newData);
       setUserData(newData); // Set the filtered data
     } catch (error) {
       console.error("Error fetching RTV data:", error);
     }
   }
-  
 
   async function getDateRTV(selectedDate) {
     try {
       // Retrieve the logged-in admin's branches from localStorage
       const loggedInBranch = localStorage.getItem("accountNameBranchManning");
-  
+
       if (!loggedInBranch) {
         console.error("No branch information found for the logged-in admin.");
         return;
       }
-  
+
       const branches = loggedInBranch.split(",").map((branch) => branch.trim());
-  
+
       // Send request to filter RTV data by date and branches
-      const response = await axios.post("https://latest-backend-towi-admin.onrender.com/filter-RTV-data", {
-        selectDate: selectedDate,
-        branches,
-      });
-  
+      const response = await axios.post(
+        "https://latest-backend-towi-admin.onrender.com/filter-RTV-data",
+        {
+          selectDate: selectedDate,
+          branches,
+        }
+      );
+
       const data = response.data.data;
-  
+
       // Sort and map the data
-      const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const sortedData = data.sort(
+        (a, b) => new Date(b.date) - new Date(a.date)
+      );
       const newData = sortedData.map((data, key) => ({
         count: key + 1,
         date: data.date,
@@ -233,14 +246,14 @@ export default function RTV() {
         plateNumber: data.plateNumber,
         pullOutReason: data.pullOutReason,
       }));
-  
+
       console.log("Filtered RTV data by date:", newData);
       setUserData(newData); // Set the filtered data
     } catch (error) {
       console.error("Error filtering RTV data by date:", error);
     }
   }
-  
+
   const getExportData = async () => {
     if (dateBegin === null || dateEnd === null) {
       return alert("Please fill date fields");
@@ -360,7 +373,6 @@ export default function RTV() {
     }
   };
 
-
   React.useEffect(() => {
     getUser();
   }, []);
@@ -376,7 +388,7 @@ export default function RTV() {
             padding: { xs: "10px", sm: "20px" },
             maxWidth: "100%",
             overflow: "auto",
-                 backgroundColor: "#52B788"
+            backgroundColor: "#52B788",
           }}
         >
           {/* Controls Section */}
@@ -389,7 +401,12 @@ export default function RTV() {
               <DatePicker
                 label="Select Date"
                 onChange={(newValue) => setDateBegin(newValue)}
-                slotProps={{ textField: { size: "small" , sx: { backgroundColor: 'white' } } }}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    sx: { backgroundColor: "white" },
+                  },
+                }}
               />
             </LocalizationProvider>
 
@@ -397,7 +414,12 @@ export default function RTV() {
               <DatePicker
                 label="Select Date"
                 onChange={(newValue) => setDateEnd(newValue)}
-                slotProps={{ textField: { size: "small", sx: { backgroundColor: 'white' } } }}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    sx: { backgroundColor: "white" },
+                  },
+                }}
               />
             </LocalizationProvider>
 
