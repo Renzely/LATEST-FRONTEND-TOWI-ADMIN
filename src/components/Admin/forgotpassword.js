@@ -56,7 +56,7 @@ export default function ForgotPassword() {
 
     try {
       const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/send-otp-forgotpassword",
+        "https://towi-admin.onrender.com/send-otp-forgotpassword",
         { emailAddress: email }
       );
       const res = response.data;
@@ -99,10 +99,7 @@ export default function ForgotPassword() {
     };
 
     axios
-      .put(
-        "https://latest-backend-towi-admin.onrender.com/forgot-password-reset",
-        body
-      )
+      .put("https://towi-admin.onrender.com/forgot-password-reset", body)
       .then(async (response) => {
         const res = await response.data;
         if (res.status === 200) {

@@ -143,8 +143,11 @@ export default function Attendance() {
 
     try {
       const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/get-attendance",
-        { userEmail: emailAddress, date: formattedDate }
+        "https://towi-admin.onrender.com/get-attendance",
+        {
+          userEmail: emailAddress,
+          date: formattedDate,
+        }
       );
       const data = response.data.data;
 
@@ -227,7 +230,7 @@ export default function Attendance() {
     try {
       // Fetch the users' data
       const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/get-all-user",
+        "https://towi-admin.onrender.com/get-all-user",
         body
       );
       const data = response.data.data;

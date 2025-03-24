@@ -285,7 +285,7 @@ export default function Inventory() {
 
       // Fetch the inventory data filtered by branches
       const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/retrieve-parcel-data",
+        "https://towi-admin.onrender.com/retrieve-parcel-data",
         { branches } // Pass branches in the request body
       );
 
@@ -371,7 +371,7 @@ export default function Inventory() {
 
     try {
       const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/filter-date-range", // Correct endpoint
+        "https://towi-admin.onrender.com/filter-date-range", // Correct endpoint
         data
       );
 
@@ -446,7 +446,7 @@ export default function Inventory() {
 
     try {
       const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/export-inventory-data-towi",
+        "https://towi-admin.onrender.com/export-inventory-data-towi",
         {
           start: bDate,
           end: eDate,
