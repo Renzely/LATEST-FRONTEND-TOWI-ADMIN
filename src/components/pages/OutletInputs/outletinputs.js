@@ -1321,7 +1321,7 @@ export default function OUTLET() {
 
     try {
       const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/filter-date-range",
+        "https://towi-admin.onrender.com/filter-date-range",
         data
       );
 
@@ -1422,7 +1422,7 @@ export default function OUTLET() {
 
       // Sending the branch info in the POST request to backend
       const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/get-users-by-branch",
+        "https://towi-admin.onrender.com/get-users-by-branch",
         {
           branches,
         }

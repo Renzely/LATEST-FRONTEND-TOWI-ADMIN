@@ -49,7 +49,7 @@ export default function Login() {
 
     try {
       const response = await axios.post(
-        "https://latest-backend-towi-admin.onrender.com/login-admin",
+        "https://towi-admin.onrender.com/login-admin",
         body
       );
       const data = await response.data;
