@@ -1442,14 +1442,14 @@ export default function Admin() {
       return;
     }
 
-    if (adminSelectedBranch.length === 0) {
-      Swal.fire({
-        title: "Unable to proceed",
-        text: "Please select Branch!",
-        icon: "error",
-      });
-      return;
-    }
+    // if (adminSelectedBranch.length === 0) {
+    //   Swal.fire({
+    //     title: "Unable to proceed",
+    //     text: "Please select Branch!",
+    //     icon: "error",
+    //   });
+    //   return;
+    // }
 
     await axios
       .post("https://towi-admin.onrender.com/send-otp-register", {
